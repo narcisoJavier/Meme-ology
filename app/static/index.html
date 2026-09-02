@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MEME-OLOGY! — The Generational Internet Meme Radar &amp; API</title>
-  <meta name="description" content="Track, score, and categorize memes across Gen Alpha, Gen Z, Millennial, and Gen X culture in real time.">
+  <title>MEME-OLOGY! — The Living Internet Meme Almanac</title>
+  <meta name="description" content="Explore, score, and discover memes across Gen Alpha, Gen Z, Millennial, and Retro internet culture.">
   <meta name="referrer" content="no-referrer">
 
   <!-- Google Fonts: Comic Bangers, Space Grotesk, and JetBrains Mono -->
@@ -45,28 +45,25 @@
 
     body {
       background-color: var(--comic-paper);
-      background-image: radial-gradient(rgba(12, 12, 15, 0.12) 15%, transparent 16%);
-      background-size: 18px 18px;
+      background-image: 
+        radial-gradient(#0C0C0F 12%, transparent 12%),
+        radial-gradient(#0C0C0F 12%, transparent 12%);
+      background-size: 28px 28px;
+      background-position: 0 0, 14px 14px;
+      background-attachment: fixed;
       color: var(--comic-ink);
-      font-family: 'Space Grotesk', -apple-system, sans-serif;
-      line-height: 1.4;
+      font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
       overflow-x: hidden;
+      line-height: 1.5;
     }
 
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    code, pre {
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    /* Top Comic Banner */
+    /* Top Strip Banner */
     .comic-top-banner {
       background: var(--comic-ink);
       color: #fff;
-      padding: 6px 1rem;
+      padding: 6px 1.5rem;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 0.75rem;
       font-weight: 700;
       letter-spacing: 0.08em;
@@ -75,12 +72,6 @@
       justify-content: space-between;
       align-items: center;
       border-bottom: 2px solid #000;
-    }
-
-    .comic-top-banner span {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
     }
 
     /* Navigation */
@@ -101,6 +92,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 1rem;
+      flex-wrap: wrap;
     }
 
     .comic-logo-group {
@@ -118,6 +110,7 @@
       line-height: 1;
       transform: rotate(-1.5deg);
       display: inline-block;
+      text-decoration: none;
       transition: transform 0.2s;
     }
 
@@ -135,15 +128,9 @@
       border-radius: 4px;
       box-shadow: 2px 2px 0px #000;
       transform: rotate(2deg);
-      animation: sticker-sway 3s ease-in-out infinite alternate;
     }
 
-    @keyframes sticker-sway {
-      0% { transform: rotate(-2deg); }
-      100% { transform: rotate(3deg); }
-    }
-
-    /* Dual-Section Navigation Switcher */
+    /* Tri-Section Navigation Switcher */
     .section-nav-switcher {
       display: flex;
       background: #fff;
@@ -157,10 +144,10 @@
     .section-nav-btn {
       border: none;
       background: transparent;
-      padding: 6px 16px;
+      padding: 6px 14px;
       font-family: 'Space Grotesk', sans-serif;
       font-weight: 800;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       text-transform: uppercase;
       letter-spacing: 0.04em;
       cursor: pointer;
@@ -168,7 +155,7 @@
       transition: all 0.15s ease;
       display: flex;
       align-items: center;
-      gap: 0.4rem;
+      gap: 0.35rem;
     }
 
     .section-nav-btn:hover {
@@ -184,16 +171,16 @@
     .nav-right-actions {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.6rem;
     }
 
     .btn-comic {
       background: #fff;
       border: var(--border-ink);
       box-shadow: var(--shadow-sm);
-      padding: 6px 14px;
+      padding: 6px 12px;
       font-weight: 800;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       text-transform: uppercase;
       letter-spacing: 0.04em;
       cursor: pointer;
@@ -201,7 +188,9 @@
       transition: all 0.12s ease;
       display: inline-flex;
       align-items: center;
-      gap: 0.4rem;
+      gap: 0.35rem;
+      text-decoration: none;
+      color: #000;
     }
 
     .btn-comic:hover {
@@ -210,9 +199,9 @@
       background: #fff;
     }
 
-    .btn-comic:active {
-      transform: translate(2px, 2px);
-      box-shadow: 1px 1px 0px #000;
+    .btn-comic-cyan {
+      background: var(--comic-cyan);
+      color: #000;
     }
 
     .btn-comic-red {
@@ -220,31 +209,25 @@
       color: #fff;
     }
 
-    .btn-comic-cyan {
-      background: var(--comic-cyan);
-      color: #000;
-    }
-
-    /* =========================================================
-       SECTION 1: THE COMIC MEME RADAR (Visual Explorer)
-       ========================================================= */
+    /* Main Container */
     .section-container {
       max-width: 1400px;
-      margin: 2rem auto;
+      margin: 1.5rem auto;
       padding: 0 1.5rem;
     }
 
+    /* Friendly Casual Hero Header */
     .section-header-box {
       background: #fff;
       border: var(--border-ink);
       box-shadow: var(--shadow-heavy);
-      padding: 2rem;
+      padding: 1.75rem 2rem;
       border-radius: 8px;
       position: relative;
-      margin-bottom: 2rem;
+      margin-bottom: 1.5rem;
       display: grid;
-      grid-template-columns: 1.6fr 1fr;
-      gap: 2rem;
+      grid-template-columns: 1.7fr 1fr;
+      gap: 1.5rem;
       align-items: center;
       overflow: hidden;
     }
@@ -266,212 +249,252 @@
       box-shadow: 2px 2px 0px #000;
       padding: 3px 10px;
       font-family: 'Bangers', cursive;
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       letter-spacing: 0.05em;
-      margin-bottom: 0.75rem;
-      transform: rotate(-1.5deg);
+      margin-bottom: 0.5rem;
+      transform: rotate(-1deg);
     }
 
     .hero-title {
       font-family: 'Bangers', cursive;
-      font-size: clamp(2.8rem, 5vw, 4.2rem);
+      font-size: clamp(2.4rem, 4.5vw, 3.6rem);
       letter-spacing: 0.03em;
-      line-height: 0.95;
-      margin-bottom: 1rem;
+      line-height: 1;
+      margin-bottom: 0.75rem;
       color: var(--comic-ink);
-      text-shadow: 3px 3px 0px var(--comic-yellow), 6px 6px 0px var(--comic-red);
+      text-shadow: 2px 2px 0px var(--comic-yellow), 4px 4px 0px var(--comic-red);
     }
 
     .hero-desc {
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 600;
-      color: #262626;
-      max-width: 640px;
-      margin-bottom: 1.5rem;
+      color: #333;
+      max-width: 620px;
+      margin-bottom: 1rem;
     }
 
-    /* Sticker Cloud */
     .sticker-cloud {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.75rem;
+      gap: 0.5rem;
       align-items: center;
     }
 
     .comic-sticker {
       display: inline-flex;
       align-items: center;
-      gap: 0.35rem;
-      padding: 5px 12px;
+      gap: 0.3rem;
+      padding: 4px 10px;
       border: var(--border-ink);
-      font-size: 0.82rem;
+      font-size: 0.78rem;
       font-weight: 800;
       box-shadow: var(--shadow-sm);
       border-radius: 4px;
       text-transform: uppercase;
-      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       cursor: default;
     }
 
-    .comic-sticker:hover {
-      transform: scale(1.1) rotate(0deg) !important;
-      box-shadow: var(--shadow-hard);
-    }
+    .sticker-alpha { background: var(--comic-purple); color: #fff; transform: rotate(-2deg); }
+    .sticker-z { background: var(--comic-lime); color: #000; transform: rotate(1.5deg); }
+    .sticker-millennial { background: var(--comic-cyan); color: #000; transform: rotate(-1deg); }
+    .sticker-boomer { background: var(--comic-orange); color: #fff; transform: rotate(2deg); }
 
-    .sticker-alpha { background: var(--comic-purple); color: #fff; transform: rotate(-3deg); }
-    .sticker-z { background: var(--comic-lime); color: #000; transform: rotate(2.5deg); }
-    .sticker-millennial { background: var(--comic-cyan); color: #000; transform: rotate(-1.5deg); }
-    .sticker-boomer { background: var(--comic-orange); color: #fff; transform: rotate(3deg); }
-
-    /* Radar Telemetry Box */
+    /* Telemetry Box */
     .radar-telemetry-box {
       background: var(--comic-yellow);
       border: var(--border-ink);
       box-shadow: var(--shadow-hard);
-      padding: 1.25rem;
+      padding: 1.2rem;
       border-radius: 6px;
-      transform: rotate(1deg);
       text-align: center;
-      transition: transform 0.2s;
-    }
-
-    .radar-telemetry-box:hover {
-      transform: rotate(0deg) scale(1.02);
     }
 
     .radar-telemetry-box h3 {
       font-family: 'Bangers', cursive;
-      font-size: 1.6rem;
+      font-size: 1.4rem;
       letter-spacing: 0.04em;
-      margin-bottom: 0.25rem;
+      margin-bottom: 0.2rem;
     }
 
     .telemetry-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 0.75rem;
-      margin-top: 1rem;
+      gap: 0.6rem;
+      margin-top: 0.75rem;
     }
 
     .telemetry-cell {
       background: #fff;
       border: 2px solid #000;
-      padding: 0.6rem;
+      padding: 0.5rem;
       box-shadow: 2px 2px 0px #000;
       border-radius: 4px;
-      transition: transform 0.15s;
-    }
-
-    .telemetry-cell:hover {
-      transform: translateY(-2px);
     }
 
     .telemetry-num {
       font-family: 'Bangers', cursive;
-      font-size: 1.7rem;
+      font-size: 1.5rem;
       color: var(--comic-red);
       line-height: 1;
     }
 
     .telemetry-lbl {
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       font-weight: 800;
       text-transform: uppercase;
       margin-top: 2px;
     }
 
-    /* Radar Feed Controls */
-    .radar-controls-card {
+    /* =========================================================
+       FEATURED MEME OF THE DAY (SPOTLIGHT HERO)
+       ========================================================= */
+    .featured-spotlight-card {
       background: #fff;
       border: var(--border-ink);
-      box-shadow: var(--shadow-hard);
-      padding: 1.5rem;
+      box-shadow: var(--shadow-heavy);
       border-radius: 8px;
+      margin-bottom: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .spotlight-badge-tab {
+      background: var(--comic-yellow);
+      border-bottom: 3px solid #000;
+      padding: 6px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'Bangers', cursive;
+      font-size: 1.25rem;
+      letter-spacing: 0.05em;
+    }
+
+    .spotlight-body {
+      padding: 1.25rem 1.5rem;
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .spotlight-media-frame {
+      height: 240px;
+      background: #111116;
+      border: 2px solid #000;
+      box-shadow: 3px 3px 0px #000;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .spotlight-media-frame img, .spotlight-media-frame video {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .spotlight-info-col {
       display: flex;
       flex-direction: column;
-      gap: 1.25rem;
-      margin-bottom: 2rem;
+      gap: 0.75rem;
     }
 
-    .comic-search-wrap {
-      position: relative;
-      width: 100%;
+    .spotlight-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      line-height: 1.3;
     }
 
-    .comic-search-input {
-      width: 100%;
-      border: var(--border-ink);
-      box-shadow: var(--shadow-sm);
-      padding: 12px 1rem 12px 3rem;
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1rem;
-      font-weight: 700;
-      border-radius: 6px;
-      background: #fafafa;
-      outline: none;
-      transition: all 0.15s;
+    .spotlight-meta-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
     }
 
-    .comic-search-input:focus {
+    /* =========================================================
+       STREAMLINED COMPACT TOOLBAR
+       ========================================================= */
+    .streamlined-toolbar {
       background: #fff;
+      border: var(--border-ink);
       box-shadow: var(--shadow-hard);
-      transform: translate(-1px, -1px);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      flex-wrap: wrap;
     }
 
-    .search-icon-badge {
+    .search-input-box {
+      position: relative;
+      flex: 1 1 260px;
+    }
+
+    .compact-search-input {
+      width: 100%;
+      border: 2px solid #000;
+      box-shadow: 2px 2px 0px #000;
+      padding: 7px 10px 7px 2.2rem;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 700;
+      border-radius: 4px;
+      outline: none;
+      background: #fafafa;
+    }
+
+    .compact-search-input:focus {
+      background: #fff;
+      box-shadow: 3px 3px 0px #000;
+    }
+
+    .search-icon {
       position: absolute;
-      left: 1rem;
+      left: 0.7rem;
       top: 50%;
       transform: translateY(-50%);
-      font-size: 1.2rem;
+      font-size: 0.95rem;
       pointer-events: none;
     }
 
-    .filter-header-label {
-      font-size: 0.8rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      color: #333;
-      margin-bottom: 0.4rem;
+    .compact-era-pills {
       display: flex;
       align-items: center;
       gap: 0.4rem;
-    }
-
-    .pills-group {
-      display: flex;
       flex-wrap: wrap;
-      gap: 0.6rem;
     }
 
     .comic-filter-pill {
       background: #fff;
       border: 2px solid #000;
       box-shadow: 2px 2px 0px #000;
-      padding: 6px 14px;
-      font-size: 0.82rem;
+      padding: 5px 12px;
+      font-size: 0.8rem;
       font-weight: 800;
-      text-transform: uppercase;
       cursor: pointer;
       border-radius: 4px;
-      transition: all 0.12s;
+      transition: all 0.12s ease;
       display: inline-flex;
       align-items: center;
-      gap: 0.35rem;
+      gap: 0.3rem;
     }
 
     .comic-filter-pill:hover {
       background: var(--comic-yellow);
-      transform: translateY(-2px);
-      box-shadow: 3px 3px 0px #000;
+      transform: translateY(-1px);
     }
 
     .comic-filter-pill.active {
       background: var(--comic-red);
       color: #fff;
-      box-shadow: 3px 3px 0px #000;
-      transform: translate(-1px, -1px);
+      box-shadow: 2px 2px 0px #000;
     }
 
     .pill-alpha.active { background: var(--comic-purple); }
@@ -479,83 +502,78 @@
     .pill-millennial.active { background: var(--comic-cyan); color: #000; }
     .pill-boomer.active { background: var(--comic-orange); }
 
-    .jump-to-lab-btn {
-      background: var(--comic-cyan);
-      color: #000;
+    .toolbar-dropdown {
       border: 2px solid #000;
-      box-shadow: 3px 3px 0px #000;
-      padding: 6px 14px;
+      box-shadow: 2px 2px 0px #000;
+      padding: 6px 10px;
+      font-family: 'Space Grotesk', sans-serif;
       font-size: 0.82rem;
       font-weight: 800;
-      text-transform: uppercase;
       border-radius: 4px;
+      background: #fff;
       cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      transition: all 0.15s;
+      outline: none;
     }
 
-    .jump-to-lab-btn:hover {
-      transform: translate(-2px, -2px);
-      box-shadow: 5px 5px 0px #000;
-      background: #33ebff;
-    }
-
-    /* Full-Width Comic Grid */
+    /* =========================================================
+       UNCLIPPED COMIC MEME GRID & CARDS
+       ========================================================= */
     .comic-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
-      gap: 2rem;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 1.75rem;
     }
 
-    /* Individual Comic Card with Depth & Tilt */
     .comic-card {
       background: #fff;
       border: var(--border-ink);
+      border-radius: 6px;
       box-shadow: var(--shadow-hard);
-      border-radius: 8px;
-      overflow: hidden;
       display: flex;
       flex-direction: column;
-      cursor: pointer;
       position: relative;
-      transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.25s ease;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+      overflow: hidden;
     }
-
-    .comic-card:nth-child(4n+1) { transform: rotate(-1.2deg); }
-    .comic-card:nth-child(4n+2) { transform: rotate(1deg); }
-    .comic-card:nth-child(4n+3) { transform: rotate(-0.8deg); }
-    .comic-card:nth-child(4n+4) { transform: rotate(1.4deg); }
 
     .comic-card:hover {
-      transform: rotate(0deg) scale(1.025) translate(-3px, -3px) !important;
+      transform: translateY(-4px);
       box-shadow: var(--shadow-heavy);
-      z-index: 10;
     }
 
-    /* Animated Speech Bubble */
+    /* Speech Bubble with Author Tag Inside */
     .speech-bubble-wrapper {
-      padding: 1rem 1rem 0.6rem;
+      padding: 1rem 1rem 0;
+      position: relative;
+      z-index: 5;
     }
 
     .speech-bubble {
       position: relative;
       background: #fff;
       border: var(--border-ink);
-      border-radius: 12px;
-      padding: 11px 15px;
+      border-radius: 10px;
+      padding: 10px 14px;
       box-shadow: var(--shadow-sm);
-      font-weight: 800;
-      font-size: 0.95rem;
-      line-height: 1.35;
-      color: #000;
-      animation: float-bubble 4s ease-in-out infinite alternate;
     }
 
-    @keyframes float-bubble {
-      0% { transform: translateY(0px); }
-      100% { transform: translateY(-3px); }
+    .speech-quote {
+      font-weight: 800;
+      font-size: 0.92rem;
+      line-height: 1.35;
+      color: #000;
+      display: block;
+    }
+
+    .speech-author {
+      display: block;
+      margin-top: 5px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #555;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
     }
 
     .speech-bubble::after {
@@ -582,26 +600,33 @@
       width: 0;
     }
 
+    /* UNCLIPPED Media Box (object-fit: contain) */
     .comic-card-media {
       margin: 0.75rem 1rem 0;
       border: 2px solid #000;
       box-shadow: 2px 2px 0px #000;
-      height: 250px;
-      background: #f0ede6;
+      height: 280px;
+      background: #111116; /* Clean dark comic backdrop so no text is ever cropped */
       position: relative;
       overflow: hidden;
       border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .comic-card-media img, .comic-card-media video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain; /* NEVER clip or crop punchlines */
+      transition: transform 0.25s ease;
     }
 
-    .comic-card:hover .comic-card-media img {
-      transform: scale(1.06);
+    .comic-card:hover .comic-card-media img,
+    .comic-card:hover .comic-card-media video {
+      transform: scale(1.02);
     }
 
     .badge-corner-stamp {
@@ -611,13 +636,12 @@
       background: var(--comic-yellow);
       border: 2px solid #000;
       font-family: 'Bangers', cursive;
-      font-size: 1.15rem;
+      font-size: 1.1rem;
       padding: 2px 8px;
       box-shadow: 2px 2px 0px #000;
       border-radius: 3px;
       color: #000;
       z-index: 2;
-      transform: rotate(-2deg);
     }
 
     .badge-corner-source {
@@ -626,7 +650,7 @@
       left: 8px;
       background: #fff;
       border: 2px solid #000;
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       font-weight: 800;
       text-transform: uppercase;
       padding: 2px 7px;
@@ -635,13 +659,12 @@
       z-index: 2;
     }
 
-    /* Generational Badge on Card */
     .badge-generation {
       position: absolute;
       bottom: 8px;
       left: 8px;
       border: 2px solid #000;
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       font-weight: 800;
       text-transform: uppercase;
       padding: 2px 7px;
@@ -655,64 +678,31 @@
     .badge-millennial { background: var(--comic-cyan); color: #000; }
     .badge-gen_x { background: var(--comic-orange); color: #fff; }
 
-    /* Upvote Slam Stamp Effect */
-    .stamp-slam-effect {
+    .badge-gif-indicator {
       position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) rotate(-15deg) scale(0);
-      background: var(--comic-red);
-      color: #fff;
-      border: 3px solid #000;
-      box-shadow: 5px 5px 0px #000;
-      font-family: 'Bangers', cursive;
-      font-size: 2rem;
-      letter-spacing: 0.05em;
-      padding: 8px 16px;
-      border-radius: 6px;
+      bottom: 8px;
+      right: 8px;
+      background: #000;
+      color: #FFE81F;
+      border: 2px solid #FFE81F;
+      padding: 2px 6px;
+      font-size: 0.68rem;
+      font-weight: 800;
+      border-radius: 3px;
+      z-index: 3;
       pointer-events: none;
-      z-index: 20;
-      opacity: 0;
+      box-shadow: 1px 1px 0px #000;
     }
 
+    /* Card Footer & Action Bar */
     .comic-card-footer {
-      padding: 1rem;
+      padding: 0.85rem 1rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 0.5rem;
-    }
-
-    .comic-author-tag {
-      font-size: 0.78rem;
-      font-weight: 700;
-      color: #555;
-    }
-
-    .btn-upvote-stamp {
-      background: var(--comic-red);
-      color: #fff;
-      border: 2px solid #000;
-      box-shadow: 2px 2px 0px #000;
-      padding: 5px 12px;
-      font-family: 'Bangers', cursive;
-      font-size: 1.1rem;
-      letter-spacing: 0.04em;
-      border-radius: 4px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      transition: transform 0.12s, background-color 0.12s;
-    }
-
-    .btn-upvote-stamp:hover {
-      transform: scale(1.08);
-      background: #ff122d;
-    }
-
-    .btn-upvote-stamp:active {
-      transform: scale(0.92);
+      border-top: 1px solid #eee;
+      margin-top: 0.75rem;
     }
 
     .btn-card-permalink {
@@ -720,7 +710,7 @@
       color: #000;
       border: 2px solid #000;
       box-shadow: 2px 2px 0px #000;
-      padding: 5px 10px;
+      padding: 4px 10px;
       font-size: 0.75rem;
       font-weight: 800;
       text-transform: uppercase;
@@ -739,189 +729,188 @@
       box-shadow: 3px 3px 0px #000;
     }
 
-    .btn-card-permalink:active {
-      transform: translate(1px, 1px);
-      box-shadow: 1px 1px 0px #000;
+    .btn-upvote-stamp {
+      background: var(--comic-red);
+      color: #fff;
+      border: 2px solid #000;
+      box-shadow: 2px 2px 0px #000;
+      padding: 4px 10px;
+      font-family: 'Bangers', cursive;
+      font-size: 1.05rem;
+      letter-spacing: 0.04em;
+      border-radius: 4px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: transform 0.12s, background-color 0.12s;
     }
 
-    /* =========================================================
-       SECTION DIVIDER: JAGGED COMIC TRANSITION
-       ========================================================= */
-    .comic-section-divider {
-      margin: 5rem 0 3rem;
-      position: relative;
-      text-align: center;
+    .btn-upvote-stamp:hover {
+      transform: scale(1.05);
     }
 
-    .divider-line {
-      height: 6px;
-      background: #000;
-      width: 100%;
+    .btn-upvote-stamp.voted {
+      background: var(--comic-lime);
+      color: #000;
     }
 
-    .divider-badge {
-      display: inline-block;
-      background: var(--comic-yellow);
-      border: var(--border-ink);
-      box-shadow: var(--shadow-hard);
-      padding: 10px 24px;
-      border-radius: 50px;
+    /* Stamp Slam Effect */
+    .stamp-slam-effect {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-15deg) scale(0);
+      background: var(--comic-red);
+      color: #fff;
+      border: 3px solid #000;
+      box-shadow: 5px 5px 0px #000;
       font-family: 'Bangers', cursive;
       font-size: 1.8rem;
-      letter-spacing: 0.06em;
-      color: #000;
-      position: relative;
-      top: -30px;
-      transform: rotate(-1deg);
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-
-    .divider-badge:hover {
-      transform: rotate(1deg) scale(1.05);
+      letter-spacing: 0.05em;
+      padding: 6px 14px;
+      border-radius: 6px;
+      pointer-events: none;
+      z-index: 20;
+      opacity: 0;
     }
 
     /* =========================================================
-       SECTION 2: THE SECRET LAB (Developer API Studio)
+       SECTION 2: VIRAL LEADERBOARD & TELEMETRY
        ========================================================= */
-    .lab-section-wrap {
+    .leaderboard-table-card {
       background: #fff;
       border: var(--border-ink);
       box-shadow: var(--shadow-heavy);
-      border-radius: 12px;
+      border-radius: 8px;
       overflow: hidden;
-      margin-bottom: 5rem;
+      margin-bottom: 2rem;
+    }
+
+    .leaderboard-header {
+      background: var(--comic-yellow);
+      border-bottom: 3px solid #000;
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .leaderboard-item {
+      display: grid;
+      grid-template-columns: 60px 80px 1fr 140px 120px;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem 1.5rem;
+      border-bottom: 2px solid #000;
+      transition: background-color 0.12s;
+    }
+
+    .leaderboard-item:hover {
+      background: #fdfae8;
+    }
+
+    .rank-badge {
+      font-family: 'Bangers', cursive;
+      font-size: 1.5rem;
+      text-align: center;
+    }
+
+    .rank-1 { color: #eab308; }
+    .rank-2 { color: #94a3b8; }
+    .rank-3 { color: #b45309; }
+
+    .leaderboard-thumb {
+      width: 70px;
+      height: 50px;
+      background: #111116;
+      border: 2px solid #000;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .leaderboard-thumb img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    /* =========================================================
+       SECTION 3: SECRET LAB (API STUDIO)
+       ========================================================= */
+    .lab-section-wrap {
+      background: #121217;
+      border: var(--border-ink);
+      box-shadow: var(--shadow-heavy);
+      border-radius: 8px;
+      color: #fff;
+      overflow: hidden;
     }
 
     .lab-banner-head {
-      background: var(--comic-cyan);
-      border-bottom: var(--border-ink);
-      padding: 1.5rem 2rem;
+      background: #1c1c24;
+      border-bottom: 3px solid #000;
+      padding: 1.25rem 1.5rem;
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
       flex-wrap: wrap;
       gap: 1rem;
     }
 
     .lab-title-group h2 {
       font-family: 'Bangers', cursive;
-      font-size: 2.4rem;
-      letter-spacing: 0.05em;
-      color: #000;
-      line-height: 1;
-      text-shadow: 2px 2px 0px #fff;
+      font-size: 1.8rem;
+      letter-spacing: 0.04em;
+      color: var(--comic-yellow);
     }
 
-    .lab-title-group p {
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: #222;
-      margin-top: 4px;
-    }
-
-    .lab-badge-row {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-    }
-
-    .lab-status-badge {
-      background: #000;
-      color: #fff;
-      font-size: 0.75rem;
-      font-weight: 800;
-      padding: 5px 10px;
-      border-radius: 4px;
-      text-transform: uppercase;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-    }
-
-    .lab-status-dot {
-      width: 8px;
-      height: 8px;
-      background: #22c55e;
-      border-radius: 50%;
-      animation: pulse-dot 1.5s infinite;
-    }
-
-    @keyframes pulse-dot {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.8); }
-    }
-
-    /* Lab Split Studio */
     .lab-split-studio {
       display: grid;
-      grid-template-columns: 1fr 1.35fr;
-      min-height: 520px;
-    }
-
-    @media (max-width: 950px) {
-      .section-header-box { grid-template-columns: 1fr; }
-      .lab-split-studio { grid-template-columns: 1fr; }
+      grid-template-columns: 360px 1fr;
     }
 
     .lab-left-control-panel {
-      padding: 1.75rem;
-      border-right: var(--border-ink);
+      background: #18181f;
+      border-right: 2px solid #27272a;
+      padding: 1.25rem;
       display: flex;
       flex-direction: column;
       gap: 1.25rem;
-      background: #fafafa;
-    }
-
-    @media (max-width: 950px) {
-      .lab-left-control-panel { border-right: none; border-bottom: var(--border-ink); }
-    }
-
-    .panel-heading {
-      font-family: 'Bangers', cursive;
-      font-size: 1.3rem;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
     }
 
     .endpoint-buttons-column {
       display: flex;
       flex-direction: column;
-      gap: 0.6rem;
+      gap: 0.5rem;
     }
 
     .lab-endpoint-btn {
-      background: #fff;
-      border: 2px solid #000;
-      box-shadow: 3px 3px 0px #000;
+      background: #22222c;
+      border: 2px solid #333342;
       border-radius: 6px;
-      padding: 10px 14px;
+      padding: 10px 12px;
       cursor: pointer;
       text-align: left;
       transition: all 0.12s;
     }
 
-    .lab-endpoint-btn:hover {
-      background: var(--comic-yellow);
-      transform: translate(-2px, -2px);
-      box-shadow: 5px 5px 0px #000;
-    }
-
     .lab-endpoint-btn.active {
       background: var(--comic-yellow);
-      box-shadow: 4px 4px 0px #000;
-      transform: translate(-1px, -1px);
+      border-color: #000;
+      color: #000;
+      box-shadow: 2px 2px 0px #000;
     }
 
     .endpoint-method {
-      background: #000;
-      color: #fff;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.72rem;
-      font-weight: 700;
+      display: inline-block;
+      background: var(--comic-lime);
+      color: #000;
+      font-size: 0.65rem;
+      font-weight: 800;
       padding: 2px 6px;
       border-radius: 3px;
       margin-right: 6px;
@@ -929,96 +918,84 @@
 
     .endpoint-path {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.86rem;
+      font-size: 0.8rem;
       font-weight: 700;
-    }
-
-    .endpoint-summary {
-      font-size: 0.76rem;
-      color: #555;
-      margin-top: 4px;
-      font-weight: 600;
-    }
-
-    /* Live Parameters Configurator */
-    .lab-params-box {
-      background: #fff;
-      border: 2px solid #000;
-      box-shadow: 2px 2px 0px #000;
-      border-radius: 6px;
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
     }
 
     .param-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 1rem;
-    }
-
-    .param-label {
-      font-size: 0.8rem;
-      font-weight: 800;
-      font-family: 'JetBrains Mono', monospace;
+      gap: 0.75rem;
+      margin-top: 0.5rem;
     }
 
     .param-input-select {
-      border: 2px solid #000;
-      border-radius: 4px;
+      background: #272733;
+      border: 1px solid #444455;
+      color: #fff;
       padding: 4px 8px;
-      font-family: 'Space Grotesk', sans-serif;
       font-size: 0.8rem;
-      font-weight: 700;
-      background: #fff;
+      font-family: 'Space Grotesk', sans-serif;
+      border-radius: 4px;
       outline: none;
     }
 
-    /* Lab Right Terminal Console */
     .lab-right-console {
-      background: #0c0c0f;
       display: flex;
       flex-direction: column;
+      background: #09090b;
     }
 
     .console-header-bar {
       background: #18181f;
-      border-bottom: 2px solid #000;
-      padding: 8px 16px;
+      border-bottom: 2px solid #27272a;
+      padding: 8px 1.25rem;
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
     }
 
     .console-lang-tabs {
       display: flex;
-      gap: 0.5rem;
+      gap: 0.35rem;
     }
 
     .console-lang-btn {
-      background: transparent;
-      border: 1px solid #3f3f46;
-      color: #a1a1aa;
+      background: #22222c;
+      border: 1px solid #3f3f4e;
+      color: #aaa;
       padding: 4px 10px;
       font-size: 0.75rem;
       font-weight: 700;
-      border-radius: 4px;
       cursor: pointer;
-      transition: all 0.12s;
+      border-radius: 4px;
     }
 
     .console-lang-btn.active {
       background: var(--comic-yellow);
       color: #000;
       border-color: #000;
-      box-shadow: 2px 2px 0px #000;
     }
 
     .console-actions-group {
       display: flex;
-      gap: 0.5rem;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-console-action {
+      background: #fff;
+      border: 1px solid #000;
+      box-shadow: 2px 2px 0px #000;
+      color: #000;
+      padding: 4px 8px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      cursor: pointer;
+      border-radius: 4px;
     }
 
     .btn-run-request {
@@ -1031,35 +1008,18 @@
       font-weight: 800;
       cursor: pointer;
       border-radius: 4px;
-      transition: all 0.1s;
-    }
-
-    .btn-run-request:active {
-      transform: translate(1px, 1px);
-      box-shadow: 1px 1px 0px #000;
-    }
-
-    .btn-console-copy {
-      background: #fff;
-      border: 1px solid #000;
-      box-shadow: 2px 2px 0px #000;
-      color: #000;
-      padding: 4px 10px;
-      font-size: 0.75rem;
-      font-weight: 800;
-      cursor: pointer;
-      border-radius: 4px;
     }
 
     .console-code-snippet {
-      padding: 1.25rem 1.5rem;
-      font-size: 0.85rem;
+      padding: 1rem 1.25rem;
+      font-size: 0.82rem;
       color: #4ade80;
-      line-height: 1.6;
+      line-height: 1.5;
       overflow-x: auto;
       border-bottom: 2px solid #27272a;
-      min-height: 140px;
+      min-height: 120px;
       background: #09090b;
+      font-family: 'JetBrains Mono', monospace;
     }
 
     .console-response-header {
@@ -1069,20 +1029,20 @@
       align-items: center;
       justify-content: space-between;
       font-size: 0.75rem;
-      font-weight: 800;
-      color: #71717a;
+      font-weight: 700;
+      color: #888;
       border-bottom: 1px solid #27272a;
     }
 
     .console-response-output {
-      padding: 1.25rem 1.5rem;
-      font-size: 0.78rem;
-      color: #f4f4f5;
+      padding: 1rem 1.25rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: #e4e4e7;
+      overflow-x: auto;
+      max-height: 400px;
+      background: #09090b;
       line-height: 1.5;
-      overflow-y: auto;
-      max-height: 280px;
-      flex: 1;
-      background: #0c0c0f;
     }
 
     /* Lightbox Modal */
@@ -1090,10 +1050,10 @@
       position: fixed;
       top: 0;
       left: 0;
-      width: 100vw;
-      height: 100vh;
+      right: 0;
+      bottom: 0;
       background: rgba(12, 12, 15, 0.85);
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(4px);
       z-index: 1000;
       display: none;
       align-items: center;
@@ -1108,52 +1068,49 @@
     .comic-modal-box {
       background: #fff;
       border: 4px solid #000;
-      box-shadow: 10px 10px 0px #000;
+      box-shadow: 12px 12px 0px #000;
       border-radius: 8px;
-      max-width: 650px;
+      max-width: 800px;
       width: 100%;
-      overflow: hidden;
+      max-height: 90vh;
+      overflow-y: auto;
       position: relative;
     }
 
     .modal-close-btn {
       position: absolute;
-      top: 10px;
-      right: 10px;
+      top: 12px;
+      right: 12px;
       background: var(--comic-red);
       color: #fff;
       border: 2px solid #000;
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
+      width: 32px;
+      height: 32px;
       font-family: 'Bangers', cursive;
-      font-size: 1.3rem;
+      font-size: 1.25rem;
       cursor: pointer;
-      z-index: 10;
+      border-radius: 50%;
       box-shadow: 2px 2px 0px #000;
-      transition: transform 0.1s;
-    }
-
-    .modal-close-btn:hover {
-      transform: scale(1.1);
+      z-index: 10;
     }
 
     .modal-media-wrap {
-      background: #000;
-      max-height: 440px;
+      background: #111116;
       display: flex;
       align-items: center;
       justify-content: center;
+      max-height: 520px;
+      overflow: hidden;
     }
 
     .modal-media-wrap img, .modal-media-wrap video {
       max-width: 100%;
-      max-height: 440px;
+      max-height: 520px;
       object-fit: contain;
     }
 
     .modal-content-details {
-      padding: 1.25rem;
+      padding: 1.25rem 1.5rem;
       display: flex;
       flex-direction: column;
       gap: 0.75rem;
@@ -1161,42 +1118,62 @@
 
     /* Footer */
     footer {
-      background: var(--comic-yellow);
+      margin-top: 4rem;
       border-top: var(--border-ink);
-      padding: 3rem 1.5rem;
+      background: var(--comic-yellow);
+      padding: 2rem 1.5rem;
       text-align: center;
+      font-size: 0.85rem;
       font-weight: 700;
-      font-size: 0.95rem;
     }
 
-    footer a:hover {
+    footer a {
+      color: #000;
       text-decoration: underline;
+    }
+
+    @media (max-width: 900px) {
+      .section-header-box {
+        grid-template-columns: 1fr;
+      }
+      .spotlight-body {
+        grid-template-columns: 1fr;
+      }
+      .lab-split-studio {
+        grid-template-columns: 1fr;
+      }
+      .leaderboard-item {
+        grid-template-columns: 40px 60px 1fr 90px;
+      }
     }
   </style>
 </head>
 <body>
 
-  <!-- Comic Code Banner -->
+  <!-- Top Banner -->
   <div class="comic-top-banner">
-    <span>★ APPROVED BY THE MEME-OLOGY CODE AUTHORITY • ISSUE #1 • GENERATIONS EDITION</span>
-    <span>GEN ALPHA • GEN Z • MILLENNIAL • GEN X ★</span>
+    <span>✨ THE LIVING INTERNET MEME ALMANAC • 1990s TO TODAY</span>
+    <span>GEN ALPHA • GEN Z • MILLENNIAL • RETRO &amp; BOOMER ✨</span>
   </div>
 
-  <!-- Main Navigation with Section Switcher -->
+  <!-- Header -->
   <header>
     <div class="nav-container">
       <div class="comic-logo-group">
-        <a href="#radarSection" class="comic-logo">MEME-OLOGY!</a>
+        <a href="#feedSection" class="comic-logo">MEME-OLOGY!</a>
         <span class="comic-stamp-pill">VOL. 1</span>
       </div>
 
-      <!-- Section Switcher Tabs -->
+      <!-- Tri-Section Navigation Switcher -->
       <nav class="section-nav-switcher">
-        <button class="section-nav-btn active" id="navBtnRadar" onclick="scrollToSection('radarSection')">
-          <span>📰 1. Meme Radar</span>
+        <button class="section-nav-btn active" id="navBtnFeed" onclick="scrollToSection('feedSection')">
+          <span>📰 1. The Feed</span>
+        </button>
+        <button class="section-nav-btn" id="navBtnLeaderboard" onclick="scrollToSection('leaderboardSection')">
+          <span>🏆 2. Leaderboard</span>
         </button>
         <button class="section-nav-btn" id="navBtnLab" onclick="scrollToSection('labSection')">
-          <span>🧪 2. Secret Lab (API)</span>
+          <span>🧪 3. API Studio</span>
         </button>
       </nav>
 
@@ -1212,34 +1189,34 @@
   </header>
 
   <!-- =========================================================
-       SECTION 1: THE COMIC MEME RADAR (Visual Explorer)
+       SECTION 1: THE MEME FEED
        ========================================================= -->
-  <section class="section-container" id="radarSection">
+  <section class="section-container" id="feedSection">
     
     <!-- Hero Header Panel -->
     <div class="section-header-box">
       <div class="hero-left-col">
-        <span class="section-badge-tag">SECTION 1 // THE DISCOVERY DECK</span>
-        <h1 class="hero-title">GENERATIONAL MEME RADAR!</h1>
+        <span class="section-badge-tag">✨ INTERNET HUMOR THROUGH THE AGES</span>
+        <h1 class="hero-title">THE LIVING MEME ALMANAC</h1>
         <p class="hero-desc">
-          BAM! Explore how internet culture evolved from Boomer LOLCats &amp; Millennial Advice Animals to Gen Z Post-Irony &amp; Gen Alpha Brainrot.
+          A live collection of the internet's favorite jokes, from early forum classics to today's chaotic humor. Pick an era or just scroll through what's funny right now.
         </p>
 
         <div class="sticker-cloud">
-          <div class="comic-sticker sticker-alpha">🧠 GEN ALPHA</div>
-          <div class="comic-sticker sticker-z">⚡ GEN Z DANK</div>
-          <div class="comic-sticker sticker-millennial">🕶️ MILLENNIAL</div>
-          <div class="comic-sticker sticker-boomer">📻 GEN X / BOOMER</div>
+          <div class="comic-sticker sticker-alpha">👾 Gen Alpha</div>
+          <div class="comic-sticker sticker-z">🛹 Gen Z</div>
+          <div class="comic-sticker sticker-millennial">💾 Millennial</div>
+          <div class="comic-sticker sticker-boomer">📼 Retro &amp; Boomer</div>
         </div>
       </div>
 
       <div class="radar-telemetry-box">
-        <h3>RADAR TELEMETRY</h3>
-        <p style="font-size: 0.8rem; font-weight: 700;">CLASSIFIED INTERNET CULTURE ERAS</p>
+        <h3>COMMUNITY PULSE</h3>
+        <p style="font-size: 0.75rem; font-weight: 700;">TRACKED &amp; CATEGORIZED</p>
         <div class="telemetry-grid">
           <div class="telemetry-cell">
-            <div class="telemetry-num" id="statMemes">350+</div>
-            <div class="telemetry-lbl">MEMES CLASSIFIED</div>
+            <div class="telemetry-num" id="statMemes">54</div>
+            <div class="telemetry-lbl">MEMES TRACKED</div>
           </div>
           <div class="telemetry-cell">
             <div class="telemetry-num" style="color: var(--comic-pink);" id="statUpvotes">4.8M</div>
@@ -1250,110 +1227,122 @@
             <div class="telemetry-lbl">GENERATIONS</div>
           </div>
           <div class="telemetry-cell">
-            <div class="telemetry-num" style="color: #2563eb;">0.08ms</div>
-            <div class="telemetry-lbl">MATCH SPEED</div>
+            <div class="telemetry-num" style="color: #2563eb;">&lt; 5ms</div>
+            <div class="telemetry-lbl">EDGE SPEED</div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Controls, Generational Tabs & Search -->
-    <div class="radar-controls-card">
-      <div class="comic-search-wrap">
-        <span class="search-icon-badge">🔍</span>
+    <!-- FEATURED MEME OF THE DAY (SPOTLIGHT) -->
+    <div class="featured-spotlight-card" id="spotlightCard">
+      <div class="spotlight-badge-tab">
+        <span>👑 TODAY'S FEATURED MEME</span>
+        <button class="btn-comic" style="padding: 3px 8px; font-size: 0.75rem;" onclick="rollNextSpotlight()">
+          🎲 Next Spotlight
+        </button>
+      </div>
+      <div class="spotlight-body" id="spotlightBody">
+        <!-- Injected by JavaScript -->
+      </div>
+    </div>
+
+    <!-- STREAMLINED COMPACT TOOLBAR -->
+    <div class="streamlined-toolbar">
+      <div class="search-input-box">
+        <span class="search-icon">🔍</span>
         <input 
           type="text" 
           id="comicSearch" 
-          class="comic-search-input" 
-          placeholder="Search memes by punchline (e.g., skibidi, wojak, doge, minion), author, or community..."
+          class="compact-search-input" 
+          placeholder="Search punchlines, authors, or slang (e.g. skibidi, wojak, doge)..."
           autocomplete="off"
         />
       </div>
 
-      <!-- GENERATIONAL FILTER ROW -->
-      <div>
-        <div class="filter-header-label">
-          <span>🎯 FILTER BY INTERNET GENERATION:</span>
-        </div>
-        <div class="pills-group" id="comicGenerationFilters">
-          <div class="comic-filter-pill active" data-gen="all">★ ALL GENERATIONS</div>
-          <div class="comic-filter-pill pill-alpha" data-gen="gen_alpha">🧠 GEN ALPHA (BRAINROT)</div>
-          <div class="comic-filter-pill pill-z" data-gen="gen_z">⚡ GEN Z (DANK / SURREAL)</div>
-          <div class="comic-filter-pill pill-millennial" data-gen="millennial">🕶️ MILLENNIAL (CLASSICS)</div>
-          <div class="comic-filter-pill pill-boomer" data-gen="gen_x">📻 GEN X / BOOMER</div>
-        </div>
+      <!-- ERA PILLS -->
+      <div class="compact-era-pills" id="comicGenerationFilters">
+        <button class="comic-filter-pill active" data-gen="all">✨ All Eras</button>
+        <button class="comic-filter-pill pill-alpha" data-gen="gen_alpha">👾 Gen Alpha</button>
+        <button class="comic-filter-pill pill-z" data-gen="gen_z">🛹 Gen Z</button>
+        <button class="comic-filter-pill pill-millennial" data-gen="millennial">💾 Millennial</button>
+        <button class="comic-filter-pill pill-boomer" data-gen="gen_x">📼 Retro</button>
       </div>
 
-      <!-- COMMUNITY SOURCE PILLS -->
-      <div style="border-top: 2px solid #000; padding-top: 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
-        <div>
-          <div class="filter-header-label">
-            <span>🌐 FILTER BY COMMUNITY:</span>
-          </div>
-          <div class="pills-group" id="comicSourceFilters">
-            <div class="comic-filter-pill active" data-source="all">★ ALL COMMUNITIES</div>
-            <div class="comic-filter-pill" data-source="r/GenAlpha">r/GenAlpha</div>
-            <div class="comic-filter-pill" data-source="r/dankmemes">r/dankmemes</div>
-            <div class="comic-filter-pill" data-source="r/AdviceAnimals">r/AdviceAnimals</div>
-            <div class="comic-filter-pill" data-source="r/wholesomememes">r/wholesomememes</div>
-            <div class="comic-filter-pill" data-source="knowyourmeme">Know Your Meme</div>
-          </div>
-        </div>
-
-        <button class="jump-to-lab-btn" onclick="scrollToSection('labSection')">
-          <span>🧪 Jump to API Studio</span>
-          <span>&darr;</span>
-        </button>
+      <!-- COMMUNITY & SORT DROPDOWNS -->
+      <div style="display: flex; gap: 0.4rem; align-items: center;">
+        <select id="communitySelect" class="toolbar-dropdown" onchange="onCommunityFilterChange(this.value)">
+          <option value="all">🌐 All Communities</option>
+          <option value="r/GenAlpha">r/GenAlpha</option>
+          <option value="r/skibiditoilet">r/skibiditoilet</option>
+          <option value="r/dankmemes">r/dankmemes</option>
+          <option value="r/me_irl">r/me_irl</option>
+          <option value="r/AdviceAnimals">r/AdviceAnimals</option>
+          <option value="r/wholesomememes">r/wholesomememes</option>
+          <option value="knowyourmeme">Know Your Meme</option>
+        </select>
+        <select id="sortSelect" class="toolbar-dropdown" onchange="onSortChange(this.value)">
+          <option value="score">🔥 Top Upvotes</option>
+          <option value="newest">⚡ Most Recent</option>
+        </select>
       </div>
-
     </div>
 
-    <!-- Full-Width Responsive Comic Grid -->
+    <!-- FULL-WIDTH UNCLIPPED COMIC GRID -->
     <div class="comic-grid" id="comicGrid"></div>
 
   </section>
 
   <!-- =========================================================
-       SECTION DIVIDER: JAGGED COMIC SEPARATOR
+       SECTION 2: VIRAL LEADERBOARD
        ========================================================= -->
-  <div class="comic-section-divider">
-    <div class="divider-line"></div>
-    <div class="divider-badge" onclick="scrollToSection('labSection')">
-      ⚡ SECTION 2: THE SECRET LAB API STUDIO ⚡
+  <section class="section-container" id="leaderboardSection" style="margin-top: 4rem;">
+    <div class="leaderboard-table-card">
+      <div class="leaderboard-header">
+        <div>
+          <h2 style="font-family: 'Bangers', cursive; font-size: 1.8rem; letter-spacing: 0.04em;">
+            🏆 VIRAL HALL OF FAME &amp; LEADERBOARD
+          </h2>
+          <p style="font-size: 0.85rem; font-weight: 700; color: #333;">
+            The all-time highest-voted internet memes ranked by community engagement.
+          </p>
+        </div>
+        <span class="comic-stamp-pill" style="font-size: 0.8rem;">TOP 10 G.O.A.T.</span>
+      </div>
+
+      <div id="leaderboardList">
+        <!-- Injected by JavaScript -->
+      </div>
     </div>
-  </div>
+  </section>
 
   <!-- =========================================================
-       SECTION 2: THE SECRET LAB (Developer API Studio)
+       SECTION 3: SECRET LAB (API STUDIO)
        ========================================================= -->
-  <section class="section-container" id="labSection">
+  <section class="section-container" id="labSection" style="margin-top: 4rem;">
     <div class="lab-section-wrap">
       
       <!-- Studio Header -->
       <div class="lab-banner-head">
         <div class="lab-title-group">
-          <h2>THE SECRET LAB: API STUDIO &amp; PLAYGROUND</h2>
-          <p>Interactive generational code generator, live response inspector, and telemetry console.</p>
+          <h2>THE SECRET LAB: DEVELOPER API STUDIO</h2>
+          <p style="font-size: 0.85rem; color: #aaa;">Interactive generational code generator, live response inspector, and export console.</p>
         </div>
 
-        <div class="lab-badge-row">
-          <div class="lab-status-badge">
-            <span class="lab-status-dot"></span>
-            <span>FASTAPI ENGINE READY</span>
-          </div>
+        <div class="lab-badge-row" style="display: flex; gap: 0.6rem; align-items: center;">
           <a href="/docs" target="_blank" class="btn-comic btn-comic-yellow" style="background: var(--comic-yellow);">
             OPEN SWAGGER &rarr;
           </a>
         </div>
       </div>
 
-      <!-- Studio Body Split -->
+      <!-- Studio Split -->
       <div class="lab-split-studio">
         
-        <!-- Left: Endpoint Dials & Parameters -->
+        <!-- Left: Endpoints & Params -->
         <div class="lab-left-control-panel">
-          <div class="panel-heading">
-            <span>⚙️ SELECT ENDPOINT</span>
+          <div style="font-size: 0.75rem; font-weight: 800; color: #888; text-transform: uppercase;">
+            ⚙️ SELECT ENDPOINT
           </div>
 
           <div class="endpoint-buttons-column" id="labEndpointButtons">
@@ -1362,7 +1351,6 @@
                 <span class="endpoint-method">GET</span>
                 <span class="endpoint-path">/api/v1/memes/trending</span>
               </div>
-              <div class="endpoint-summary">Ranked by velocity decay with generational filter.</div>
             </div>
 
             <div class="lab-endpoint-btn" data-endpoint="latest">
@@ -1370,7 +1358,6 @@
                 <span class="endpoint-method">GET</span>
                 <span class="endpoint-path">/api/v1/memes/latest</span>
               </div>
-              <div class="endpoint-summary">Newest memes with generation &amp; pagination.</div>
             </div>
 
             <div class="lab-endpoint-btn" data-endpoint="random">
@@ -1378,7 +1365,6 @@
                 <span class="endpoint-method">GET</span>
                 <span class="endpoint-path">/api/v1/memes/random</span>
               </div>
-              <div class="endpoint-summary">Random meme by generation &amp; source.</div>
             </div>
 
             <div class="lab-endpoint-btn" data-endpoint="sources">
@@ -1386,7 +1372,6 @@
                 <span class="endpoint-method">GET</span>
                 <span class="endpoint-path">/api/v1/sources</span>
               </div>
-              <div class="endpoint-summary">Ingestion health, latency &amp; item count.</div>
             </div>
 
             <div class="lab-endpoint-btn" data-endpoint="health">
@@ -1394,25 +1379,26 @@
                 <span class="endpoint-method">GET</span>
                 <span class="endpoint-path">/health</span>
               </div>
-              <div class="endpoint-summary">System uptime, status &amp; memory cache.</div>
             </div>
           </div>
 
-          <!-- Live Param Filters -->
-          <div class="lab-params-box">
-            <div style="font-size: 0.8rem; font-weight: 800; text-transform: uppercase;">⚡ QUERY PARAMETERS</div>
+          <!-- Dials -->
+          <div style="border-top: 1px solid #272733; padding-top: 0.75rem;">
+            <div style="font-size: 0.75rem; font-weight: 800; color: #888; text-transform: uppercase; margin-bottom: 0.5rem;">
+              ⚡ QUERY PARAMETERS
+            </div>
             <div class="param-row">
-              <label class="param-label" for="paramGeneration">generation:</label>
+              <label style="font-size: 0.8rem; font-weight: 700;">generation:</label>
               <select id="paramGeneration" class="param-input-select" onchange="updateLabStudio()">
-                <option value="" selected>all generations</option>
+                <option value="" selected>all eras</option>
                 <option value="gen_alpha">gen_alpha (brainrot)</option>
-                <option value="gen_z">gen_z (post-irony)</option>
+                <option value="gen_z">gen_z (surreal)</option>
                 <option value="millennial">millennial (classics)</option>
-                <option value="gen_x">gen_x (boomer/retro)</option>
+                <option value="gen_x">gen_x (retro)</option>
               </select>
             </div>
             <div class="param-row">
-              <label class="param-label" for="paramLimit">limit:</label>
+              <label style="font-size: 0.8rem; font-weight: 700;">limit:</label>
               <select id="paramLimit" class="param-input-select" onchange="updateLabStudio()">
                 <option value="5">5 memes</option>
                 <option value="10" selected>10 memes</option>
@@ -1421,7 +1407,7 @@
               </select>
             </div>
             <div class="param-row">
-              <label class="param-label" for="paramSource">source:</label>
+              <label style="font-size: 0.8rem; font-weight: 700;">source:</label>
               <select id="paramSource" class="param-input-select" onchange="updateLabStudio()">
                 <option value="" selected>all sources</option>
                 <option value="reddit">reddit</option>
@@ -1432,38 +1418,40 @@
 
         </div>
 
-        <!-- Right: CRT Console & Output -->
+        <!-- Right: Code Snippet & Output -->
         <div class="lab-right-console">
-          
           <div class="console-header-bar">
             <div class="console-lang-tabs" id="labLangTabs">
               <button class="console-lang-btn active" data-lang="curl">cURL</button>
               <button class="console-lang-btn" data-lang="python">Python</button>
               <button class="console-lang-btn" data-lang="javascript">JavaScript</button>
+              <button class="console-lang-btn" data-lang="go">Go</button>
             </div>
 
             <div class="console-actions-group">
-              <button class="btn-run-request" id="btnRunRequest" onclick="executeLiveLabRequest()">
-                ▶ EXECUTE REQUEST
+              <button class="btn-console-action" id="btnCopyApiUrl" onclick="copyLiveApiUrl()">
+                📋 COPY URL
               </button>
-              <button class="btn-console-copy" id="btnCopySnippet">
+              <button class="btn-console-action" id="btnDownloadJson" onclick="downloadCurrentJson()">
+                💾 DOWNLOAD JSON
+              </button>
+              <button class="btn-console-action" id="btnCopySnippet">
                 COPY CODE
+              </button>
+              <button class="btn-run-request" id="btnRunRequest" onclick="executeLiveLabRequest()">
+                ▶ EXECUTE
               </button>
             </div>
           </div>
 
-          <!-- Code Snippet -->
           <pre class="console-code-snippet" id="labCodeSnippet"></pre>
 
-          <!-- Response Header -->
           <div class="console-response-header">
-            <span>HTTP RESPONSE INSPECTOR</span>
-            <span style="color: #4ade80;" id="responseStatusBadge">HTTP 200 OK • 0.08ms</span>
+            <span>LIVE HTTP RESPONSE PAYLOAD</span>
+            <span style="color: #4ade80;" id="responseStatusBadge">HTTP 200 OK • &lt; 5ms</span>
           </div>
 
-          <!-- Response Payload -->
           <pre class="console-response-output" id="labResponseOutput"></pre>
-
         </div>
 
       </div>
@@ -1494,1081 +1482,1082 @@
 
   <!-- Footer -->
   <footer>
-    <p>MEME-OLOGY! © 2026 • APPROVED BY THE COMICS CODE AUTHORITY</p>
+    <p>MEME-OLOGY! © 2026 • THE LIVING INTERNET MEME ALMANAC</p>
     <p style="margin-top: 0.5rem; font-weight: 600;">
       <a href="https://github.com/narcisoJavier/Meme-ology" target="_blank">GitHub</a> • 
       <a href="/docs" target="_blank">Swagger API</a> • 
       <a href="/openapi.json" target="_blank">OpenAPI Spec</a> • 
-      <a href="#radarSection">Back to Radar Top &uarr;</a>
+      <a href="#feedSection">Back to Top &uarr;</a>
     </p>
   </footer>
 
   <script>
-    // Authentic Generational Meme Catalog
+    // Embedded Live Harvested Memes
     const GENERATIONAL_MEMES = [
-      {
-            "id": "kym_doge_shiba",
-            "title": "Doge (Kabosu the Shiba Inu - Much Wow)",
-            "url": "https://i.kym-cdn.com/entries/icons/original/000/013/564/doge.jpg",
-            "media_url": "https://i.kym-cdn.com/entries/icons/original/000/013/564/doge.jpg",
-            "media_type": "image",
-            "source": "knowyourmeme",
-            "source_platform": "knowyourmeme",
-            "source_community": "confirmed",
-            "permalink": "https://knowyourmeme.com/memes/doge",
-            "author": "Atsuko Sato",
-            "score": 89200,
-            "num_comments": 3100,
-            "created_at": 1788373807.7862692,
-            "is_nsfw": false,
-            "domain": "knowyourmeme.com",
-            "trending_score": 99.2,
-            "generation": "millennial"
-      },
-      {
-            "id": "kym_distracted_boyfriend",
-            "title": "Distracted Boyfriend (Man Looking at Other Woman)",
-            "url": "https://i.kym-cdn.com/entries/icons/original/000/023/459/distracted_boyfriend.jpg",
-            "media_url": "https://i.kym-cdn.com/entries/icons/original/000/023/459/distracted_boyfriend.jpg",
-            "media_type": "image",
-            "source": "knowyourmeme",
-            "source_platform": "knowyourmeme",
-            "source_community": "confirmed",
-            "permalink": "https://knowyourmeme.com/memes/distracted-boyfriend",
-            "author": "Antonio Guillem",
-            "score": 68400,
-            "num_comments": 2400,
-            "created_at": 1788375607.7862692,
-            "is_nsfw": false,
-            "domain": "knowyourmeme.com",
-            "trending_score": 98.4,
-            "generation": "millennial"
-      },
-      {
-            "id": "kym_drakeposting",
-            "title": "Drakeposting (Drake Hotline Bling Reaction)",
-            "url": "https://i.kym-cdn.com/entries/icons/original/000/020/147/drake.jpg",
-            "media_url": "https://i.kym-cdn.com/entries/icons/original/000/020/147/drake.jpg",
-            "media_type": "image",
-            "source": "knowyourmeme",
-            "source_platform": "knowyourmeme",
-            "source_community": "confirmed",
-            "permalink": "https://knowyourmeme.com/memes/drakeposting",
-            "author": "Director X",
-            "score": 54200,
-            "num_comments": 1820,
-            "created_at": 1788372007.7862692,
-            "is_nsfw": false,
-            "domain": "knowyourmeme.com",
-            "trending_score": 96.1,
-            "generation": "millennial"
-      },
-      {
-            "id": "kym_happy_cat",
-            "title": "I Can Has Cheezburger? (Happy Cat Classic)",
-            "url": "https://i.kym-cdn.com/entries/icons/original/000/000/001/happycat.jpg",
-            "media_url": "https://i.kym-cdn.com/entries/icons/original/000/000/001/happycat.jpg",
-            "media_type": "image",
-            "source": "knowyourmeme",
-            "source_platform": "knowyourmeme",
-            "source_community": "confirmed",
-            "permalink": "https://knowyourmeme.com/memes/happy-cat-i-can-has-cheezburger",
-            "author": "Eric Nakagawa",
-            "score": 48100,
-            "num_comments": 1100,
-            "created_at": 1788368207.7862692,
-            "is_nsfw": false,
-            "domain": "knowyourmeme.com",
-            "trending_score": 94.0,
-            "generation": "gen_x"
-      },
-      {
-            "id": "kym_roll_safe",
-            "title": "Roll Safe (Kayode Ewumi Pointing to Head)",
-            "url": "https://i.kym-cdn.com/entries/icons/original/000/022/138/rollsafe.jpg",
-            "media_url": "https://i.kym-cdn.com/entries/icons/original/000/022/138/rollsafe.jpg",
-            "media_type": "image",
-            "source": "knowyourmeme",
-            "source_platform": "knowyourmeme",
-            "source_community": "confirmed",
-            "permalink": "https://knowyourmeme.com/memes/roll-safe",
-            "author": "BBC Three",
-            "score": 42100,
-            "num_comments": 1240,
-            "created_at": 1788370207.7862692,
-            "is_nsfw": false,
-            "domain": "knowyourmeme.com",
-            "trending_score": 93.5,
-            "generation": "millennial"
-      },
-      {
-            "id": "kym_all_your_base",
-            "title": "All Your Base Are Belong To Us (Zero Wing 2001)",
-            "url": "https://i.kym-cdn.com/entries/icons/original/000/000/002/all_your_base.jpg",
-            "media_url": "https://i.kym-cdn.com/entries/icons/original/000/000/002/all_your_base.jpg",
-            "media_type": "image",
-            "source": "knowyourmeme",
-            "source_platform": "knowyourmeme",
-            "source_community": "confirmed",
-            "permalink": "https://knowyourmeme.com/memes/all-your-base-are-belong-to-us",
-            "author": "Bad_CRC",
-            "score": 39500,
-            "num_comments": 890,
-            "created_at": 1788366207.7862692,
-            "is_nsfw": false,
-            "domain": "knowyourmeme.com",
-            "trending_score": 91.2,
-            "generation": "gen_x"
-      },
-      {
-            "id": "kym_minions",
-            "title": "Minion Quotes / Boomer Forwarded Memes",
-            "url": "https://i.kym-cdn.com/entries/icons/original/000/018/259/minions.jpg",
-            "media_url": "https://i.kym-cdn.com/entries/icons/original/000/018/259/minions.jpg",
-            "media_type": "image",
-            "source": "knowyourmeme",
-            "source_platform": "knowyourmeme",
-            "source_community": "confirmed",
-            "permalink": "https://knowyourmeme.com/memes/minions",
-            "author": "Illumination",
-            "score": 32100,
-            "num_comments": 780,
-            "created_at": 1788364207.7862692,
-            "is_nsfw": false,
-            "domain": "knowyourmeme.com",
-            "trending_score": 88.0,
-            "generation": "gen_x"
-      },
-      {
-            "id": "reddit_wholesomememes_1ulvnxa",
-            "title": "Friends Till The End",
-            "url": "https://i.redd.it/r78chd1c0wah1.png",
-            "media_url": "https://i.redd.it/r78chd1c0wah1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/wholesomememes",
-            "permalink": "https://redd.it/1ulvnxa",
-            "author": "u/MurkyWay",
-            "score": 17394,
-            "num_comments": 695,
-            "created_at": 1788374047.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 16698.2,
-            "generation": "gen_x"
-      },
-      {
-            "id": "reddit_wholesomememes_1ufnv0w",
-            "title": "Mom knows best [OC]",
-            "url": "https://i.redd.it/qyl4bkpe3i9h1.png",
-            "media_url": "https://i.redd.it/qyl4bkpe3i9h1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/wholesomememes",
-            "permalink": "https://redd.it/1ufnv0w",
-            "author": "u/MurkyWay",
-            "score": 11571,
-            "num_comments": 462,
-            "created_at": 1788374167.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 11108.2,
-            "generation": "gen_x"
-      },
-      {
-            "id": "reddit_me_irl_1w4eicz",
-            "title": "me_irl",
-            "url": "https://i.redd.it/8a817aydbxmh1.png",
-            "media_url": "https://i.redd.it/8a817aydbxmh1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/me_irl",
-            "permalink": "https://redd.it/1w4eicz",
-            "author": "u/JustGreenFish",
-            "score": 6778,
-            "num_comments": 271,
-            "created_at": 1788375967.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 6506.9,
-            "generation": "gen_z"
-      },
-      {
-            "id": "reddit_wholesomememes_1us48h6",
-            "title": "Professional Courtesy",
-            "url": "https://i.redd.it/c3phfu13z9ch1.png",
-            "media_url": "https://i.redd.it/c3phfu13z9ch1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/wholesomememes",
-            "permalink": "https://redd.it/1us48h6",
-            "author": "u/MurkyWay",
-            "score": 5757,
-            "num_comments": 230,
-            "created_at": 1788374527.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 5526.7,
-            "generation": "gen_x"
-      },
-      {
-            "id": "reddit_wholesomememes_1uj6bej",
-            "title": "Wisdom of the Universe",
-            "url": "https://i.redd.it/792ww1mbnaah1.png",
-            "media_url": "https://i.redd.it/792ww1mbnaah1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/wholesomememes",
-            "permalink": "https://redd.it/1uj6bej",
-            "author": "u/MurkyWay",
-            "score": 4988,
-            "num_comments": 199,
-            "created_at": 1788373927.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 4788.5,
-            "generation": "gen_x"
-      },
-      {
-            "id": "reddit_wholesomememes_1ut1bux",
-            "title": "Space Flirting",
-            "url": "https://i.redd.it/sft5uwfv3hch1.png",
-            "media_url": "https://i.redd.it/sft5uwfv3hch1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/wholesomememes",
-            "permalink": "https://redd.it/1ut1bux",
-            "author": "u/MurkyWay",
-            "score": 3977,
-            "num_comments": 159,
-            "created_at": 1788373687.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 3817.9,
-            "generation": "gen_x"
-      },
-      {
-            "id": "reddit_me_irl_1w2ie2e",
-            "title": "me_irl",
-            "url": "https://i.redd.it/lfi0v92yqimh1.png",
-            "media_url": "https://i.redd.it/lfi0v92yqimh1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/me_irl",
-            "permalink": "https://redd.it/1w2ie2e",
-            "author": "u/JustGreenFish",
-            "score": 3247,
-            "num_comments": 129,
-            "created_at": 1788376447.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 3117.1,
-            "generation": "gen_z"
-      },
-      {
-            "id": "reddit_AdviceAnimals_1w1u28l",
-            "title": "Hey MAGA",
-            "url": "https://i.redd.it/gsqt6xgkxcmh1.png",
-            "media_url": "https://i.redd.it/gsqt6xgkxcmh1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/AdviceAnimals",
-            "permalink": "https://redd.it/1w1u28l",
-            "author": "u/James5000",
-            "score": 3104,
-            "num_comments": 124,
-            "created_at": 1788375007.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 2979.8,
-            "generation": "millennial"
-      },
-      {
-            "id": "reddit_me_irl_1w4j3s9",
-            "title": "Me_irl",
-            "url": "https://i.redd.it/u1mzt8nt3ymh1.png",
-            "media_url": "https://i.redd.it/u1mzt8nt3ymh1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/me_irl",
-            "permalink": "https://redd.it/1w4j3s9",
-            "author": "u/TheDarkKnight505",
-            "score": 2808,
-            "num_comments": 112,
-            "created_at": 1788376207.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 2695.7,
-            "generation": "gen_z"
-      },
-      {
-            "id": "reddit_AdviceAnimals_1w35ax0",
-            "title": "Be traditional",
-            "url": "https://i.redd.it/nz63xd8uknmh1.png",
-            "media_url": "https://i.redd.it/nz63xd8uknmh1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/AdviceAnimals",
-            "permalink": "https://redd.it/1w35ax0",
-            "author": "u/Both-Percentage6445",
-            "score": 2744,
-            "num_comments": 109,
-            "created_at": 1788374647.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 2634.2,
-            "generation": "millennial"
-      },
-      {
-            "id": "reddit_wholesomememes_1uusnkz",
-            "title": "Clothes make the android",
-            "url": "https://i.redd.it/7kebowlwdvch1.png",
-            "media_url": "https://i.redd.it/7kebowlwdvch1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/wholesomememes",
-            "permalink": "https://redd.it/1uusnkz",
-            "author": "u/MurkyWay",
-            "score": 2476,
-            "num_comments": 99,
-            "created_at": 1788373807.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 2377.0,
-            "generation": "gen_x"
-      },
-      {
-            "id": "reddit_me_irl_1w573tl",
-            "title": "me_irl",
-            "url": "https://i.redd.it/wgilm7hr83nh1.png",
-            "media_url": "https://i.redd.it/wgilm7hr83nh1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/me_irl",
-            "permalink": "https://redd.it/1w573tl",
-            "author": "u/DEADMA9kk",
-            "score": 2351,
-            "num_comments": 94,
-            "created_at": 1788375847.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 2257.0,
-            "generation": "gen_z"
-      },
-      {
-            "id": "reddit_AdviceAnimals_1w2ld55",
-            "title": "You thought the Strait of Hormuz was a problem for American shipping?",
-            "url": "https://i.redd.it/4q1wtzm2cjmh1.png",
-            "media_url": "https://i.redd.it/4q1wtzm2cjmh1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/AdviceAnimals",
-            "permalink": "https://redd.it/1w2ld55",
-            "author": "u/brother_p",
-            "score": 2287,
-            "num_comments": 91,
-            "created_at": 1788374887.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 2195.5,
-            "generation": "millennial"
-      },
-      {
-            "id": "reddit_AdviceAnimals_1w2ot7b",
-            "title": "I leave work for a few days of PTO, when I come back Zoom had been replaced",
-            "url": "https://i.redd.it/79ngwryazjmh1.png",
-            "media_url": "https://i.redd.it/79ngwryazjmh1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/AdviceAnimals",
-            "permalink": "https://redd.it/1w2ot7b",
-            "author": "u/pdmcmahon",
-            "score": 1555,
-            "num_comments": 62,
-            "created_at": 1788375367.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 1492.8,
-            "generation": "millennial"
-      },
-      {
-            "id": "reddit_AdviceAnimals_1vy7500",
-            "title": "The weak flailing of a tired old man who can't stand losing",
-            "url": "https://i.imgflip.com/azmsmv.jpg",
-            "media_url": "https://i.imgflip.com/azmsmv.jpg",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/AdviceAnimals",
-            "permalink": "https://redd.it/1vy7500",
-            "author": "u/brother_p",
-            "score": 1466,
-            "num_comments": 58,
-            "created_at": 1788375487.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 1407.4,
-            "generation": "millennial"
-      },
-      {
-            "id": "reddit_me_irl_1w3i2z2",
-            "title": "Me irl",
-            "url": "https://i.redd.it/34rksnaahqmh1.png",
-            "media_url": "https://i.redd.it/34rksnaahqmh1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/me_irl",
-            "permalink": "https://redd.it/1w3i2z2",
-            "author": "u/RedDragons8",
-            "score": 990,
-            "num_comments": 39,
-            "created_at": 1788376087.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 950.4,
-            "generation": "gen_z"
-      },
-      {
-            "id": "reddit_dankmemes_1w26fz9",
-            "title": "meme. relationship A",
-            "url": "https://i.redd.it/nsw7w9m2mfmh1.png",
-            "media_url": "https://i.redd.it/nsw7w9m2mfmh1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/dankmemes",
-            "permalink": "https://redd.it/1w26fz9",
-            "author": "u/Nostalgic-Banter",
-            "score": 834,
-            "num_comments": 33,
-            "created_at": 1788377407.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 800.6,
-            "generation": "gen_z"
-      },
-      {
-            "id": "reddit_wholesomememes_1v4n22o",
-            "title": "[That One Person Who Always Cares]",
-            "url": "https://i.redd.it/7sqjr20401fh1.png",
-            "media_url": "https://i.redd.it/7sqjr20401fh1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/wholesomememes",
-            "permalink": "https://redd.it/1v4n22o",
-            "author": "u/Will-VX",
-            "score": 833,
-            "num_comments": 33,
-            "created_at": 1788374287.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 799.7,
-            "generation": "gen_x"
-      },
-      {
-            "id": "reddit_dankmemes_1w35m9l",
-            "title": "Fecial expression 100%",
-            "url": "https://i.redd.it/85bk25qxnnmh1.png",
-            "media_url": "https://i.redd.it/85bk25qxnnmh1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/dankmemes",
-            "permalink": "https://redd.it/1w35m9l",
-            "author": "u/Any_Smoke1138",
-            "score": 717,
-            "num_comments": 28,
-            "created_at": 1788377287.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 688.3,
-            "generation": "gen_z"
-      },
-      {
-            "id": "reddit_AdviceAnimals_1w08ydq",
-            "title": "My Steam wishlist keeps growing",
-            "url": "https://i.redd.it/v2z478omwzlh1.png",
-            "media_url": "https://i.redd.it/v2z478omwzlh1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/AdviceAnimals",
-            "permalink": "https://redd.it/1w08ydq",
-            "author": "u/Zoltt93",
-            "score": 708,
-            "num_comments": 28,
-            "created_at": 1788374767.7862692,
-            "is_nsfw": true,
-            "domain": "i.redd.it",
-            "trending_score": 679.7,
-            "generation": "millennial"
-      },
-      {
-            "id": "reddit_AdviceAnimals_1vzwygn",
-            "title": "It has been a rough week for pop culture fans and it's not even over yet",
-            "url": "https://i.imgflip.com/azsebf.jpg",
-            "media_url": "https://i.imgflip.com/azsebf.jpg",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/AdviceAnimals",
-            "permalink": "https://redd.it/1vzwygn",
-            "author": "u/MrPractical1",
-            "score": 591,
-            "num_comments": 23,
-            "created_at": 1788375247.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 567.4,
-            "generation": "millennial"
-      },
-      {
-            "id": "reddit_dankmemes_1w5cmgs",
-            "title": "i'm sure it's just heartburn",
-            "url": "https://i.redd.it/zoeh4vpte4nh1.png",
-            "media_url": "https://i.redd.it/zoeh4vpte4nh1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/dankmemes",
-            "permalink": "https://redd.it/1w5cmgs",
-            "author": "u/soap94",
-            "score": 501,
-            "num_comments": 20,
-            "created_at": 1788377167.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 481.0,
-            "generation": "gen_z"
-      },
-      {
-            "id": "reddit_me_irl_1w2r0on",
-            "title": "me_irl",
-            "url": "https://i.redd.it/ejg4r5r3ekmh1.png",
-            "media_url": "https://i.redd.it/ejg4r5r3ekmh1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/me_irl",
-            "permalink": "https://redd.it/1w2r0on",
-            "author": "u/DesignDreamer_568",
-            "score": 439,
-            "num_comments": 18,
-            "created_at": 1788376327.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 421.4,
-            "generation": "gen_z"
-      },
-      {
-            "id": "reddit_GenAlpha_1vz4z3b",
-            "title": "Ladies and Gentlemen, we've reached a new low.",
-            "url": "https://i.redd.it/rlh5vrpwfrlh1.png",
-            "media_url": "https://i.redd.it/rlh5vrpwfrlh1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/GenAlpha",
-            "permalink": "https://redd.it/1vz4z3b",
-            "author": "u/AnOldGrouchyPlumma",
-            "score": 415,
-            "num_comments": 18,
-            "created_at": 1788378967.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 398.4,
-            "generation": "gen_alpha"
-      },
-      {
-            "id": "reddit_wholesomememes_1ufgejz",
-            "title": "My Dad is Dracula (and a Gigantic Doughnut) [OC]",
-            "url": "https://i.redd.it/oqop0gn8qg9h1.png",
-            "media_url": "https://i.redd.it/oqop0gn8qg9h1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/wholesomememes",
-            "permalink": "https://redd.it/1ufgejz",
-            "author": "u/jasonpoland",
-            "score": 353,
-            "num_comments": 18,
-            "created_at": 1788374407.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 338.9,
-            "generation": "gen_x"
-      },
-      {
-            "id": "reddit_dankmemes_1w5h0aa",
-            "title": "makes sense",
-            "url": "https://i.redd.it/iylcbn8k65nh1.png",
-            "media_url": "https://i.redd.it/iylcbn8k65nh1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/dankmemes",
-            "permalink": "https://redd.it/1w5h0aa",
-            "author": "u/bigpoppajoe80",
-            "score": 328,
-            "num_comments": 18,
-            "created_at": 1788376687.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 314.9,
-            "generation": "gen_z"
-      },
-      {
-            "id": "reddit_me_irl_1w3zo57",
-            "title": "me_irl",
-            "url": "https://i.redd.it/c85op4odqtmh1.png",
-            "media_url": "https://i.redd.it/c85op4odqtmh1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/me_irl",
-            "permalink": "https://redd.it/1w3zo57",
-            "author": "u/lonsin",
-            "score": 203,
-            "num_comments": 18,
-            "created_at": 1788375607.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 194.9,
-            "generation": "gen_z"
-      },
-      {
-            "id": "reddit_GenAlpha_1w131zd",
-            "title": "TRY NOT TO BE RACIST: VOCALOIDD EDITION:",
-            "url": "https://i.redd.it/9n80oq9yl6mh1.png",
-            "media_url": "https://i.redd.it/9n80oq9yl6mh1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/GenAlpha",
-            "permalink": "https://redd.it/1w131zd",
-            "author": "u/AnOldGrouchyPlumma",
-            "score": 94,
-            "num_comments": 18,
-            "created_at": 1788378847.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 90.2,
-            "generation": "gen_alpha"
-      },
-      {
-            "id": "reddit_me_irl_1w2yoa2",
-            "title": "me irl",
-            "url": "https://i.redd.it/obcxkngpylmh1.png",
-            "media_url": "https://i.redd.it/obcxkngpylmh1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/me_irl",
-            "permalink": "https://redd.it/1w2yoa2",
-            "author": "u/moofish1001",
-            "score": 76,
-            "num_comments": 18,
-            "created_at": 1788375727.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 73.0,
-            "generation": "gen_z"
-      },
-      {
-            "id": "reddit_dankmemes_1w5ibwv",
-            "title": "GL being Zucc's unpaid intern",
-            "url": "https://i.redd.it/g4dmed0ve5nh1.png",
-            "media_url": "https://i.redd.it/g4dmed0ve5nh1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/dankmemes",
-            "permalink": "https://redd.it/1w5ibwv",
-            "author": "u/Skillz2dP",
-            "score": 63,
-            "num_comments": 18,
-            "created_at": 1788376927.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 60.5,
-            "generation": "gen_z"
-      },
-      {
-            "id": "reddit_GenAlpha_1vywcmq",
-            "title": "School year tierlist",
-            "url": "https://i.redd.it/h709zzrovplh1.png",
-            "media_url": "https://i.redd.it/h709zzrovplh1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/GenAlpha",
-            "permalink": "https://redd.it/1vywcmq",
-            "author": "u/Weak-Joke1475",
-            "score": 55,
-            "num_comments": 18,
-            "created_at": 1788378727.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 52.8,
-            "generation": "gen_alpha"
-      },
-      {
-            "id": "reddit_skibiditoilet_1w3nn35",
-            "title": "Meet The Recorder mans (Skibidi Shift/Swap Universe)",
-            "url": "https://i.redd.it/xqtlrohxermh1.png",
-            "media_url": "https://i.redd.it/xqtlrohxermh1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/skibiditoilet",
-            "permalink": "https://redd.it/1w3nn35",
-            "author": "u/wectoronline2511",
-            "score": 41,
-            "num_comments": 18,
-            "created_at": 1788377887.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 39.4,
-            "generation": "gen_alpha"
-      },
-      {
-            "id": "reddit_GenAlpha_1w2tdp9",
-            "title": "title",
-            "url": "https://i.redd.it/vg0a3o25ukmh1.png",
-            "media_url": "https://i.redd.it/vg0a3o25ukmh1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/GenAlpha",
-            "permalink": "https://redd.it/1w2tdp9",
-            "author": "u/Mourninger",
-            "score": 39,
-            "num_comments": 18,
-            "created_at": 1788379087.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 37.4,
-            "generation": "gen_alpha"
-      },
-      {
-            "id": "reddit_skibiditoilet_1w56q3x",
-            "title": "Lucky and detective romance arc in emergence, IMPORTANT!!",
-            "url": "https://i.redd.it/r5jzftzi53nh1.png",
-            "media_url": "https://i.redd.it/r5jzftzi53nh1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/skibiditoilet",
-            "permalink": "https://redd.it/1w56q3x",
-            "author": "u/RashedMekkawi",
-            "score": 38,
-            "num_comments": 18,
-            "created_at": 1788378007.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 36.5,
-            "generation": "gen_alpha"
-      },
-      {
-            "id": "reddit_skibiditoilet_1w59dik",
-            "title": "Meet The Large Recorder man aka Photon (Skibidi Shift/Swap Universe)",
-            "url": "https://i.redd.it/gdoxl47es3nh1.png",
-            "media_url": "https://i.redd.it/gdoxl47es3nh1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/skibiditoilet",
-            "permalink": "https://redd.it/1w59dik",
-            "author": "u/wectoronline2511",
-            "score": 37,
-            "num_comments": 18,
-            "created_at": 1788377767.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 35.5,
-            "generation": "gen_alpha"
-      },
-      {
-            "id": "reddit_GenAlpha_1w26lz2",
-            "title": "thanks i hated it very much",
-            "url": "https://i.redd.it/n05vncupnfmh1.png",
-            "media_url": "https://i.redd.it/n05vncupnfmh1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/GenAlpha",
-            "permalink": "https://redd.it/1w26lz2",
-            "author": "u/baskedpotato",
-            "score": 31,
-            "num_comments": 18,
-            "created_at": 1788378487.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 29.8,
-            "generation": "gen_alpha"
-      },
-      {
-            "id": "reddit_dankmemes_1w239pg",
-            "title": "Yeah, Totally, The \"Ren and Stimpy\" Virus..! It Forces You to Watch Ren and Stimpy Nonstop..!",
-            "url": "https://i.redd.it/lm6dpqs9uemh1.png",
-            "media_url": "https://i.redd.it/lm6dpqs9uemh1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/dankmemes",
-            "permalink": "https://redd.it/1w239pg",
-            "author": "u/Flashlight237",
-            "score": 25,
-            "num_comments": 18,
-            "created_at": 1788377047.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 24.0,
-            "generation": "gen_z"
-      },
-      {
-            "id": "reddit_dankmemes_1w437yl",
-            "title": "Omar the ominous bird",
-            "url": "https://i.redd.it/de6kx9oqmumh1.png",
-            "media_url": "https://i.redd.it/de6kx9oqmumh1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/dankmemes",
-            "permalink": "https://redd.it/1w437yl",
-            "author": "u/Broad_Roll",
-            "score": 17,
-            "num_comments": 18,
-            "created_at": 1788377647.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 16.3,
-            "generation": "gen_z"
-      },
-      {
-            "id": "reddit_GenAlpha_1vw4z64",
-            "title": "will you call him a chud",
-            "url": "https://i.redd.it/tu4nsk7f34lh1.png",
-            "media_url": "https://i.redd.it/tu4nsk7f34lh1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/GenAlpha",
-            "permalink": "https://redd.it/1vw4z64",
-            "author": "u/birdandcupgamingyt",
-            "score": 16,
-            "num_comments": 18,
-            "created_at": 1788378367.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 15.4,
-            "generation": "gen_alpha"
-      },
-      {
-            "id": "reddit_GenAlpha_1w435e2",
-            "title": "I miss my innocent.",
-            "url": "https://i.redd.it/id8t5vu0mumh1.png",
-            "media_url": "https://i.redd.it/id8t5vu0mumh1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/GenAlpha",
-            "permalink": "https://redd.it/1w435e2",
-            "author": "u/Prior-Fee4451",
-            "score": 15,
-            "num_comments": 18,
-            "created_at": 1788378607.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 14.4,
-            "generation": "gen_alpha"
-      },
-      {
-            "id": "reddit_skibiditoilet_1w48wds",
-            "title": "Peak juggernaut render",
-            "url": "https://i.redd.it/w94vtlau6wmh1.png",
-            "media_url": "https://i.redd.it/w94vtlau6wmh1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/skibiditoilet",
-            "permalink": "https://redd.it/1w48wds",
-            "author": "u/dunnoidk2025",
-            "score": 14,
-            "num_comments": 18,
-            "created_at": 1788378127.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 13.4,
-            "generation": "gen_alpha"
-      },
-      {
-            "id": "reddit_skibiditoilet_1w59fat",
-            "title": "my take on executor 2 years ago",
-            "url": "https://i.redd.it/g3t45onms3nh1.png",
-            "media_url": "https://i.redd.it/g3t45onms3nh1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/skibiditoilet",
-            "permalink": "https://redd.it/1w59fat",
-            "author": "u/Odd_Country1157",
-            "score": 11,
-            "num_comments": 18,
-            "created_at": 1788378247.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 10.6,
-            "generation": "gen_alpha"
-      },
-      {
-            "id": "reddit_GenAlpha_1w2ed3i",
-            "title": "I hate comments on edits",
-            "url": "https://i.redd.it/hovp125bshmh1.png",
-            "media_url": "https://i.redd.it/hovp125bshmh1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/GenAlpha",
-            "permalink": "https://redd.it/1w2ed3i",
-            "author": "u/Resident-Seat2280",
-            "score": 9,
-            "num_comments": 18,
-            "created_at": 1788379207.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 8.6,
-            "generation": "gen_alpha"
-      },
-      {
-            "id": "reddit_dankmemes_1w4hib2",
-            "title": "Far From Hidden.",
-            "url": "https://i.redd.it/y7wqbh43uxmh1.png",
-            "media_url": "https://i.redd.it/y7wqbh43uxmh1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/dankmemes",
-            "permalink": "https://redd.it/1w4hib2",
-            "author": "u/SirDoritos1",
-            "score": 8,
-            "num_comments": 18,
-            "created_at": 1788376807.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 7.7,
-            "generation": "gen_z"
-      },
-      {
-            "id": "reddit_dankmemes_1w3zzyr",
-            "title": "A title (about relationships)",
-            "url": "https://i.redd.it/17dkh032ttmh1.png",
-            "media_url": "https://i.redd.it/17dkh032ttmh1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/dankmemes",
-            "permalink": "https://redd.it/1w3zzyr",
-            "author": "u/Nostalgic-Banter",
-            "score": 0,
-            "num_comments": 18,
-            "created_at": 1788377527.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 0.0,
-            "generation": "gen_z"
-      },
-      {
-            "id": "reddit_dankmemes_1w4w1l4",
-            "title": "soggy",
-            "url": "https://i.redd.it/zb59jsndd0nh1.png",
-            "media_url": "https://i.redd.it/zb59jsndd0nh1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/dankmemes",
-            "permalink": "https://redd.it/1w4w1l4",
-            "author": "u/xela1991",
-            "score": 0,
-            "num_comments": 18,
-            "created_at": 1788376567.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 0.0,
-            "generation": "gen_z"
-      },
-      {
-            "id": "reddit_AdviceAnimals_1vz4mwu",
-            "title": "10 Years ago we had...",
-            "url": "https://i.redd.it/u2xl2sz2erlh1.png",
-            "media_url": "https://i.redd.it/u2xl2sz2erlh1.png",
-            "media_type": "image",
-            "source": "reddit",
-            "source_platform": "reddit",
-            "source_community": "r/AdviceAnimals",
-            "permalink": "https://redd.it/1vz4mwu",
-            "author": "u/Leather-Ad-9419",
-            "score": 0,
-            "num_comments": 18,
-            "created_at": 1788375127.7862692,
-            "is_nsfw": false,
-            "domain": "i.redd.it",
-            "trending_score": 0.0,
-            "generation": "millennial"
-      }
+    {
+        "id": "kym_doge_shiba",
+        "title": "Doge (Kabosu the Shiba Inu - Much Wow)",
+        "url": "https://i.kym-cdn.com/entries/icons/original/000/013/564/doge.jpg",
+        "media_url": "https://i.kym-cdn.com/entries/icons/original/000/013/564/doge.jpg",
+        "media_type": "image",
+        "source": "knowyourmeme",
+        "source_platform": "knowyourmeme",
+        "source_community": "confirmed",
+        "permalink": "https://knowyourmeme.com/memes/doge",
+        "author": "Atsuko Sato",
+        "score": 89200,
+        "num_comments": 3100,
+        "created_at": 1788373807.7862692,
+        "is_nsfw": false,
+        "domain": "knowyourmeme.com",
+        "trending_score": 99.2,
+        "generation": "millennial"
+    },
+    {
+        "id": "kym_distracted_boyfriend",
+        "title": "Distracted Boyfriend (Man Looking at Other Woman)",
+        "url": "https://i.kym-cdn.com/entries/icons/original/000/023/459/distracted_boyfriend.jpg",
+        "media_url": "https://i.kym-cdn.com/entries/icons/original/000/023/459/distracted_boyfriend.jpg",
+        "media_type": "image",
+        "source": "knowyourmeme",
+        "source_platform": "knowyourmeme",
+        "source_community": "confirmed",
+        "permalink": "https://knowyourmeme.com/memes/distracted-boyfriend",
+        "author": "Antonio Guillem",
+        "score": 68400,
+        "num_comments": 2400,
+        "created_at": 1788375607.7862692,
+        "is_nsfw": false,
+        "domain": "knowyourmeme.com",
+        "trending_score": 98.4,
+        "generation": "millennial"
+    },
+    {
+        "id": "kym_drakeposting",
+        "title": "Drakeposting (Drake Hotline Bling Reaction)",
+        "url": "https://i.kym-cdn.com/entries/icons/original/000/020/147/drake.jpg",
+        "media_url": "https://i.kym-cdn.com/entries/icons/original/000/020/147/drake.jpg",
+        "media_type": "image",
+        "source": "knowyourmeme",
+        "source_platform": "knowyourmeme",
+        "source_community": "confirmed",
+        "permalink": "https://knowyourmeme.com/memes/drakeposting",
+        "author": "Director X",
+        "score": 54200,
+        "num_comments": 1820,
+        "created_at": 1788372007.7862692,
+        "is_nsfw": false,
+        "domain": "knowyourmeme.com",
+        "trending_score": 96.1,
+        "generation": "millennial"
+    },
+    {
+        "id": "kym_happy_cat",
+        "title": "I Can Has Cheezburger? (Happy Cat Classic)",
+        "url": "https://i.kym-cdn.com/entries/icons/original/000/000/001/happycat.jpg",
+        "media_url": "https://i.kym-cdn.com/entries/icons/original/000/000/001/happycat.jpg",
+        "media_type": "image",
+        "source": "knowyourmeme",
+        "source_platform": "knowyourmeme",
+        "source_community": "confirmed",
+        "permalink": "https://knowyourmeme.com/memes/happy-cat-i-can-has-cheezburger",
+        "author": "Eric Nakagawa",
+        "score": 48100,
+        "num_comments": 1100,
+        "created_at": 1788368207.7862692,
+        "is_nsfw": false,
+        "domain": "knowyourmeme.com",
+        "trending_score": 94.0,
+        "generation": "gen_x"
+    },
+    {
+        "id": "kym_roll_safe",
+        "title": "Roll Safe (Kayode Ewumi Pointing to Head)",
+        "url": "https://i.kym-cdn.com/entries/icons/original/000/022/138/rollsafe.jpg",
+        "media_url": "https://i.kym-cdn.com/entries/icons/original/000/022/138/rollsafe.jpg",
+        "media_type": "image",
+        "source": "knowyourmeme",
+        "source_platform": "knowyourmeme",
+        "source_community": "confirmed",
+        "permalink": "https://knowyourmeme.com/memes/roll-safe",
+        "author": "BBC Three",
+        "score": 42100,
+        "num_comments": 1240,
+        "created_at": 1788370207.7862692,
+        "is_nsfw": false,
+        "domain": "knowyourmeme.com",
+        "trending_score": 93.5,
+        "generation": "millennial"
+    },
+    {
+        "id": "kym_all_your_base",
+        "title": "All Your Base Are Belong To Us (Zero Wing 2001)",
+        "url": "https://i.kym-cdn.com/entries/icons/original/000/000/002/all_your_base.jpg",
+        "media_url": "https://i.kym-cdn.com/entries/icons/original/000/000/002/all_your_base.jpg",
+        "media_type": "image",
+        "source": "knowyourmeme",
+        "source_platform": "knowyourmeme",
+        "source_community": "confirmed",
+        "permalink": "https://knowyourmeme.com/memes/all-your-base-are-belong-to-us",
+        "author": "Bad_CRC",
+        "score": 39500,
+        "num_comments": 890,
+        "created_at": 1788366207.7862692,
+        "is_nsfw": false,
+        "domain": "knowyourmeme.com",
+        "trending_score": 91.2,
+        "generation": "gen_x"
+    },
+    {
+        "id": "kym_minions",
+        "title": "Minion Quotes / Boomer Forwarded Memes",
+        "url": "https://i.kym-cdn.com/entries/icons/original/000/018/259/minions.jpg",
+        "media_url": "https://i.kym-cdn.com/entries/icons/original/000/018/259/minions.jpg",
+        "media_type": "image",
+        "source": "knowyourmeme",
+        "source_platform": "knowyourmeme",
+        "source_community": "confirmed",
+        "permalink": "https://knowyourmeme.com/memes/minions",
+        "author": "Illumination",
+        "score": 32100,
+        "num_comments": 780,
+        "created_at": 1788364207.7862692,
+        "is_nsfw": false,
+        "domain": "knowyourmeme.com",
+        "trending_score": 88.0,
+        "generation": "gen_x"
+    },
+    {
+        "id": "reddit_wholesomememes_1ulvnxa",
+        "title": "Friends Till The End",
+        "url": "https://i.redd.it/r78chd1c0wah1.png",
+        "media_url": "https://i.redd.it/r78chd1c0wah1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/wholesomememes",
+        "permalink": "https://redd.it/1ulvnxa",
+        "author": "u/MurkyWay",
+        "score": 17394,
+        "num_comments": 695,
+        "created_at": 1788374047.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 16698.2,
+        "generation": "gen_x"
+    },
+    {
+        "id": "reddit_wholesomememes_1ufnv0w",
+        "title": "Mom knows best [OC]",
+        "url": "https://i.redd.it/qyl4bkpe3i9h1.png",
+        "media_url": "https://i.redd.it/qyl4bkpe3i9h1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/wholesomememes",
+        "permalink": "https://redd.it/1ufnv0w",
+        "author": "u/MurkyWay",
+        "score": 11571,
+        "num_comments": 462,
+        "created_at": 1788374167.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 11108.2,
+        "generation": "gen_x"
+    },
+    {
+        "id": "reddit_me_irl_1w4eicz",
+        "title": "me_irl",
+        "url": "https://i.redd.it/8a817aydbxmh1.png",
+        "media_url": "https://i.redd.it/8a817aydbxmh1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/me_irl",
+        "permalink": "https://redd.it/1w4eicz",
+        "author": "u/JustGreenFish",
+        "score": 6778,
+        "num_comments": 271,
+        "created_at": 1788375967.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 6506.9,
+        "generation": "gen_z"
+    },
+    {
+        "id": "reddit_wholesomememes_1us48h6",
+        "title": "Professional Courtesy",
+        "url": "https://i.redd.it/c3phfu13z9ch1.png",
+        "media_url": "https://i.redd.it/c3phfu13z9ch1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/wholesomememes",
+        "permalink": "https://redd.it/1us48h6",
+        "author": "u/MurkyWay",
+        "score": 5757,
+        "num_comments": 230,
+        "created_at": 1788374527.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 5526.7,
+        "generation": "gen_x"
+    },
+    {
+        "id": "reddit_wholesomememes_1uj6bej",
+        "title": "Wisdom of the Universe",
+        "url": "https://i.redd.it/792ww1mbnaah1.png",
+        "media_url": "https://i.redd.it/792ww1mbnaah1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/wholesomememes",
+        "permalink": "https://redd.it/1uj6bej",
+        "author": "u/MurkyWay",
+        "score": 4988,
+        "num_comments": 199,
+        "created_at": 1788373927.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 4788.5,
+        "generation": "gen_x"
+    },
+    {
+        "id": "reddit_wholesomememes_1ut1bux",
+        "title": "Space Flirting",
+        "url": "https://i.redd.it/sft5uwfv3hch1.png",
+        "media_url": "https://i.redd.it/sft5uwfv3hch1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/wholesomememes",
+        "permalink": "https://redd.it/1ut1bux",
+        "author": "u/MurkyWay",
+        "score": 3977,
+        "num_comments": 159,
+        "created_at": 1788373687.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 3817.9,
+        "generation": "gen_x"
+    },
+    {
+        "id": "reddit_me_irl_1w2ie2e",
+        "title": "me_irl",
+        "url": "https://i.redd.it/lfi0v92yqimh1.png",
+        "media_url": "https://i.redd.it/lfi0v92yqimh1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/me_irl",
+        "permalink": "https://redd.it/1w2ie2e",
+        "author": "u/JustGreenFish",
+        "score": 3247,
+        "num_comments": 129,
+        "created_at": 1788376447.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 3117.1,
+        "generation": "gen_z"
+    },
+    {
+        "id": "reddit_AdviceAnimals_1w1u28l",
+        "title": "Hey MAGA",
+        "url": "https://i.redd.it/gsqt6xgkxcmh1.png",
+        "media_url": "https://i.redd.it/gsqt6xgkxcmh1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/AdviceAnimals",
+        "permalink": "https://redd.it/1w1u28l",
+        "author": "u/James5000",
+        "score": 3104,
+        "num_comments": 124,
+        "created_at": 1788375007.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 2979.8,
+        "generation": "millennial"
+    },
+    {
+        "id": "reddit_me_irl_1w4j3s9",
+        "title": "Me_irl",
+        "url": "https://i.redd.it/u1mzt8nt3ymh1.png",
+        "media_url": "https://i.redd.it/u1mzt8nt3ymh1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/me_irl",
+        "permalink": "https://redd.it/1w4j3s9",
+        "author": "u/TheDarkKnight505",
+        "score": 2808,
+        "num_comments": 112,
+        "created_at": 1788376207.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 2695.7,
+        "generation": "gen_z"
+    },
+    {
+        "id": "reddit_AdviceAnimals_1w35ax0",
+        "title": "Be traditional",
+        "url": "https://i.redd.it/nz63xd8uknmh1.png",
+        "media_url": "https://i.redd.it/nz63xd8uknmh1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/AdviceAnimals",
+        "permalink": "https://redd.it/1w35ax0",
+        "author": "u/Both-Percentage6445",
+        "score": 2744,
+        "num_comments": 109,
+        "created_at": 1788374647.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 2634.2,
+        "generation": "millennial"
+    },
+    {
+        "id": "reddit_wholesomememes_1uusnkz",
+        "title": "Clothes make the android",
+        "url": "https://i.redd.it/7kebowlwdvch1.png",
+        "media_url": "https://i.redd.it/7kebowlwdvch1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/wholesomememes",
+        "permalink": "https://redd.it/1uusnkz",
+        "author": "u/MurkyWay",
+        "score": 2476,
+        "num_comments": 99,
+        "created_at": 1788373807.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 2377.0,
+        "generation": "gen_x"
+    },
+    {
+        "id": "reddit_me_irl_1w573tl",
+        "title": "me_irl",
+        "url": "https://i.redd.it/wgilm7hr83nh1.png",
+        "media_url": "https://i.redd.it/wgilm7hr83nh1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/me_irl",
+        "permalink": "https://redd.it/1w573tl",
+        "author": "u/DEADMA9kk",
+        "score": 2351,
+        "num_comments": 94,
+        "created_at": 1788375847.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 2257.0,
+        "generation": "gen_z"
+    },
+    {
+        "id": "reddit_AdviceAnimals_1w2ld55",
+        "title": "You thought the Strait of Hormuz was a problem for American shipping?",
+        "url": "https://i.redd.it/4q1wtzm2cjmh1.png",
+        "media_url": "https://i.redd.it/4q1wtzm2cjmh1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/AdviceAnimals",
+        "permalink": "https://redd.it/1w2ld55",
+        "author": "u/brother_p",
+        "score": 2287,
+        "num_comments": 91,
+        "created_at": 1788374887.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 2195.5,
+        "generation": "millennial"
+    },
+    {
+        "id": "reddit_AdviceAnimals_1w2ot7b",
+        "title": "I leave work for a few days of PTO, when I come back Zoom had been replaced",
+        "url": "https://i.redd.it/79ngwryazjmh1.png",
+        "media_url": "https://i.redd.it/79ngwryazjmh1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/AdviceAnimals",
+        "permalink": "https://redd.it/1w2ot7b",
+        "author": "u/pdmcmahon",
+        "score": 1555,
+        "num_comments": 62,
+        "created_at": 1788375367.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 1492.8,
+        "generation": "millennial"
+    },
+    {
+        "id": "reddit_AdviceAnimals_1vy7500",
+        "title": "The weak flailing of a tired old man who can't stand losing",
+        "url": "https://i.imgflip.com/azmsmv.jpg",
+        "media_url": "https://i.imgflip.com/azmsmv.jpg",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/AdviceAnimals",
+        "permalink": "https://redd.it/1vy7500",
+        "author": "u/brother_p",
+        "score": 1466,
+        "num_comments": 58,
+        "created_at": 1788375487.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 1407.4,
+        "generation": "millennial"
+    },
+    {
+        "id": "reddit_me_irl_1w3i2z2",
+        "title": "Me irl",
+        "url": "https://i.redd.it/34rksnaahqmh1.png",
+        "media_url": "https://i.redd.it/34rksnaahqmh1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/me_irl",
+        "permalink": "https://redd.it/1w3i2z2",
+        "author": "u/RedDragons8",
+        "score": 990,
+        "num_comments": 39,
+        "created_at": 1788376087.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 950.4,
+        "generation": "gen_z"
+    },
+    {
+        "id": "reddit_dankmemes_1w26fz9",
+        "title": "meme. relationship A",
+        "url": "https://i.redd.it/nsw7w9m2mfmh1.png",
+        "media_url": "https://i.redd.it/nsw7w9m2mfmh1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/dankmemes",
+        "permalink": "https://redd.it/1w26fz9",
+        "author": "u/Nostalgic-Banter",
+        "score": 834,
+        "num_comments": 33,
+        "created_at": 1788377407.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 800.6,
+        "generation": "gen_z"
+    },
+    {
+        "id": "reddit_wholesomememes_1v4n22o",
+        "title": "[That One Person Who Always Cares]",
+        "url": "https://i.redd.it/7sqjr20401fh1.png",
+        "media_url": "https://i.redd.it/7sqjr20401fh1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/wholesomememes",
+        "permalink": "https://redd.it/1v4n22o",
+        "author": "u/Will-VX",
+        "score": 833,
+        "num_comments": 33,
+        "created_at": 1788374287.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 799.7,
+        "generation": "gen_x"
+    },
+    {
+        "id": "reddit_dankmemes_1w35m9l",
+        "title": "Fecial expression 100%",
+        "url": "https://i.redd.it/85bk25qxnnmh1.png",
+        "media_url": "https://i.redd.it/85bk25qxnnmh1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/dankmemes",
+        "permalink": "https://redd.it/1w35m9l",
+        "author": "u/Any_Smoke1138",
+        "score": 717,
+        "num_comments": 28,
+        "created_at": 1788377287.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 688.3,
+        "generation": "gen_z"
+    },
+    {
+        "id": "reddit_AdviceAnimals_1w08ydq",
+        "title": "My Steam wishlist keeps growing",
+        "url": "https://i.redd.it/v2z478omwzlh1.png",
+        "media_url": "https://i.redd.it/v2z478omwzlh1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/AdviceAnimals",
+        "permalink": "https://redd.it/1w08ydq",
+        "author": "u/Zoltt93",
+        "score": 708,
+        "num_comments": 28,
+        "created_at": 1788374767.7862692,
+        "is_nsfw": true,
+        "domain": "i.redd.it",
+        "trending_score": 679.7,
+        "generation": "millennial"
+    },
+    {
+        "id": "reddit_AdviceAnimals_1vzwygn",
+        "title": "It has been a rough week for pop culture fans and it's not even over yet",
+        "url": "https://i.imgflip.com/azsebf.jpg",
+        "media_url": "https://i.imgflip.com/azsebf.jpg",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/AdviceAnimals",
+        "permalink": "https://redd.it/1vzwygn",
+        "author": "u/MrPractical1",
+        "score": 591,
+        "num_comments": 23,
+        "created_at": 1788375247.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 567.4,
+        "generation": "millennial"
+    },
+    {
+        "id": "reddit_dankmemes_1w5cmgs",
+        "title": "i'm sure it's just heartburn",
+        "url": "https://i.redd.it/zoeh4vpte4nh1.png",
+        "media_url": "https://i.redd.it/zoeh4vpte4nh1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/dankmemes",
+        "permalink": "https://redd.it/1w5cmgs",
+        "author": "u/soap94",
+        "score": 501,
+        "num_comments": 20,
+        "created_at": 1788377167.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 481.0,
+        "generation": "gen_z"
+    },
+    {
+        "id": "reddit_me_irl_1w2r0on",
+        "title": "me_irl",
+        "url": "https://i.redd.it/ejg4r5r3ekmh1.png",
+        "media_url": "https://i.redd.it/ejg4r5r3ekmh1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/me_irl",
+        "permalink": "https://redd.it/1w2r0on",
+        "author": "u/DesignDreamer_568",
+        "score": 439,
+        "num_comments": 18,
+        "created_at": 1788376327.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 421.4,
+        "generation": "gen_z"
+    },
+    {
+        "id": "reddit_GenAlpha_1vz4z3b",
+        "title": "Ladies and Gentlemen, we've reached a new low.",
+        "url": "https://i.redd.it/rlh5vrpwfrlh1.png",
+        "media_url": "https://i.redd.it/rlh5vrpwfrlh1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/GenAlpha",
+        "permalink": "https://redd.it/1vz4z3b",
+        "author": "u/AnOldGrouchyPlumma",
+        "score": 415,
+        "num_comments": 18,
+        "created_at": 1788378967.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 398.4,
+        "generation": "gen_alpha"
+    },
+    {
+        "id": "reddit_wholesomememes_1ufgejz",
+        "title": "My Dad is Dracula (and a Gigantic Doughnut) [OC]",
+        "url": "https://i.redd.it/oqop0gn8qg9h1.png",
+        "media_url": "https://i.redd.it/oqop0gn8qg9h1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/wholesomememes",
+        "permalink": "https://redd.it/1ufgejz",
+        "author": "u/jasonpoland",
+        "score": 353,
+        "num_comments": 18,
+        "created_at": 1788374407.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 338.9,
+        "generation": "gen_x"
+    },
+    {
+        "id": "reddit_dankmemes_1w5h0aa",
+        "title": "makes sense",
+        "url": "https://i.redd.it/iylcbn8k65nh1.png",
+        "media_url": "https://i.redd.it/iylcbn8k65nh1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/dankmemes",
+        "permalink": "https://redd.it/1w5h0aa",
+        "author": "u/bigpoppajoe80",
+        "score": 328,
+        "num_comments": 18,
+        "created_at": 1788376687.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 314.9,
+        "generation": "gen_z"
+    },
+    {
+        "id": "reddit_me_irl_1w3zo57",
+        "title": "me_irl",
+        "url": "https://i.redd.it/c85op4odqtmh1.png",
+        "media_url": "https://i.redd.it/c85op4odqtmh1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/me_irl",
+        "permalink": "https://redd.it/1w3zo57",
+        "author": "u/lonsin",
+        "score": 203,
+        "num_comments": 18,
+        "created_at": 1788375607.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 194.9,
+        "generation": "gen_z"
+    },
+    {
+        "id": "reddit_GenAlpha_1w131zd",
+        "title": "TRY NOT TO BE RACIST: VOCALOIDD EDITION:",
+        "url": "https://i.redd.it/9n80oq9yl6mh1.png",
+        "media_url": "https://i.redd.it/9n80oq9yl6mh1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/GenAlpha",
+        "permalink": "https://redd.it/1w131zd",
+        "author": "u/AnOldGrouchyPlumma",
+        "score": 94,
+        "num_comments": 18,
+        "created_at": 1788378847.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 90.2,
+        "generation": "gen_alpha"
+    },
+    {
+        "id": "reddit_me_irl_1w2yoa2",
+        "title": "me irl",
+        "url": "https://i.redd.it/obcxkngpylmh1.png",
+        "media_url": "https://i.redd.it/obcxkngpylmh1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/me_irl",
+        "permalink": "https://redd.it/1w2yoa2",
+        "author": "u/moofish1001",
+        "score": 76,
+        "num_comments": 18,
+        "created_at": 1788375727.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 73.0,
+        "generation": "gen_z"
+    },
+    {
+        "id": "reddit_dankmemes_1w5ibwv",
+        "title": "GL being Zucc's unpaid intern",
+        "url": "https://i.redd.it/g4dmed0ve5nh1.png",
+        "media_url": "https://i.redd.it/g4dmed0ve5nh1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/dankmemes",
+        "permalink": "https://redd.it/1w5ibwv",
+        "author": "u/Skillz2dP",
+        "score": 63,
+        "num_comments": 18,
+        "created_at": 1788376927.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 60.5,
+        "generation": "gen_z"
+    },
+    {
+        "id": "reddit_GenAlpha_1vywcmq",
+        "title": "School year tierlist",
+        "url": "https://i.redd.it/h709zzrovplh1.png",
+        "media_url": "https://i.redd.it/h709zzrovplh1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/GenAlpha",
+        "permalink": "https://redd.it/1vywcmq",
+        "author": "u/Weak-Joke1475",
+        "score": 55,
+        "num_comments": 18,
+        "created_at": 1788378727.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 52.8,
+        "generation": "gen_alpha"
+    },
+    {
+        "id": "reddit_skibiditoilet_1w3nn35",
+        "title": "Meet The Recorder mans (Skibidi Shift/Swap Universe)",
+        "url": "https://i.redd.it/xqtlrohxermh1.png",
+        "media_url": "https://i.redd.it/xqtlrohxermh1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/skibiditoilet",
+        "permalink": "https://redd.it/1w3nn35",
+        "author": "u/wectoronline2511",
+        "score": 41,
+        "num_comments": 18,
+        "created_at": 1788377887.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 39.4,
+        "generation": "gen_alpha"
+    },
+    {
+        "id": "reddit_GenAlpha_1w2tdp9",
+        "title": "title",
+        "url": "https://i.redd.it/vg0a3o25ukmh1.png",
+        "media_url": "https://i.redd.it/vg0a3o25ukmh1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/GenAlpha",
+        "permalink": "https://redd.it/1w2tdp9",
+        "author": "u/Mourninger",
+        "score": 39,
+        "num_comments": 18,
+        "created_at": 1788379087.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 37.4,
+        "generation": "gen_alpha"
+    },
+    {
+        "id": "reddit_skibiditoilet_1w56q3x",
+        "title": "Lucky and detective romance arc in emergence, IMPORTANT!!",
+        "url": "https://i.redd.it/r5jzftzi53nh1.png",
+        "media_url": "https://i.redd.it/r5jzftzi53nh1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/skibiditoilet",
+        "permalink": "https://redd.it/1w56q3x",
+        "author": "u/RashedMekkawi",
+        "score": 38,
+        "num_comments": 18,
+        "created_at": 1788378007.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 36.5,
+        "generation": "gen_alpha"
+    },
+    {
+        "id": "reddit_skibiditoilet_1w59dik",
+        "title": "Meet The Large Recorder man aka Photon (Skibidi Shift/Swap Universe)",
+        "url": "https://i.redd.it/gdoxl47es3nh1.png",
+        "media_url": "https://i.redd.it/gdoxl47es3nh1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/skibiditoilet",
+        "permalink": "https://redd.it/1w59dik",
+        "author": "u/wectoronline2511",
+        "score": 37,
+        "num_comments": 18,
+        "created_at": 1788377767.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 35.5,
+        "generation": "gen_alpha"
+    },
+    {
+        "id": "reddit_GenAlpha_1w26lz2",
+        "title": "thanks i hated it very much",
+        "url": "https://i.redd.it/n05vncupnfmh1.png",
+        "media_url": "https://i.redd.it/n05vncupnfmh1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/GenAlpha",
+        "permalink": "https://redd.it/1w26lz2",
+        "author": "u/baskedpotato",
+        "score": 31,
+        "num_comments": 18,
+        "created_at": 1788378487.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 29.8,
+        "generation": "gen_alpha"
+    },
+    {
+        "id": "reddit_dankmemes_1w239pg",
+        "title": "Yeah, Totally, The \"Ren and Stimpy\" Virus..! It Forces You to Watch Ren and Stimpy Nonstop..!",
+        "url": "https://i.redd.it/lm6dpqs9uemh1.png",
+        "media_url": "https://i.redd.it/lm6dpqs9uemh1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/dankmemes",
+        "permalink": "https://redd.it/1w239pg",
+        "author": "u/Flashlight237",
+        "score": 25,
+        "num_comments": 18,
+        "created_at": 1788377047.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 24.0,
+        "generation": "gen_z"
+    },
+    {
+        "id": "reddit_dankmemes_1w437yl",
+        "title": "Omar the ominous bird",
+        "url": "https://i.redd.it/de6kx9oqmumh1.png",
+        "media_url": "https://i.redd.it/de6kx9oqmumh1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/dankmemes",
+        "permalink": "https://redd.it/1w437yl",
+        "author": "u/Broad_Roll",
+        "score": 17,
+        "num_comments": 18,
+        "created_at": 1788377647.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 16.3,
+        "generation": "gen_z"
+    },
+    {
+        "id": "reddit_GenAlpha_1vw4z64",
+        "title": "will you call him a chud",
+        "url": "https://i.redd.it/tu4nsk7f34lh1.png",
+        "media_url": "https://i.redd.it/tu4nsk7f34lh1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/GenAlpha",
+        "permalink": "https://redd.it/1vw4z64",
+        "author": "u/birdandcupgamingyt",
+        "score": 16,
+        "num_comments": 18,
+        "created_at": 1788378367.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 15.4,
+        "generation": "gen_alpha"
+    },
+    {
+        "id": "reddit_GenAlpha_1w435e2",
+        "title": "I miss my innocent.",
+        "url": "https://i.redd.it/id8t5vu0mumh1.png",
+        "media_url": "https://i.redd.it/id8t5vu0mumh1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/GenAlpha",
+        "permalink": "https://redd.it/1w435e2",
+        "author": "u/Prior-Fee4451",
+        "score": 15,
+        "num_comments": 18,
+        "created_at": 1788378607.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 14.4,
+        "generation": "gen_alpha"
+    },
+    {
+        "id": "reddit_skibiditoilet_1w48wds",
+        "title": "Peak juggernaut render",
+        "url": "https://i.redd.it/w94vtlau6wmh1.png",
+        "media_url": "https://i.redd.it/w94vtlau6wmh1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/skibiditoilet",
+        "permalink": "https://redd.it/1w48wds",
+        "author": "u/dunnoidk2025",
+        "score": 14,
+        "num_comments": 18,
+        "created_at": 1788378127.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 13.4,
+        "generation": "gen_alpha"
+    },
+    {
+        "id": "reddit_skibiditoilet_1w59fat",
+        "title": "my take on executor 2 years ago",
+        "url": "https://i.redd.it/g3t45onms3nh1.png",
+        "media_url": "https://i.redd.it/g3t45onms3nh1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/skibiditoilet",
+        "permalink": "https://redd.it/1w59fat",
+        "author": "u/Odd_Country1157",
+        "score": 11,
+        "num_comments": 18,
+        "created_at": 1788378247.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 10.6,
+        "generation": "gen_alpha"
+    },
+    {
+        "id": "reddit_GenAlpha_1w2ed3i",
+        "title": "I hate comments on edits",
+        "url": "https://i.redd.it/hovp125bshmh1.png",
+        "media_url": "https://i.redd.it/hovp125bshmh1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/GenAlpha",
+        "permalink": "https://redd.it/1w2ed3i",
+        "author": "u/Resident-Seat2280",
+        "score": 9,
+        "num_comments": 18,
+        "created_at": 1788379207.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 8.6,
+        "generation": "gen_alpha"
+    },
+    {
+        "id": "reddit_dankmemes_1w4hib2",
+        "title": "Far From Hidden.",
+        "url": "https://i.redd.it/y7wqbh43uxmh1.png",
+        "media_url": "https://i.redd.it/y7wqbh43uxmh1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/dankmemes",
+        "permalink": "https://redd.it/1w4hib2",
+        "author": "u/SirDoritos1",
+        "score": 8,
+        "num_comments": 18,
+        "created_at": 1788376807.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 7.7,
+        "generation": "gen_z"
+    },
+    {
+        "id": "reddit_dankmemes_1w3zzyr",
+        "title": "A title (about relationships)",
+        "url": "https://i.redd.it/17dkh032ttmh1.png",
+        "media_url": "https://i.redd.it/17dkh032ttmh1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/dankmemes",
+        "permalink": "https://redd.it/1w3zzyr",
+        "author": "u/Nostalgic-Banter",
+        "score": 0,
+        "num_comments": 18,
+        "created_at": 1788377527.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 0.0,
+        "generation": "gen_z"
+    },
+    {
+        "id": "reddit_dankmemes_1w4w1l4",
+        "title": "soggy",
+        "url": "https://i.redd.it/zb59jsndd0nh1.png",
+        "media_url": "https://i.redd.it/zb59jsndd0nh1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/dankmemes",
+        "permalink": "https://redd.it/1w4w1l4",
+        "author": "u/xela1991",
+        "score": 0,
+        "num_comments": 18,
+        "created_at": 1788376567.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 0.0,
+        "generation": "gen_z"
+    },
+    {
+        "id": "reddit_AdviceAnimals_1vz4mwu",
+        "title": "10 Years ago we had...",
+        "url": "https://i.redd.it/u2xl2sz2erlh1.png",
+        "media_url": "https://i.redd.it/u2xl2sz2erlh1.png",
+        "media_type": "image",
+        "source": "reddit",
+        "source_platform": "reddit",
+        "source_community": "r/AdviceAnimals",
+        "permalink": "https://redd.it/1vz4mwu",
+        "author": "u/Leather-Ad-9419",
+        "score": 0,
+        "num_comments": 18,
+        "created_at": 1788375127.7862692,
+        "is_nsfw": false,
+        "domain": "i.redd.it",
+        "trending_score": 0.0,
+        "generation": "millennial"
+    }
 ];
 
     let memeCollection = [...GENERATIONAL_MEMES];
-    let selectedLabEndpoint = 'trending';
-    let selectedLabLang = 'curl';
+    let spotlightIndex = 0;
+    let selectedCommunity = 'all';
+    let selectedSort = 'score';
 
-    // Smooth Scroll Helper
-    function scrollToSection(id) {
-      const el = document.getElementById(id);
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth' });
-        updateNavState(id);
-      }
-    }
-
-    function updateNavState(id) {
-      document.getElementById('navBtnRadar').classList.toggle('active', id === 'radarSection');
-      document.getElementById('navBtnLab').classList.toggle('active', id === 'labSection');
-    }
-
-    // Scroll spy for navigation
-    window.addEventListener('scroll', () => {
-      const labEl = document.getElementById('labSection');
-      if (labEl) {
-        const rect = labEl.getBoundingClientRect();
-        if (rect.top <= 200) {
-          updateNavState('labSection');
-        } else {
-          updateNavState('radarSection');
-        }
-      }
-    });
-
-    // Ingest Live Memes with Generational Failover
-    async function initRadarFeed() {
+    // Persistent 1-Vote Per User Registry (localStorage)
+    function getVotedMemeIds() {
       try {
-        const res = await fetch('/api/v1/memes/trending?limit=50');
+        return JSON.parse(localStorage.getItem('memeology_voted_ids') || '[]');
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function isMemeVoted(id) {
+      return getVotedMemeIds().includes(id);
+    }
+
+    function toggleMemeVote(meme) {
+      let votedIds = getVotedMemeIds();
+      const alreadyVoted = votedIds.includes(meme.id);
+      if (alreadyVoted) {
+        votedIds = votedIds.filter(x => x !== meme.id);
+        meme.score = Math.max(0, (meme.score || 1) - 1);
+      } else {
+        votedIds.push(meme.id);
+        meme.score = (meme.score || 0) + 1;
+      }
+      localStorage.setItem('memeology_voted_ids', JSON.stringify(votedIds));
+      return !alreadyVoted;
+    }
+
+    // Ingest Live Memes with Failover
+    async function initFeed() {
+      try {
+        const res = await fetch('/api/v1/memes/trending?limit=100');
         if (res.ok) {
           const data = await res.json();
           const items = Array.isArray(data) ? data : (data.items || []);
@@ -2577,57 +2566,112 @@
           }
         }
       } catch (e) {
-        console.log("Using generational meme bank");
+        console.log("Using cached meme collection");
       }
+      renderSpotlight();
       renderComicGrid();
+      renderLeaderboard();
       updateLabStudio();
     }
 
-    // Render Full-Width Comic Grid
+    // Render Featured Meme of the Day Spotlight
+    function renderSpotlight() {
+      if (!memeCollection.length) return;
+      const sorted = [...memeCollection].sort((a,b) => (b.score || 0) - (a.score || 0));
+      const m = sorted[spotlightIndex % sorted.length];
+      const isVideo = m.media_type === 'video' || (m.url && (m.url.endsWith('.mp4') || m.url.endsWith('.webm')));
+      const mediaTag = isVideo ? 
+        `<video src="${m.url}" autoplay loop muted playsinline referrerpolicy="no-referrer"></video>` :
+        `<img src="${m.url}" alt="${m.title}" referrerpolicy="no-referrer" onerror="this.src='https://api.memegen.link/images/fine.jpg';" />`;
+
+      const genKey = (m.generation || 'gen_z').toLowerCase();
+      const genLabel = {
+        gen_alpha: "👾 GEN ALPHA",
+        gen_z: "🛹 GEN Z",
+        millennial: "💾 MILLENNIAL",
+        gen_x: "📼 RETRO"
+      }[genKey] || "🛹 GEN Z";
+
+      document.getElementById('spotlightBody').innerHTML = `
+        <div class="spotlight-media-frame">
+          ${mediaTag}
+        </div>
+        <div class="spotlight-info-col">
+          <div class="spotlight-meta-row">
+            <span class="comic-stamp-pill">${m.source_community || m.source}</span>
+            <span class="badge-generation badge-${genKey}" style="position: static;">${genLabel}</span>
+            <span style="font-family: 'Bangers', cursive; font-size: 1.3rem; color: var(--comic-red);">
+              💥 ${Number(m.score).toLocaleString()} UPVOTES
+            </span>
+          </div>
+          <div class="spotlight-title">"${m.title}"</div>
+          <div style="font-size: 0.85rem; font-weight: 700; color: #555;">
+            Posted by <strong>${m.author || 'anonymous'}</strong>
+          </div>
+          <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+            <a href="${m.permalink}" target="_blank" rel="noopener noreferrer" class="btn-card-permalink" style="padding: 6px 14px; font-size: 0.85rem;">
+              🚀 OPEN ORIGINAL POST &rarr;
+            </a>
+            <button class="btn-comic" onclick="openComicModal(memeCollection.find(x => x.id === '${m.id}'))">
+              🔍 Fullscreen Preview
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function rollNextSpotlight() {
+      spotlightIndex++;
+      renderSpotlight();
+    }
+
+    // Render Full-Width Unclipped Grid
     function renderComicGrid() {
       const grid = document.getElementById('comicGrid');
       const search = document.getElementById('comicSearch').value.toLowerCase().trim();
       const activeGen = document.querySelector('#comicGenerationFilters .comic-filter-pill.active').dataset.gen;
-      const activeSource = document.querySelector('#comicSourceFilters .comic-filter-pill.active').dataset.source;
 
-      const filtered = memeCollection.filter(m => {
+      let filtered = memeCollection.filter(m => {
         const title = (m.title || '').toLowerCase();
         const author = (m.author || '').toLowerCase();
         const comm = (m.source_community || '').toLowerCase();
         const gen = (m.generation || 'gen_z').toLowerCase();
 
-        // 1. Search Query Match
-        const matchesSearch = !search || 
-          title.includes(search) || 
-          author.includes(search) || 
-          comm.includes(search) ||
-          gen.includes(search);
+        // Search Match
+        const matchesSearch = !search || title.includes(search) || author.includes(search) || comm.includes(search) || gen.includes(search);
 
-        // 2. Generational Filter Match
+        // Era Match
         let matchesGen = true;
         if (activeGen !== 'all') {
           matchesGen = gen === activeGen;
         }
 
-        // 3. Source Community Filter Match
-        let matchesSource = true;
-        if (activeSource !== 'all') {
-          if (activeSource === 'knowyourmeme') {
-            matchesSource = m.source === 'knowyourmeme' || (m.source_platform && m.source_platform.includes('knowyourmeme'));
+        // Community Match
+        let matchesCommunity = true;
+        if (selectedCommunity !== 'all') {
+          if (selectedCommunity === 'knowyourmeme') {
+            matchesCommunity = m.source === 'knowyourmeme' || (m.source_platform && m.source_platform.includes('knowyourmeme'));
           } else {
-            matchesSource = m.source_community === activeSource;
+            matchesCommunity = m.source_community === selectedCommunity;
           }
         }
 
-        return matchesSearch && matchesGen && matchesSource;
+        return matchesSearch && matchesGen && matchesCommunity;
       });
+
+      // Sort
+      if (selectedSort === 'score') {
+        filtered.sort((a,b) => (b.score || 0) - (a.score || 0));
+      } else if (selectedSort === 'newest') {
+        filtered.sort((a,b) => (b.created_at || 0) - (a.created_at || 0));
+      }
 
       if (filtered.length === 0) {
         grid.innerHTML = `
-          <div style="grid-column: 1/-1; text-align: center; padding: 4rem; background: #fff; border: 3px solid #000; box-shadow: 6px 6px 0px #000; border-radius: 8px;">
-            <div style="font-size: 3rem;">💥</div>
-            <h3 style="font-family: 'Bangers', cursive; font-size: 2rem; margin-top: 0.5rem;">NO MEMES IN THIS GENERATION!</h3>
-            <p style="font-size: 1rem; font-weight: 700; color: #555;">Try clicking a different generational pill (e.g. Gen Alpha or Gen Z) or clearing your search.</p>
+          <div style="grid-column: 1/-1; text-align: center; padding: 3.5rem; background: #fff; border: 3px solid #000; box-shadow: 6px 6px 0px #000; border-radius: 8px;">
+            <div style="font-size: 3rem;">✨</div>
+            <h3 style="font-family: 'Bangers', cursive; font-size: 2rem; margin-top: 0.5rem;">NO MEMES FOUND IN THIS VIEW</h3>
+            <p style="font-size: 0.95rem; font-weight: 700; color: #555;">Try choosing another era or clearing your search term.</p>
           </div>
         `;
         return;
@@ -2635,24 +2679,34 @@
 
       grid.innerHTML = filtered.map(m => {
         const isVideo = m.media_type === 'video' || (m.url && (m.url.endsWith('.mp4') || m.url.endsWith('.webm')));
+        const isGif = m.media_type === 'gif' || (m.url && m.url.endsWith('.gif'));
+        const voted = isMemeVoted(m.id);
+
         const mediaTag = isVideo ? `
-          <video src="${m.url}" autoplay loop muted playsinline referrerpolicy="no-referrer"></video>
+          <video src="${m.url}" preload="metadata" muted playsinline loop referrerpolicy="no-referrer"></video>
+          <div class="badge-gif-indicator">▶ VIDEO</div>
+        ` : (isGif ? `
+          <img src="${m.url}" alt="${m.title}" loading="lazy" referrerpolicy="no-referrer" onerror="this.src='https://api.memegen.link/images/fine.jpg';" />
+          <div class="badge-gif-indicator">▶ GIF</div>
         ` : `
           <img src="${m.url}" alt="${m.title}" loading="lazy" referrerpolicy="no-referrer" onerror="this.src='https://api.memegen.link/images/fine.jpg';" />
-        `;
+        `);
 
         const genKey = (m.generation || 'gen_z').toLowerCase();
         const genLabel = {
-          gen_alpha: "🧠 GEN ALPHA",
-          gen_z: "⚡ GEN Z",
-          millennial: "🕶️ MILLENNIAL",
-          gen_x: "📻 GEN X / BOOMER"
-        }[genKey] || "⚡ GEN Z";
+          gen_alpha: "👾 GEN ALPHA",
+          gen_z: "🛹 GEN Z",
+          millennial: "💾 MILLENNIAL",
+          gen_x: "📼 RETRO"
+        }[genKey] || "🛹 GEN Z";
 
         return `
           <div class="comic-card" data-id="${m.id}">
             <div class="speech-bubble-wrapper">
-              <div class="speech-bubble">"${m.title}"</div>
+              <div class="speech-bubble">
+                <span class="speech-quote">"${m.title}"</span>
+                <span class="speech-author">posted by ${m.author || 'anonymous'}</span>
+              </div>
             </div>
 
             <div class="comic-card-media">
@@ -2664,78 +2718,164 @@
             </div>
 
             <div class="comic-card-footer">
-              <span class="comic-author-tag">${m.author || 'anonymous'}</span>
-              <div style="display: flex; align-items: center; gap: 0.4rem;">
-                <a href="${m.permalink}" target="_blank" rel="noopener noreferrer" class="btn-card-permalink" title="Open post thread on ${m.source_community || m.source}" onclick="event.stopPropagation()">
-                  <span>🔗 POST &rarr;</span>
-                </a>
-                <button class="btn-upvote-stamp" title="Stamp Upvote">
-                  <span>🔥 POW!</span>
-                  <span class="upvote-num">${Number(m.score).toLocaleString()}</span>
-                </button>
-              </div>
+              <a href="${m.permalink}" target="_blank" rel="noopener noreferrer" class="btn-card-permalink" title="Open post thread on ${m.source_community || m.source}" onclick="event.stopPropagation()">
+                <span>🔗 POST &rarr;</span>
+              </a>
+              <button class="btn-upvote-stamp ${voted ? 'voted' : ''}" title="Toggle vote (1 per user)">
+                <span>${voted ? '✓ VOTED' : '🔥 POW!'}</span>
+                <span class="upvote-num">${Number(m.score).toLocaleString()}</span>
+              </button>
             </div>
           </div>
         `;
       }).join('');
 
-      // Anime.js Staggered Entrance Animation
+      // Anime.js Staggered Entrance
       if (window.anime) {
         anime({
           targets: '.comic-card',
-          scale: [0.92, 1],
+          scale: [0.94, 1],
           opacity: [0, 1],
-          translateY: [25, 0],
-          delay: anime.stagger(45),
+          translateY: [20, 0],
+          delay: anime.stagger(30),
           easing: 'easeOutElastic(1, .8)',
-          duration: 500
+          duration: 400
         });
       }
 
-      // Event Listeners for Upvote Stamp & Lightbox
+      // Listeners for Upvoting, Hover-Play Video/GIF, and Modal
       document.querySelectorAll('.comic-card').forEach(card => {
         const id = card.dataset.id;
         const meme = memeCollection.find(x => x.id === id);
         if (!meme) return;
 
-        // Upvote Stamp Action with Slam Animation & Confetti
+        // Hover to play video
+        const video = card.querySelector('video');
+        if (video) {
+          card.addEventListener('mouseenter', () => { video.play().catch(() => {}); });
+          card.addEventListener('mouseleave', () => { video.pause(); video.currentTime = 0; });
+        }
+
+        // Upvote Toggle
         const upvoteBtn = card.querySelector('.btn-upvote-stamp');
         const slamStamp = card.querySelector('.stamp-slam-effect');
 
         upvoteBtn.addEventListener('click', (e) => {
           e.stopPropagation();
-          meme.score = (meme.score || 0) + 1;
-          card.querySelector('.upvote-num').textContent = Number(meme.score).toLocaleString();
-          card.querySelector('.badge-corner-stamp').textContent = `💥 ${Number(meme.score).toLocaleString()}`;
+          const justVoted = toggleMemeVote(meme);
+          const currentScore = Number(meme.score).toLocaleString();
           
-          if (window.anime && slamStamp) {
-            anime({
-              targets: slamStamp,
-              scale: [2.5, 1],
-              opacity: [0, 1, 1, 0],
-              rotate: [-25, -10],
-              duration: 800,
-              easing: 'easeOutElastic(1, .6)'
-            });
+          card.querySelector('.upvote-num').textContent = currentScore;
+          card.querySelector('.badge-corner-stamp').textContent = `💥 ${currentScore}`;
+          
+          if (justVoted) {
+            upvoteBtn.classList.add('voted');
+            upvoteBtn.querySelector('span:first-child').textContent = '✓ VOTED';
+            if (window.anime && slamStamp) {
+              anime({
+                targets: slamStamp,
+                scale: [2.2, 1],
+                opacity: [0, 1, 1, 0],
+                rotate: [-20, -8],
+                duration: 700,
+                easing: 'easeOutElastic(1, .6)'
+              });
+            }
+            if (window.confetti) {
+              confetti({
+                particleCount: 25,
+                spread: 50,
+                origin: { x: e.clientX / window.innerWidth, y: e.clientY / window.innerHeight }
+              });
+            }
+          } else {
+            upvoteBtn.classList.remove('voted');
+            upvoteBtn.querySelector('span:first-child').textContent = '🔥 POW!';
           }
 
-          if (window.confetti) {
-            confetti({
-              particleCount: 30,
-              spread: 60,
-              origin: { x: e.clientX / window.innerWidth, y: e.clientY / window.innerHeight }
-            });
-          }
+          renderLeaderboard();
         });
 
-        // Click Card -> Fullscreen Lightbox
+        // Lightbox Modal
         card.addEventListener('click', () => {
           openComicModal(meme);
         });
       });
     }
 
-    // Modal Handlers
+    // Render Viral Leaderboard (Top 10)
+    function renderLeaderboard() {
+      const list = document.getElementById('leaderboardList');
+      if (!list) return;
+
+      const top10 = [...memeCollection].sort((a,b) => (b.score || 0) - (a.score || 0)).slice(0, 10);
+
+      list.innerHTML = top10.map((m, idx) => {
+        const rank = idx + 1;
+        const rankClass = rank === 1 ? 'rank-1' : (rank === 2 ? 'rank-2' : (rank === 3 ? 'rank-3' : ''));
+        const medal = rank === 1 ? '🥇' : (rank === 2 ? '🥈' : (rank === 3 ? '🥉' : `#${rank}`));
+
+        const genKey = (m.generation || 'gen_z').toLowerCase();
+        const genLabel = {
+          gen_alpha: "👾 ALPHA",
+          gen_z: "🛹 GEN Z",
+          millennial: "💾 MILLENNIAL",
+          gen_x: "📼 RETRO"
+        }[genKey] || "🛹 GEN Z";
+
+        return `
+          <div class="leaderboard-item">
+            <div class="rank-badge ${rankClass}">${medal}</div>
+            <div class="leaderboard-thumb">
+              <img src="${m.url}" alt="${m.title}" loading="lazy" referrerpolicy="no-referrer" />
+            </div>
+            <div>
+              <div style="font-weight: 800; font-size: 0.92rem; line-height: 1.3;">"${m.title}"</div>
+              <div style="font-size: 0.72rem; color: #666; font-weight: 700; margin-top: 3px;">
+                by ${m.author || 'anonymous'} • ${m.source_community || m.source}
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span class="badge-generation badge-${genKey}" style="position: static; font-size: 0.65rem;">${genLabel}</span>
+              <span style="font-family: 'Bangers', cursive; font-size: 1.25rem; color: var(--comic-red);">
+                💥 ${Number(m.score).toLocaleString()}
+              </span>
+            </div>
+            <div style="text-align: right;">
+              <a href="${m.permalink}" target="_blank" rel="noopener noreferrer" class="btn-card-permalink" style="padding: 3px 8px; font-size: 0.72rem;">
+                🔗 Post &rarr;
+              </a>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function onCommunityFilterChange(val) {
+      selectedCommunity = val;
+      renderComicGrid();
+    }
+
+    function onSortChange(val) {
+      selectedSort = val;
+      renderComicGrid();
+    }
+
+    // Filter Pills Click Handler
+    document.querySelectorAll('#comicGenerationFilters .comic-filter-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        document.querySelectorAll('#comicGenerationFilters .comic-filter-pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        renderComicGrid();
+      });
+    });
+
+    // Search Input
+    document.getElementById('comicSearch').addEventListener('input', () => {
+      renderComicGrid();
+    });
+
+    // Lightbox Modal
     const modal = document.getElementById('comicModal');
     const modalClose = document.getElementById('modalClose');
 
@@ -2748,119 +2888,153 @@
 
       const isVideo = meme.media_type === 'video' || (meme.url && (meme.url.endsWith('.mp4') || meme.url.endsWith('.webm')));
       document.getElementById('modalMedia').innerHTML = isVideo ? `
-        <video src="${meme.url}" controls autoplay loop referrerpolicy="no-referrer"></video>
+        <video src="${meme.url}" controls autoplay loop muted referrerpolicy="no-referrer"></video>
       ` : `
-        <img src="${meme.url}" alt="${meme.title}" referrerpolicy="no-referrer" onerror="this.src='https://api.memegen.link/images/fine.jpg';" />
+        <img src="${meme.url}" alt="${meme.title}" referrerpolicy="no-referrer" />
       `;
 
       modal.classList.add('active');
     }
 
-    modalClose.addEventListener('click', () => modal.classList.remove('active'));
-    modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') modal.classList.remove('active'); });
-
-    // Filter & Search Handlers
-    document.getElementById('comicSearch').addEventListener('input', renderComicGrid);
-
-    document.querySelectorAll('#comicGenerationFilters .comic-filter-pill').forEach(pill => {
-      pill.addEventListener('click', () => {
-        document.querySelectorAll('#comicGenerationFilters .comic-filter-pill').forEach(p => p.classList.remove('active'));
-        pill.classList.add('active');
-        renderComicGrid();
-      });
+    modalClose.addEventListener('click', () => {
+      modal.classList.remove('active');
+      document.getElementById('modalMedia').innerHTML = '';
     });
 
-    document.querySelectorAll('#comicSourceFilters .comic-filter-pill').forEach(pill => {
-      pill.addEventListener('click', () => {
-        document.querySelectorAll('#comicSourceFilters .comic-filter-pill').forEach(p => p.classList.remove('active'));
-        pill.classList.add('active');
-        renderComicGrid();
-      });
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.classList.remove('active');
+        document.getElementById('modalMedia').innerHTML = '';
+      }
     });
 
-    // =========================================================
-    // SECTION 2: THE SECRET LAB API CODE ENGINE
-    // =========================================================
-    function getLabQueryString() {
-      const gen = document.getElementById('paramGeneration').value;
-      const limit = document.getElementById('paramLimit').value;
-      const source = document.getElementById('paramSource').value;
-      let params = [];
-      if (gen) params.push(`generation=${gen}`);
-      if (limit) params.push(`limit=${limit}`);
-      if (source) params.push(`source=${source}`);
-      return params.length > 0 ? `?${params.join('&')}` : '';
+    // Section Scroll & Nav Sync
+    function scrollToSection(id) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
+      document.querySelectorAll('.section-nav-btn').forEach(b => b.classList.remove('active'));
+      if (id === 'feedSection') document.getElementById('navBtnFeed').classList.add('active');
+      if (id === 'leaderboardSection') document.getElementById('navBtnLeaderboard').classList.add('active');
+      if (id === 'labSection') document.getElementById('navBtnLab').classList.add('active');
     }
 
-    function generateCodeSnippets() {
-      const qs = getLabQueryString();
-      const origin = "https://meme-ology.vercel.app";
+    // =========================================================
+    // SECTION 3: SECRET LAB (API STUDIO) LOGIC
+    // =========================================================
+    let selectedLabEndpoint = 'trending';
+    let selectedLabLang = 'curl';
 
-      return {
-        trending: {
-          curl: `curl -X GET "${origin}/api/v1/memes/trending${qs}" \\\n     -H "Accept: application/json"`,
-          python: `import httpx\n\nresponse = httpx.get(\n    "${origin}/api/v1/memes/trending",\n    params={"generation": "${document.getElementById('paramGeneration').value || 'all'}", "limit": ${document.getElementById('paramLimit').value}}\n)\nmemes = response.json()\nprint(f"Loaded {len(memes.get('items', []))} generational memes!")`,
-          javascript: `const res = await fetch("${origin}/api/v1/memes/trending${qs}");\nconst memes = await res.json();\nconsole.log(memes);`
-        },
-        latest: {
-          curl: `curl -X GET "${origin}/api/v1/memes/latest${qs}" \\\n     -H "Accept: application/json"`,
-          python: `import httpx\n\nres = httpx.get("${origin}/api/v1/memes/latest", params={"limit": ${document.getElementById('paramLimit').value}})\ndata = res.json()\nprint(f"Total memes: {data.get('total')}")`,
-          javascript: `const res = await fetch("${origin}/api/v1/memes/latest${qs}");\nconst data = await res.json();\nconsole.log(data);`
-        },
-        random: {
-          curl: `curl -X GET "${origin}/api/v1/memes/random?generation=gen_alpha" \\\n     -H "Accept: application/json"`,
-          python: `import httpx\n\nmeme = httpx.get("${origin}/api/v1/memes/random", params={"generation": "gen_alpha"}).json()\nprint("Gen Alpha meme:", meme["title"], meme["url"])`,
-          javascript: `const res = await fetch("${origin}/api/v1/memes/random?generation=gen_alpha");\nconst meme = await res.json();\nconsole.log(meme.title);`
-        },
-        sources: {
-          curl: `curl -X GET "${origin}/api/v1/sources" \\\n     -H "Accept: application/json"`,
-          python: `import httpx\n\nsources = httpx.get("${origin}/api/v1/sources").json()\nfor s in sources:\n    print(f"[{s['status'].upper()}] {s['name']} - {s['item_count']} cached")`,
-          javascript: `const res = await fetch("${origin}/api/v1/sources");\nconst sources = await res.json();\nconsole.table(sources);`
-        },
-        health: {
-          curl: `curl -X GET "${origin}/health" \\\n     -H "Accept: application/json"`,
-          python: `import httpx\n\nhealth = httpx.get("${origin}/health").json()\nprint("Status:", health["status"], "| Engine speed:", health["cache_latency"])`,
-          javascript: `const res = await fetch("${origin}/health");\nconst health = await res.json();\nconsole.log(health);`
-        }
-      };
+    function getBaseUrl() {
+      return window.location.origin;
+    }
+
+    function buildCurrentApiUrl() {
+      const base = getBaseUrl();
+      const gen = document.getElementById('paramGeneration').value;
+      const limit = document.getElementById('paramLimit').value;
+      const src = document.getElementById('paramSource').value;
+
+      let path = `/api/v1/memes/${selectedLabEndpoint}`;
+      if (selectedLabEndpoint === 'sources') path = '/api/v1/sources';
+      if (selectedLabEndpoint === 'health') path = '/health';
+
+      const params = new URLSearchParams();
+      if (['trending', 'latest', 'random'].includes(selectedLabEndpoint)) {
+        if (gen) params.set('generation', gen);
+        if (selectedLabEndpoint !== 'random' && limit) params.set('limit', limit);
+        if (src) params.set('source', src);
+      }
+
+      const qs = params.toString();
+      return `${base}${path}${qs ? '?' + qs : ''}`;
+    }
+
+    function copyLiveApiUrl() {
+      const url = buildCurrentApiUrl();
+      navigator.clipboard.writeText(url);
+      const btn = document.getElementById('btnCopyApiUrl');
+      btn.textContent = 'COPIED URL!';
+      setTimeout(() => { btn.textContent = '📋 COPY URL'; }, 1500);
+    }
+
+    function downloadCurrentJson() {
+      const raw = document.getElementById('labResponseOutput').textContent;
+      const blob = new Blob([raw], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `memeology-${selectedLabEndpoint}.json`;
+      a.click();
     }
 
     function updateLabStudio() {
-      const snippets = generateCodeSnippets();
-      document.getElementById('labCodeSnippet').textContent = snippets[selectedLabEndpoint][selectedLabLang];
+      const fullUrl = buildCurrentApiUrl();
+      const codeBox = document.getElementById('labCodeSnippet');
 
-      const activeGen = document.getElementById('paramGeneration').value;
-      const limit = parseInt(document.getElementById('paramLimit').value, 10) || 2;
-      
-      let sampleData = memeCollection;
-      if (activeGen) {
-        sampleData = memeCollection.filter(m => (m.generation || 'gen_z') === activeGen);
+      if (selectedLabLang === 'curl') {
+        codeBox.textContent = `curl -X GET "${fullUrl}" \
+  -H "Accept: application/json"`;
+      } else if (selectedLabLang === 'python') {
+        codeBox.textContent = `import httpx
+
+response = httpx.get(
+    "${fullUrl}"
+)
+print(response.json())`;
+      } else if (selectedLabLang === 'javascript') {
+        codeBox.textContent = `fetch("${fullUrl}")
+  .then(res => res.json())
+  .then(data => console.log(data));`;
+      } else if (selectedLabLang === 'go') {
+        codeBox.textContent = `package main
+
+import (
+    "fmt"
+    "io"
+    "net/http"
+)
+
+func main() {
+    resp, _ := http.Get("${fullUrl}")
+    defer resp.Body.Close()
+    body, _ := io.ReadAll(resp.Body)
+    fmt.Println(string(body))
+}`;
       }
 
-      let sampleOutput;
-      if (selectedLabEndpoint === 'trending' || selectedLabEndpoint === 'latest') {
-        sampleOutput = {
-          items: sampleData.slice(0, Math.min(limit, 3)),
-          total: sampleData.length,
-          limit: limit,
-          offset: 0
-        };
-      } else if (selectedLabEndpoint === 'random') {
-        sampleOutput = sampleData[0] || GENERATIONAL_MEMES[0];
-      } else if (selectedLabEndpoint === 'sources') {
-        sampleOutput = [
-          { id: "reddit_genalpha", name: "reddit:r/GenAlpha", status: "ok", item_count: 45, latency_ms: 110.2 },
-          { id: "reddit_dankmemes", name: "reddit:r/dankmemes", status: "ok", item_count: 50, latency_ms: 120.4 },
-          { id: "reddit_adviceanimals", name: "reddit:r/AdviceAnimals", status: "ok", item_count: 38, latency_ms: 95.8 }
-        ];
-      } else {
-        sampleOutput = { status: "ok", app_name: "Meme Tracker API", total_memes_cached: memeCollection.length, healthy_sources: 10 };
-      }
-      document.getElementById('labResponseOutput').textContent = JSON.stringify(sampleOutput, null, 2);
+      // Simulate payload
+      const gen = document.getElementById('paramGeneration').value;
+      const limit = parseInt(document.getElementById('paramLimit').value, 10);
+      let items = [...memeCollection];
+      if (gen) items = items.filter(m => (m.generation || '').toLowerCase() === gen);
+      items = items.slice(0, limit);
+
+      const previewPayload = selectedLabEndpoint === 'random' ? (items[0] || {}) : (
+        selectedLabEndpoint === 'sources' ? [
+          { platform: "reddit", community: "r/dankmemes", status: "ok", item_count: 18 },
+          { platform: "reddit", community: "r/GenAlpha", status: "ok", item_count: 13 },
+          { platform: "knowyourmeme", community: "confirmed", status: "ok", item_count: 12 }
+        ] : (
+          selectedLabEndpoint === 'health' ? {
+            status: "ok",
+            version: "1.0.0",
+            total_cached_memes: memeCollection.length,
+            cache_mode: "memory+sqlite"
+          } : {
+            items: items,
+            total: items.length,
+            limit: limit,
+            offset: 0,
+            has_more: false
+          }
+        )
+      );
+
+      document.getElementById('labResponseOutput').textContent = JSON.stringify(previewPayload, null, 2);
     }
 
-    // Endpoint Button Selector
+    // Lab Endpoint Buttons
     document.querySelectorAll('#labEndpointButtons .lab-endpoint-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('#labEndpointButtons .lab-endpoint-btn').forEach(b => b.classList.remove('active'));
@@ -2870,7 +3044,7 @@
       });
     });
 
-    // Language Tab Selector
+    // Language Selector
     document.querySelectorAll('#labLangTabs .console-lang-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('#labLangTabs .console-lang-btn').forEach(b => b.classList.remove('active'));
@@ -2880,7 +3054,7 @@
       });
     });
 
-    // Copy Code Button
+    // Copy Snippet
     document.getElementById('btnCopySnippet').addEventListener('click', () => {
       const code = document.getElementById('labCodeSnippet').textContent;
       navigator.clipboard.writeText(code);
@@ -2889,21 +3063,20 @@
       setTimeout(() => { btn.textContent = 'COPY CODE'; }, 1500);
     });
 
-    // Live Request Execution
     function executeLiveLabRequest() {
       const badge = document.getElementById('responseStatusBadge');
       badge.textContent = 'FETCHING LIVE...';
       badge.style.color = '#FFE81F';
 
       setTimeout(() => {
-        badge.textContent = 'HTTP 200 OK • 0.08ms';
+        badge.textContent = 'HTTP 200 OK • < 5ms';
         badge.style.color = '#4ade80';
         updateLabStudio();
-      }, 250);
+      }, 200);
     }
 
     // Start
-    initRadarFeed();
+    initFeed();
   </script>
 </body>
 </html>
