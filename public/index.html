@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MEME-OLOGY! — The Internet's Comic Meme Radar &amp; API</title>
-  <meta name="description" content="Comic-Book pop-art radar and API tracking trending memes across Reddit and Know Your Meme.">
+  <meta name="description" content="Comic-Book pop-art radar and API tracking trending memes across Reddit and Know Your Meme in real time.">
   <meta name="referrer" content="no-referrer">
 
   <!-- Google Fonts: Comic Bangers, Space Grotesk, and JetBrains Mono -->
@@ -23,12 +23,13 @@
       --comic-cyan: #00E5FF;
       --comic-pink: #FF3B94;
       --comic-lime: #22E576;
+      --comic-purple: #8B5CF6;
       --comic-ink: #0C0C0F;
       --comic-paper: #FFFDF7;
       --border-ink: 3px solid #0C0C0F;
-      --shadow-hard: 5px 5px 0px #0C0C0F;
-      --shadow-heavy: 8px 8px 0px #0C0C0F;
       --shadow-sm: 3px 3px 0px #0C0C0F;
+      --shadow-hard: 6px 6px 0px #0C0C0F;
+      --shadow-heavy: 10px 10px 0px #0C0C0F;
     }
 
     * {
@@ -37,10 +38,14 @@
       padding: 0;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       background-color: var(--comic-paper);
       background-image: radial-gradient(rgba(12, 12, 15, 0.12) 15%, transparent 16%);
-      background-size: 16px 16px;
+      background-size: 18px 18px;
       color: var(--comic-ink);
       font-family: 'Space Grotesk', -apple-system, sans-serif;
       line-height: 1.4;
@@ -94,6 +99,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 1rem;
     }
 
     .comic-logo-group {
@@ -111,6 +117,11 @@
       line-height: 1;
       transform: rotate(-1.5deg);
       display: inline-block;
+      transition: transform 0.2s;
+    }
+
+    .comic-logo:hover {
+      transform: rotate(1deg) scale(1.05);
     }
 
     .comic-stamp-pill {
@@ -123,12 +134,56 @@
       border-radius: 4px;
       box-shadow: 2px 2px 0px #000;
       transform: rotate(2deg);
+      animation: sticker-sway 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes sticker-sway {
+      0% { transform: rotate(-2deg); }
+      100% { transform: rotate(3deg); }
+    }
+
+    /* Dual-Section Navigation Switcher */
+    .section-nav-switcher {
+      display: flex;
+      background: #fff;
+      border: var(--border-ink);
+      border-radius: 30px;
+      padding: 4px;
+      box-shadow: var(--shadow-sm);
+      gap: 4px;
+    }
+
+    .section-nav-btn {
+      border: none;
+      background: transparent;
+      padding: 6px 16px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 800;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      border-radius: 20px;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .section-nav-btn:hover {
+      background: #f4f4f5;
+    }
+
+    .section-nav-btn.active {
+      background: var(--comic-red);
+      color: #fff;
+      box-shadow: 2px 2px 0px #000;
     }
 
     .nav-right-actions {
       display: flex;
       align-items: center;
-      gap: 1rem;
+      gap: 0.75rem;
     }
 
     .btn-comic {
@@ -173,28 +228,62 @@
       color: #000;
     }
 
-    /* Comic Hero Marquee */
-    .comic-hero {
+    /* Animated Marquee Ticker */
+    .marquee-container {
+      background: var(--comic-yellow);
+      border-bottom: var(--border-ink);
+      overflow: hidden;
+      white-space: nowrap;
+      padding: 8px 0;
+      display: flex;
+    }
+
+    .marquee-track {
+      display: inline-flex;
+      gap: 2rem;
+      animation: marquee-scroll 24s linear infinite;
+      font-family: 'Bangers', cursive;
+      font-size: 1.15rem;
+      letter-spacing: 0.06em;
+      color: #000;
+    }
+
+    @keyframes marquee-scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .marquee-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    /* =========================================================
+       SECTION 1: THE COMIC MEME RADAR (Visual Explorer)
+       ========================================================= */
+    .section-container {
       max-width: 1400px;
-      margin: 1.5rem auto 1rem;
+      margin: 2rem auto;
       padding: 0 1.5rem;
     }
 
-    .hero-panel {
+    .section-header-box {
       background: #fff;
       border: var(--border-ink);
       box-shadow: var(--shadow-heavy);
       padding: 2rem;
       border-radius: 8px;
       position: relative;
-      overflow: hidden;
+      margin-bottom: 2rem;
       display: grid;
-      grid-template-columns: 1.5fr 1fr;
+      grid-template-columns: 1.6fr 1fr;
       gap: 2rem;
       align-items: center;
+      overflow: hidden;
     }
 
-    .hero-panel::before {
+    .section-header-box::before {
       content: '';
       position: absolute;
       top: 0;
@@ -204,7 +293,20 @@
       background: repeating-linear-gradient(45deg, #000, #000 15px, var(--comic-yellow) 15px, var(--comic-yellow) 30px);
     }
 
-    .hero-left h1 {
+    .section-badge-tag {
+      display: inline-block;
+      background: var(--comic-cyan);
+      border: 2px solid #000;
+      box-shadow: 2px 2px 0px #000;
+      padding: 3px 10px;
+      font-family: 'Bangers', cursive;
+      font-size: 1.1rem;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.75rem;
+      transform: rotate(-1.5deg);
+    }
+
+    .hero-title {
       font-family: 'Bangers', cursive;
       font-size: clamp(2.8rem, 5vw, 4.2rem);
       letter-spacing: 0.03em;
@@ -214,15 +316,15 @@
       text-shadow: 3px 3px 0px var(--comic-yellow), 6px 6px 0px var(--comic-red);
     }
 
-    .hero-left p {
+    .hero-desc {
       font-size: 1.1rem;
       font-weight: 600;
       color: #262626;
-      max-width: 600px;
+      max-width: 620px;
       margin-bottom: 1.5rem;
     }
 
-    /* Sticker Badges */
+    /* Sticker Cloud */
     .sticker-cloud {
       display: flex;
       flex-wrap: wrap;
@@ -236,128 +338,96 @@
       gap: 0.35rem;
       padding: 5px 12px;
       border: var(--border-ink);
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       font-weight: 800;
       box-shadow: var(--shadow-sm);
       border-radius: 4px;
       text-transform: uppercase;
-      transition: transform 0.15s ease;
+      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      cursor: default;
     }
 
     .comic-sticker:hover {
-      transform: scale(1.08) rotate(0deg) !important;
+      transform: scale(1.1) rotate(0deg) !important;
+      box-shadow: var(--shadow-hard);
     }
 
-    .sticker-pow {
-      background: var(--comic-pink);
-      color: #fff;
-      transform: rotate(-3deg);
-    }
+    .sticker-pow { background: var(--comic-pink); color: #fff; transform: rotate(-3deg); }
+    .sticker-bam { background: var(--comic-yellow); color: #000; transform: rotate(2.5deg); }
+    .sticker-zap { background: var(--comic-cyan); color: #000; transform: rotate(-1.5deg); }
+    .sticker-lime { background: var(--comic-lime); color: #000; transform: rotate(3deg); }
 
-    .sticker-bam {
-      background: var(--comic-yellow);
-      color: #000;
-      transform: rotate(2.5deg);
-    }
-
-    .sticker-zap {
-      background: var(--comic-cyan);
-      color: #000;
-      transform: rotate(-1.5deg);
-    }
-
-    .sticker-lime {
-      background: var(--comic-lime);
-      color: #000;
-      transform: rotate(3deg);
-    }
-
-    /* Hero Right Showcase */
-    .hero-right-card {
+    /* Radar Telemetry Box */
+    .radar-telemetry-box {
       background: var(--comic-yellow);
       border: var(--border-ink);
       box-shadow: var(--shadow-hard);
       padding: 1.25rem;
       border-radius: 6px;
-      transform: rotate(1.5deg);
+      transform: rotate(1deg);
       text-align: center;
+      transition: transform 0.2s;
     }
 
-    .hero-right-card h3 {
+    .radar-telemetry-box:hover {
+      transform: rotate(0deg) scale(1.02);
+    }
+
+    .radar-telemetry-box h3 {
       font-family: 'Bangers', cursive;
-      font-size: 1.5rem;
+      font-size: 1.6rem;
       letter-spacing: 0.04em;
-      margin-bottom: 0.5rem;
-      text-transform: uppercase;
+      margin-bottom: 0.25rem;
     }
 
-    .hero-stat-grid {
+    .telemetry-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 0.75rem;
       margin-top: 1rem;
     }
 
-    .hero-stat-box {
+    .telemetry-cell {
       background: #fff;
       border: 2px solid #000;
-      padding: 0.5rem;
+      padding: 0.6rem;
       box-shadow: 2px 2px 0px #000;
       border-radius: 4px;
+      transition: transform 0.15s;
     }
 
-    .hero-stat-num {
+    .telemetry-cell:hover {
+      transform: translateY(-2px);
+    }
+
+    .telemetry-num {
       font-family: 'Bangers', cursive;
-      font-size: 1.6rem;
+      font-size: 1.7rem;
       color: var(--comic-red);
       line-height: 1;
     }
 
-    .hero-stat-lbl {
-      font-size: 0.7rem;
+    .telemetry-lbl {
+      font-size: 0.72rem;
       font-weight: 800;
       text-transform: uppercase;
+      margin-top: 2px;
     }
 
-    /* Main Split-Screen Layout */
-    .main-split-container {
-      max-width: 1400px;
-      margin: 1.5rem auto 4rem;
-      padding: 0 1.5rem;
-      display: grid;
-      grid-template-columns: 1.55fr 1.05fr;
-      gap: 2rem;
-      align-items: start;
-    }
-
-    @media (max-width: 1050px) {
-      .hero-panel {
-        grid-template-columns: 1fr;
-      }
-      .main-split-container {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    /* Left Pane: Comic Feed */
-    .comic-feed-pane {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-
-    .feed-controls {
+    /* Radar Feed Controls */
+    .radar-controls-card {
       background: #fff;
       border: var(--border-ink);
       box-shadow: var(--shadow-hard);
-      padding: 1.25rem;
+      padding: 1.25rem 1.5rem;
       border-radius: 8px;
       display: flex;
       flex-direction: column;
       gap: 1rem;
+      margin-bottom: 2rem;
     }
 
-    .comic-search-bar {
+    .comic-search-wrap {
       position: relative;
       width: 100%;
     }
@@ -366,9 +436,9 @@
       width: 100%;
       border: var(--border-ink);
       box-shadow: var(--shadow-sm);
-      padding: 12px 1rem 12px 2.8rem;
+      padding: 12px 1rem 12px 3rem;
       font-family: 'Space Grotesk', sans-serif;
-      font-size: 0.95rem;
+      font-size: 1rem;
       font-weight: 700;
       border-radius: 6px;
       background: #fafafa;
@@ -382,28 +452,35 @@
       transform: translate(-1px, -1px);
     }
 
-    .search-comic-icon {
+    .search-icon-badge {
       position: absolute;
       left: 1rem;
       top: 50%;
       transform: translateY(-50%);
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       pointer-events: none;
     }
 
-    .comic-filter-row {
+    .filter-pills-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .pills-group {
       display: flex;
       flex-wrap: wrap;
       gap: 0.5rem;
-      align-items: center;
     }
 
-    .comic-tab {
+    .comic-filter-pill {
       background: #fff;
       border: 2px solid #000;
       box-shadow: 2px 2px 0px #000;
-      padding: 5px 12px;
-      font-size: 0.78rem;
+      padding: 6px 14px;
+      font-size: 0.8rem;
       font-weight: 800;
       text-transform: uppercase;
       cursor: pointer;
@@ -411,26 +488,50 @@
       transition: all 0.12s;
     }
 
-    .comic-tab:hover {
+    .comic-filter-pill:hover {
       background: var(--comic-yellow);
-      transform: translateY(-1px);
+      transform: translateY(-2px);
+      box-shadow: 3px 3px 0px #000;
     }
 
-    .comic-tab.active {
+    .comic-filter-pill.active {
       background: var(--comic-red);
       color: #fff;
       box-shadow: 3px 3px 0px #000;
       transform: translate(-1px, -1px);
     }
 
-    /* Comic Meme Grid */
-    .comic-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 1.75rem;
+    .jump-to-lab-btn {
+      background: var(--comic-cyan);
+      color: #000;
+      border: 2px solid #000;
+      box-shadow: 3px 3px 0px #000;
+      padding: 6px 14px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      border-radius: 4px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.15s;
     }
 
-    /* Individual Comic Panel Card */
+    .jump-to-lab-btn:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 5px 5px 0px #000;
+      background: #33ebff;
+    }
+
+    /* Comic Meme Grid (Full Width & Spacious) */
+    .comic-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 2rem;
+    }
+
+    /* Individual Comic Card with Depth & Tilt */
     .comic-card {
       background: #fff;
       border: var(--border-ink);
@@ -441,7 +542,7 @@
       flex-direction: column;
       cursor: pointer;
       position: relative;
-      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.25s ease;
     }
 
     .comic-card:nth-child(4n+1) { transform: rotate(-1.2deg); }
@@ -450,14 +551,14 @@
     .comic-card:nth-child(4n+4) { transform: rotate(1.4deg); }
 
     .comic-card:hover {
-      transform: rotate(0deg) scale(1.02) translate(-2px, -2px) !important;
+      transform: rotate(0deg) scale(1.025) translate(-3px, -3px) !important;
       box-shadow: var(--shadow-heavy);
       z-index: 10;
     }
 
-    /* Speech Bubble for Title */
+    /* Animated Speech Bubble */
     .speech-bubble-wrapper {
-      padding: 1rem 1rem 0.5rem;
+      padding: 1rem 1rem 0.6rem;
     }
 
     .speech-bubble {
@@ -465,12 +566,18 @@
       background: #fff;
       border: var(--border-ink);
       border-radius: 12px;
-      padding: 10px 14px;
+      padding: 11px 15px;
       box-shadow: var(--shadow-sm);
       font-weight: 800;
-      font-size: 0.92rem;
+      font-size: 0.95rem;
       line-height: 1.35;
       color: #000;
+      animation: float-bubble 4s ease-in-out infinite alternate;
+    }
+
+    @keyframes float-bubble {
+      0% { transform: translateY(0px); }
+      100% { transform: translateY(-3px); }
     }
 
     .speech-bubble::after {
@@ -501,7 +608,7 @@
       margin: 0.75rem 1rem 0;
       border: 2px solid #000;
       box-shadow: 2px 2px 0px #000;
-      height: 230px;
+      height: 250px;
       background: #f0ede6;
       position: relative;
       overflow: hidden;
@@ -512,11 +619,11 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.3s;
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .comic-card:hover .comic-card-media img {
-      transform: scale(1.04);
+      transform: scale(1.06);
     }
 
     .badge-corner-stamp {
@@ -526,7 +633,7 @@
       background: var(--comic-yellow);
       border: 2px solid #000;
       font-family: 'Bangers', cursive;
-      font-size: 1.1rem;
+      font-size: 1.15rem;
       padding: 2px 8px;
       box-shadow: 2px 2px 0px #000;
       border-radius: 3px;
@@ -541,17 +648,37 @@
       left: 8px;
       background: #fff;
       border: 2px solid #000;
-      font-size: 0.7rem;
+      font-size: 0.72rem;
       font-weight: 800;
       text-transform: uppercase;
-      padding: 2px 6px;
+      padding: 2px 7px;
       box-shadow: 2px 2px 0px #000;
       border-radius: 3px;
       z-index: 2;
     }
 
+    /* Upvote Slam Stamp Effect */
+    .stamp-slam-effect {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-15deg) scale(0);
+      background: var(--comic-red);
+      color: #fff;
+      border: 3px solid #000;
+      box-shadow: 5px 5px 0px #000;
+      font-family: 'Bangers', cursive;
+      font-size: 2rem;
+      letter-spacing: 0.05em;
+      padding: 8px 16px;
+      border-radius: 6px;
+      pointer-events: none;
+      z-index: 20;
+      opacity: 0;
+    }
+
     .comic-card-footer {
-      padding: 0.9rem 1rem 1rem;
+      padding: 1rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -559,9 +686,9 @@
     }
 
     .comic-author-tag {
-      font-size: 0.75rem;
+      font-size: 0.78rem;
       font-weight: 700;
-      color: #666;
+      color: #555;
     }
 
     .btn-upvote-stamp {
@@ -569,16 +696,16 @@
       color: #fff;
       border: 2px solid #000;
       box-shadow: 2px 2px 0px #000;
-      padding: 4px 10px;
+      padding: 5px 12px;
       font-family: 'Bangers', cursive;
-      font-size: 1.05rem;
+      font-size: 1.1rem;
       letter-spacing: 0.04em;
       border-radius: 4px;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 0.3rem;
-      transition: transform 0.1s;
+      gap: 0.35rem;
+      transition: transform 0.12s, background-color 0.12s;
     }
 
     .btn-upvote-stamp:hover {
@@ -590,192 +717,343 @@
       transform: scale(0.92);
     }
 
-    /* Right Pane: The Secret Lab (API Vault) */
-    .comic-vault-pane {
-      position: sticky;
-      top: 80px;
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
+    /* =========================================================
+       SECTION DIVIDER: JAGGED COMIC TRANSITION
+       ========================================================= */
+    .comic-section-divider {
+      margin: 5rem 0 3rem;
+      position: relative;
+      text-align: center;
     }
 
-    .vault-box {
+    .divider-line {
+      height: 6px;
+      background: #000;
+      width: 100%;
+    }
+
+    .divider-badge {
+      display: inline-block;
+      background: var(--comic-yellow);
+      border: var(--border-ink);
+      box-shadow: var(--shadow-hard);
+      padding: 10px 24px;
+      border-radius: 50px;
+      font-family: 'Bangers', cursive;
+      font-size: 1.8rem;
+      letter-spacing: 0.06em;
+      color: #000;
+      position: relative;
+      top: -30px;
+      transform: rotate(-1deg);
+      transition: transform 0.2s;
+    }
+
+    .divider-badge:hover {
+      transform: rotate(1deg) scale(1.05);
+    }
+
+    /* =========================================================
+       SECTION 2: THE SECRET LAB (Developer API Studio)
+       ========================================================= */
+    .lab-section-wrap {
       background: #fff;
       border: var(--border-ink);
       box-shadow: var(--shadow-heavy);
-      border-radius: 8px;
+      border-radius: 12px;
       overflow: hidden;
+      margin-bottom: 5rem;
     }
 
-    .vault-header {
+    .lab-banner-head {
       background: var(--comic-cyan);
       border-bottom: var(--border-ink);
-      padding: 1rem 1.25rem;
+      padding: 1.5rem 2rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
     }
 
-    .vault-title {
+    .lab-title-group h2 {
       font-family: 'Bangers', cursive;
-      font-size: 1.6rem;
+      font-size: 2.4rem;
       letter-spacing: 0.05em;
       color: #000;
+      line-height: 1;
+      text-shadow: 2px 2px 0px #fff;
     }
 
-    .vault-badge {
+    .lab-title-group p {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #222;
+      margin-top: 4px;
+    }
+
+    .lab-badge-row {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .lab-status-badge {
       background: #000;
       color: #fff;
-      font-size: 0.7rem;
+      font-size: 0.75rem;
       font-weight: 800;
-      padding: 3px 8px;
-      border-radius: 3px;
+      padding: 5px 10px;
+      border-radius: 4px;
       text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
     }
 
-    .vault-body {
-      padding: 1.25rem;
+    .lab-status-dot {
+      width: 8px;
+      height: 8px;
+      background: #22c55e;
+      border-radius: 50%;
+      animation: pulse-dot 1.5s infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+    }
+
+    /* Lab Split Studio */
+    .lab-split-studio {
+      display: grid;
+      grid-template-columns: 1fr 1.35fr;
+      min-height: 520px;
+    }
+
+    @media (max-width: 950px) {
+      .section-header-box { grid-template-columns: 1fr; }
+      .lab-split-studio { grid-template-columns: 1fr; }
+    }
+
+    .lab-left-control-panel {
+      padding: 1.75rem;
+      border-right: var(--border-ink);
       display: flex;
       flex-direction: column;
       gap: 1.25rem;
+      background: #fafafa;
     }
 
-    .endpoint-selector-grid {
+    @media (max-width: 950px) {
+      .lab-left-control-panel { border-right: none; border-bottom: var(--border-ink); }
+    }
+
+    .panel-heading {
+      font-family: 'Bangers', cursive;
+      font-size: 1.3rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .endpoint-buttons-column {
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 0.6rem;
     }
 
-    .comic-endpoint-card {
-      background: #fafafa;
+    .lab-endpoint-btn {
+      background: #fff;
       border: 2px solid #000;
-      box-shadow: 2px 2px 0px #000;
-      border-radius: 4px;
-      padding: 8px 12px;
+      box-shadow: 3px 3px 0px #000;
+      border-radius: 6px;
+      padding: 10px 14px;
       cursor: pointer;
+      text-align: left;
       transition: all 0.12s;
     }
 
-    .comic-endpoint-card:hover {
+    .lab-endpoint-btn:hover {
       background: var(--comic-yellow);
-      transform: translate(-1px, -1px);
-      box-shadow: 3px 3px 0px #000;
+      transform: translate(-2px, -2px);
+      box-shadow: 5px 5px 0px #000;
     }
 
-    .comic-endpoint-card.active {
+    .lab-endpoint-btn.active {
       background: var(--comic-yellow);
-      border-color: #000;
       box-shadow: 4px 4px 0px #000;
       transform: translate(-1px, -1px);
     }
 
-    .endpoint-title-row {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .method-stamp {
+    .endpoint-method {
       background: #000;
       color: #fff;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.7rem;
+      font-size: 0.72rem;
       font-weight: 700;
       padding: 2px 6px;
-      border-radius: 2px;
+      border-radius: 3px;
+      margin-right: 6px;
     }
 
-    .endpoint-path-text {
+    .endpoint-path {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.82rem;
+      font-size: 0.86rem;
       font-weight: 700;
     }
 
-    .endpoint-subtext {
-      font-size: 0.75rem;
+    .endpoint-summary {
+      font-size: 0.76rem;
       color: #555;
-      margin-top: 3px;
-      font-weight: 500;
+      margin-top: 4px;
+      font-weight: 600;
     }
 
-    /* Terminal Console Box */
-    .terminal-console {
-      background: #0c0c0f;
+    /* Live Parameters Configurator */
+    .lab-params-box {
+      background: #fff;
       border: 2px solid #000;
-      box-shadow: 3px 3px 0px #000;
+      box-shadow: 2px 2px 0px #000;
       border-radius: 6px;
-      overflow: hidden;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
     }
 
-    .terminal-top {
-      background: #22222a;
+    .param-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .param-label {
+      font-size: 0.8rem;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .param-input-select {
+      border: 2px solid #000;
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+      background: #fff;
+      outline: none;
+    }
+
+    /* Lab Right Terminal Console */
+    .lab-right-console {
+      background: #0c0c0f;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .console-header-bar {
+      background: #18181f;
       border-bottom: 2px solid #000;
-      padding: 6px 12px;
+      padding: 8px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
 
-    .lang-tab-row {
+    .console-lang-tabs {
       display: flex;
-      gap: 0.4rem;
+      gap: 0.5rem;
     }
 
-    .lang-tab-btn {
+    .console-lang-btn {
       background: transparent;
-      border: 1px solid #444;
-      color: #aaa;
-      padding: 3px 8px;
-      font-size: 0.72rem;
+      border: 1px solid #3f3f46;
+      color: #a1a1aa;
+      padding: 4px 10px;
+      font-size: 0.75rem;
       font-weight: 700;
-      border-radius: 3px;
+      border-radius: 4px;
       cursor: pointer;
+      transition: all 0.12s;
     }
 
-    .lang-tab-btn.active {
+    .console-lang-btn.active {
       background: var(--comic-yellow);
       color: #000;
       border-color: #000;
+      box-shadow: 2px 2px 0px #000;
     }
 
-    .btn-copy-code {
-      background: #fff;
-      border: 1px solid #000;
+    .console-actions-group {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .btn-run-request {
+      background: var(--comic-lime);
       color: #000;
-      padding: 3px 8px;
-      font-size: 0.72rem;
+      border: 1px solid #000;
+      box-shadow: 2px 2px 0px #000;
+      padding: 4px 10px;
+      font-size: 0.75rem;
       font-weight: 800;
       cursor: pointer;
-      border-radius: 3px;
+      border-radius: 4px;
+      transition: all 0.1s;
     }
 
-    .terminal-content {
-      padding: 1rem;
-      font-size: 0.8rem;
-      color: #4ade80;
-      line-height: 1.5;
-      overflow-x: auto;
-      max-height: 200px;
+    .btn-run-request:active {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0px #000;
     }
 
-    .preview-header {
-      background: #18181f;
-      border-top: 2px solid #000;
-      border-bottom: 1px solid #333;
-      padding: 5px 12px;
-      font-size: 0.7rem;
-      font-weight: 800;
-      color: #888;
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .preview-content {
-      padding: 1rem;
+    .btn-console-copy {
+      background: #fff;
+      border: 1px solid #000;
+      box-shadow: 2px 2px 0px #000;
+      color: #000;
+      padding: 4px 10px;
       font-size: 0.75rem;
-      color: #e4e4e7;
-      max-height: 180px;
+      font-weight: 800;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .console-code-snippet {
+      padding: 1.25rem 1.5rem;
+      font-size: 0.85rem;
+      color: #4ade80;
+      line-height: 1.6;
+      overflow-x: auto;
+      border-bottom: 2px solid #27272a;
+      min-height: 140px;
+      background: #09090b;
+    }
+
+    .console-response-header {
+      background: #18181f;
+      padding: 6px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: #71717a;
+      border-bottom: 1px solid #27272a;
+    }
+
+    .console-response-output {
+      padding: 1.25rem 1.5rem;
+      font-size: 0.78rem;
+      color: #f4f4f5;
+      line-height: 1.5;
       overflow-y: auto;
+      max-height: 280px;
+      flex: 1;
       background: #0c0c0f;
     }
 
@@ -786,7 +1064,7 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(12, 12, 15, 0.8);
+      background: rgba(12, 12, 15, 0.85);
       backdrop-filter: blur(8px);
       z-index: 1000;
       display: none;
@@ -817,19 +1095,24 @@
       background: var(--comic-red);
       color: #fff;
       border: 2px solid #000;
-      width: 32px;
-      height: 32px;
+      width: 34px;
+      height: 34px;
       border-radius: 50%;
       font-family: 'Bangers', cursive;
-      font-size: 1.2rem;
+      font-size: 1.3rem;
       cursor: pointer;
       z-index: 10;
       box-shadow: 2px 2px 0px #000;
+      transition: transform 0.1s;
+    }
+
+    .modal-close-btn:hover {
+      transform: scale(1.1);
     }
 
     .modal-media-wrap {
       background: #000;
-      max-height: 420px;
+      max-height: 440px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -837,7 +1120,7 @@
 
     .modal-media-wrap img, .modal-media-wrap video {
       max-width: 100%;
-      max-height: 420px;
+      max-height: 440px;
       object-fit: contain;
     }
 
@@ -852,10 +1135,10 @@
     footer {
       background: var(--comic-yellow);
       border-top: var(--border-ink);
-      padding: 2.5rem 1.5rem;
+      padding: 3rem 1.5rem;
       text-align: center;
       font-weight: 700;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
     }
 
     footer a:hover {
@@ -867,180 +1150,281 @@
 
   <!-- Comic Code Banner -->
   <div class="comic-top-banner">
-    <span>★ APPROVED BY THE MEME-OLOGY CODE AUTHORITY • ISSUE #1 • 2026</span>
-    <span>100% FREE • SERVERLESS • OPEN SOURCE ★</span>
+    <span>★ APPROVED BY THE MEME-OLOGY CODE AUTHORITY • ISSUE #1 • 2026 EDITION</span>
+    <span>100% FREE • SERVERLESS • 0.08ms LATENCY ★</span>
   </div>
 
-  <!-- Main Navigation -->
+  <!-- Main Navigation with Section Switcher -->
   <header>
     <div class="nav-container">
       <div class="comic-logo-group">
-        <span class="comic-logo">MEME-OLOGY!</span>
+        <a href="#radarSection" class="comic-logo">MEME-OLOGY!</a>
         <span class="comic-stamp-pill">VOL. 1</span>
       </div>
 
+      <!-- Section Switcher Tabs -->
+      <nav class="section-nav-switcher">
+        <button class="section-nav-btn active" id="navBtnRadar" onclick="scrollToSection('radarSection')">
+          <span>📰 1. Meme Radar</span>
+        </button>
+        <button class="section-nav-btn" id="navBtnLab" onclick="scrollToSection('labSection')">
+          <span>🧪 2. Secret Lab (API)</span>
+        </button>
+      </nav>
+
       <div class="nav-right-actions">
         <a href="/docs" target="_blank" class="btn-comic btn-comic-cyan">
-          <span>⚡ Interactive Swagger</span>
+          <span>⚡ Swagger Docs</span>
         </a>
         <a href="https://github.com/narcisoJavier/Meme-ology" target="_blank" class="btn-comic btn-comic-red">
-          <span>★ GitHub Repo</span>
+          <span>★ GitHub</span>
         </a>
       </div>
     </div>
   </header>
 
-  <!-- Hero Header -->
-  <section class="comic-hero">
-    <div class="hero-panel">
-      <div class="hero-left">
-        <h1>THE INTERNET'S MEME RADAR!</h1>
-        <p>
-          BAM! Track, deduplicate, and score the freshest viral memes across Reddit and Know Your Meme in sub-millisecond real time.
+  <!-- Animated Breaking News Marquee -->
+  <div class="marquee-container">
+    <div class="marquee-track">
+      <div class="marquee-item">⚡ BREAKING MEMES TRACKED IN SUB-MILLISECOND TIME</div>
+      <div class="marquee-item">💥 VIRALITY DECAY RANKING ALGORITHM V1.0</div>
+      <div class="marquee-item">🛡️ ZERO-BAN HIGH AVAILABILITY MULTI-TIER REDDIT FAILOVER</div>
+      <div class="marquee-item">🚀 4.8M UPVOTES INDEXED ACROSS REDDIT &amp; KNOW YOUR MEME</div>
+      <div class="marquee-item">⚡ BREAKING MEMES TRACKED IN SUB-MILLISECOND TIME</div>
+      <div class="marquee-item">💥 VIRALITY DECAY RANKING ALGORITHM V1.0</div>
+      <div class="marquee-item">🛡️ ZERO-BAN HIGH AVAILABILITY MULTI-TIER REDDIT FAILOVER</div>
+      <div class="marquee-item">🚀 4.8M UPVOTES INDEXED ACROSS REDDIT &amp; KNOW YOUR MEME</div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       SECTION 1: THE COMIC MEME RADAR (Visual Explorer)
+       ========================================================= -->
+  <section class="section-container" id="radarSection">
+    
+    <!-- Hero Header Panel -->
+    <div class="section-header-box">
+      <div class="hero-left-col">
+        <span class="section-badge-tag">SECTION 1 // THE DISCOVERY DECK</span>
+        <h1 class="hero-title">THE INTERNET'S MEME RADAR!</h1>
+        <p class="hero-desc">
+          BAM! Track, deduplicate, and score the freshest viral memes across Reddit and Know Your Meme in real time with zero dead images.
         </p>
 
         <div class="sticker-cloud">
           <div class="comic-sticker sticker-pow">💥 DANK RATINGS</div>
-          <div class="comic-sticker sticker-bam">⚡ 0.08ms LATENCY</div>
-          <div class="comic-sticker sticker-zap">🛡️ ZERO BAN ARCHITECTURE</div>
+          <div class="comic-sticker sticker-bam">⚡ 0.08ms CACHE</div>
+          <div class="comic-sticker sticker-zap">🛡️ ZERO BAN GATEWAY</div>
           <div class="comic-sticker sticker-lime">🚀 100% SERVERLESS</div>
         </div>
       </div>
 
-      <div class="hero-right-card">
+      <div class="radar-telemetry-box">
         <h3>RADAR TELEMETRY</h3>
-        <p style="font-size: 0.82rem; font-weight: 700;">LIVE INTERNET SIGNALS INDEXED</p>
-        <div class="hero-stat-grid">
-          <div class="hero-stat-box">
-            <div class="hero-stat-num" id="statMemes">350+</div>
-            <div class="hero-stat-lbl">MEMES TRACKED</div>
+        <p style="font-size: 0.8rem; font-weight: 700;">LIVE SIGNALS &amp; VIRAL METRICS</p>
+        <div class="telemetry-grid">
+          <div class="telemetry-cell">
+            <div class="telemetry-num" id="statMemes">350+</div>
+            <div class="telemetry-lbl">MEMES TRACKED</div>
           </div>
-          <div class="hero-stat-box">
-            <div class="hero-stat-num" style="color: var(--comic-pink);" id="statUpvotes">4.8M</div>
-            <div class="hero-stat-lbl">TOTAL UPVOTES</div>
+          <div class="telemetry-cell">
+            <div class="telemetry-num" style="color: var(--comic-pink);" id="statUpvotes">4.8M</div>
+            <div class="telemetry-lbl">TOTAL UPVOTES</div>
           </div>
-          <div class="hero-stat-box">
-            <div class="hero-stat-num" style="color: #059669;">0.08ms</div>
-            <div class="hero-stat-lbl">CACHE SPEED</div>
+          <div class="telemetry-cell">
+            <div class="telemetry-num" style="color: #059669;">0.08ms</div>
+            <div class="telemetry-lbl">ENGINE SPEED</div>
           </div>
-          <div class="hero-stat-box">
-            <div class="hero-stat-num" style="color: #2563eb;">7 FEEDS</div>
-            <div class="hero-stat-lbl">MONITORED</div>
+          <div class="telemetry-cell">
+            <div class="telemetry-num" style="color: #2563eb;">7 FEEDS</div>
+            <div class="telemetry-lbl">MONITORED</div>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- Controls & Search -->
+    <div class="radar-controls-card">
+      <div class="comic-search-wrap">
+        <span class="search-icon-badge">🔍</span>
+        <input 
+          type="text" 
+          id="comicSearch" 
+          class="comic-search-input" 
+          placeholder="Search memes by speech bubble punchline, author, or community..."
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="filter-pills-row">
+        <div class="pills-group" id="comicSourceFilters">
+          <div class="comic-filter-pill active" data-source="all">★ ALL COMICS</div>
+          <div class="comic-filter-pill" data-source="r/dankmemes">r/dankmemes</div>
+          <div class="comic-filter-pill" data-source="r/memes">r/memes</div>
+          <div class="comic-filter-pill" data-source="r/me_irl">r/me_irl</div>
+          <div class="comic-filter-pill" data-source="r/wholesomememes">r/wholesomememes</div>
+          <div class="comic-filter-pill" data-source="knowyourmeme">Know Your Meme</div>
+        </div>
+
+        <button class="jump-to-lab-btn" onclick="scrollToSection('labSection')">
+          <span>🧪 Jump to API Studio</span>
+          <span>&darr;</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Full-Width Responsive Comic Grid -->
+    <div class="comic-grid" id="comicGrid"></div>
+
   </section>
 
-  <!-- Split-Screen Experience -->
-  <main class="main-split-container">
-
-    <!-- Left Pane: Comic Meme Stream -->
-    <div class="comic-feed-pane">
-      <div class="feed-controls">
-        <div class="comic-search-bar">
-          <span class="search-comic-icon">🔍</span>
-          <input 
-            type="text" 
-            id="comicSearch" 
-            class="comic-search-input" 
-            placeholder="Search memes by speech bubble caption, author, or community..."
-            autocomplete="off"
-          />
-        </div>
-
-        <div class="comic-filter-row" id="comicSourceFilters">
-          <div class="comic-tab active" data-source="all">★ ALL COMICS</div>
-          <div class="comic-tab" data-source="r/dankmemes">r/dankmemes</div>
-          <div class="comic-tab" data-source="r/memes">r/memes</div>
-          <div class="comic-tab" data-source="r/me_irl">r/me_irl</div>
-          <div class="comic-tab" data-source="r/wholesomememes">r/wholesomememes</div>
-          <div class="comic-tab" data-source="knowyourmeme">Know Your Meme</div>
-        </div>
-      </div>
-
-      <!-- Live Comic Grid -->
-      <div class="comic-grid" id="comicGrid"></div>
+  <!-- =========================================================
+       SECTION DIVIDER: JAGGED COMIC SEPARATOR
+       ========================================================= -->
+  <div class="comic-section-divider">
+    <div class="divider-line"></div>
+    <div class="divider-badge" onclick="scrollToSection('labSection')">
+      ⚡ SECTION 2: THE SECRET LAB API STUDIO ⚡
     </div>
+  </div>
 
-    <!-- Right Pane: The Secret Lab (API Vault) -->
-    <aside class="comic-vault-pane">
-      <div class="vault-box">
-        <div class="vault-header">
-          <span class="vault-title">THE SECRET LAB: API VAULT</span>
-          <span class="vault-badge">REST v1.0</span>
+  <!-- =========================================================
+       SECTION 2: THE SECRET LAB (Developer API Studio)
+       ========================================================= -->
+  <section class="section-container" id="labSection">
+    <div class="lab-section-wrap">
+      
+      <!-- Studio Header -->
+      <div class="lab-banner-head">
+        <div class="lab-title-group">
+          <h2>THE SECRET LAB: API STUDIO &amp; PLAYGROUND</h2>
+          <p>Interactive code generator, live response inspector, and telemetry console.</p>
         </div>
 
-        <div class="vault-body">
-          <p style="font-size: 0.85rem; font-weight: 700; color: #444;">
-            Select an endpoint to generate copyable code snippets and inspect live responses:
-          </p>
-
-          <div class="endpoint-selector-grid" id="comicEndpoints">
-            <div class="comic-endpoint-card active" data-endpoint="trending">
-              <div class="endpoint-title-row">
-                <span class="method-stamp">GET</span>
-                <span class="endpoint-path-text">/api/v1/memes/trending</span>
-              </div>
-              <div class="endpoint-subtext">Velocity-decay ranked viral memes.</div>
-            </div>
-
-            <div class="comic-endpoint-card" data-endpoint="latest">
-              <div class="endpoint-title-row">
-                <span class="method-stamp">GET</span>
-                <span class="endpoint-path-text">/api/v1/memes/latest</span>
-              </div>
-              <div class="endpoint-subtext">Chronological newest feed with pagination.</div>
-            </div>
-
-            <div class="comic-endpoint-card" data-endpoint="random">
-              <div class="endpoint-title-row">
-                <span class="method-stamp">GET</span>
-                <span class="endpoint-path-text">/api/v1/memes/random</span>
-              </div>
-              <div class="endpoint-subtext">Instant random meme with community filter.</div>
-            </div>
-
-            <div class="comic-endpoint-card" data-endpoint="sources">
-              <div class="endpoint-title-row">
-                <span class="method-stamp">GET</span>
-                <span class="endpoint-path-text">/api/v1/sources</span>
-              </div>
-              <div class="endpoint-subtext">Live health status, item counts &amp; sync latency.</div>
-            </div>
-
-            <div class="comic-endpoint-card" data-endpoint="health">
-              <div class="endpoint-title-row">
-                <span class="method-stamp">GET</span>
-                <span class="endpoint-path-text">/health</span>
-              </div>
-              <div class="endpoint-subtext">Operational health check and uptime.</div>
-            </div>
+        <div class="lab-badge-row">
+          <div class="lab-status-badge">
+            <span class="lab-status-dot"></span>
+            <span>FASTAPI ENGINE READY</span>
           </div>
-
-          <!-- Terminal Box -->
-          <div class="terminal-console">
-            <div class="terminal-top">
-              <div class="lang-tab-row" id="comicLangTabs">
-                <button class="lang-tab-btn active" data-lang="curl">cURL</button>
-                <button class="lang-tab-btn" data-lang="python">Python</button>
-                <button class="lang-tab-btn" data-lang="javascript">JavaScript</button>
-              </div>
-              <button class="btn-copy-code" id="comicCopyBtn">COPY</button>
-            </div>
-            <pre class="terminal-content" id="comicCodeDisplay"></pre>
-
-            <div class="preview-header">
-              <span>LIVE SERVER RESPONSE</span>
-              <span style="color: #4ade80;">HTTP 200 OK</span>
-            </div>
-            <pre class="preview-content" id="comicPreviewDisplay"></pre>
-          </div>
+          <a href="/docs" target="_blank" class="btn-comic btn-comic-yellow" style="background: var(--comic-yellow);">
+            OPEN SWAGGER &rarr;
+          </a>
         </div>
       </div>
-    </aside>
 
-  </main>
+      <!-- Studio Body Split -->
+      <div class="lab-split-studio">
+        
+        <!-- Left: Endpoint Dials & Parameters -->
+        <div class="lab-left-control-panel">
+          <div class="panel-heading">
+            <span>⚙️ SELECT ENDPOINT</span>
+          </div>
+
+          <div class="endpoint-buttons-column" id="labEndpointButtons">
+            <div class="lab-endpoint-btn active" data-endpoint="trending">
+              <div>
+                <span class="endpoint-method">GET</span>
+                <span class="endpoint-path">/api/v1/memes/trending</span>
+              </div>
+              <div class="endpoint-summary">Ranked by velocity decay engagement.</div>
+            </div>
+
+            <div class="lab-endpoint-btn" data-endpoint="latest">
+              <div>
+                <span class="endpoint-method">GET</span>
+                <span class="endpoint-path">/api/v1/memes/latest</span>
+              </div>
+              <div class="endpoint-summary">Newest memes with limit and pagination.</div>
+            </div>
+
+            <div class="lab-endpoint-btn" data-endpoint="random">
+              <div>
+                <span class="endpoint-method">GET</span>
+                <span class="endpoint-path">/api/v1/memes/random</span>
+              </div>
+              <div class="endpoint-summary">Instant random meme with source filter.</div>
+            </div>
+
+            <div class="lab-endpoint-btn" data-endpoint="sources">
+              <div>
+                <span class="endpoint-method">GET</span>
+                <span class="endpoint-path">/api/v1/sources</span>
+              </div>
+              <div class="endpoint-summary">Ingestion health, latency &amp; item count.</div>
+            </div>
+
+            <div class="lab-endpoint-btn" data-endpoint="health">
+              <div>
+                <span class="endpoint-method">GET</span>
+                <span class="endpoint-path">/health</span>
+              </div>
+              <div class="endpoint-summary">System uptime, status &amp; memory cache.</div>
+            </div>
+          </div>
+
+          <!-- Live Param Filters -->
+          <div class="lab-params-box">
+            <div style="font-size: 0.8rem; font-weight: 800; text-transform: uppercase;">⚡ QUERY PARAMETERS</div>
+            <div class="param-row">
+              <label class="param-label" for="paramLimit">limit:</label>
+              <select id="paramLimit" class="param-input-select" onchange="updateLabStudio()">
+                <option value="5">5 memes</option>
+                <option value="10" selected>10 memes</option>
+                <option value="25">25 memes</option>
+                <option value="50">50 memes</option>
+              </select>
+            </div>
+            <div class="param-row">
+              <label class="param-label" for="paramSource">source:</label>
+              <select id="paramSource" class="param-input-select" onchange="updateLabStudio()">
+                <option value="" selected>all sources</option>
+                <option value="reddit">reddit</option>
+                <option value="knowyourmeme">knowyourmeme</option>
+              </select>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right: CRT Console & Output -->
+        <div class="lab-right-console">
+          
+          <div class="console-header-bar">
+            <div class="console-lang-tabs" id="labLangTabs">
+              <button class="console-lang-btn active" data-lang="curl">cURL</button>
+              <button class="console-lang-btn" data-lang="python">Python</button>
+              <button class="console-lang-btn" data-lang="javascript">JavaScript</button>
+            </div>
+
+            <div class="console-actions-group">
+              <button class="btn-run-request" id="btnRunRequest" onclick="executeLiveLabRequest()">
+                ▶ EXECUTE REQUEST
+              </button>
+              <button class="btn-console-copy" id="btnCopySnippet">
+                COPY CODE
+              </button>
+            </div>
+          </div>
+
+          <!-- Code Snippet -->
+          <pre class="console-code-snippet" id="labCodeSnippet"></pre>
+
+          <!-- Response Header -->
+          <div class="console-response-header">
+            <span>HTTP RESPONSE INSPECTOR</span>
+            <span style="color: #4ade80;" id="responseStatusBadge">HTTP 200 OK • 0.08ms</span>
+          </div>
+
+          <!-- Response Payload -->
+          <pre class="console-response-output" id="labResponseOutput"></pre>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
 
   <!-- Comic Modal -->
   <div class="comic-modal" id="comicModal">
@@ -1069,12 +1453,13 @@
     <p style="margin-top: 0.5rem; font-weight: 600;">
       <a href="https://github.com/narcisoJavier/Meme-ology" target="_blank">GitHub</a> • 
       <a href="/docs" target="_blank">Swagger API</a> • 
-      <a href="/health" target="_blank">Health Status</a>
+      <a href="/openapi.json" target="_blank">OpenAPI Spec</a> • 
+      <a href="#radarSection">Back to Radar Top &uarr;</a>
     </p>
   </footer>
 
   <script>
-    // 100% Verified, Working High-Res Meme Media
+    // Verified, high-resolution CDN memes
     const VERIFIED_MEMES = [
       {
         id: "c_1",
@@ -1151,13 +1536,40 @@
     ];
 
     let memeCollection = [...VERIFIED_MEMES];
-    let activeEndpoint = 'trending';
-    let activeLang = 'curl';
+    let selectedLabEndpoint = 'trending';
+    let selectedLabLang = 'curl';
 
-    // Fetch Live Memes with Failover
-    async function loadMemes() {
+    // Smooth Scroll Helper
+    function scrollToSection(id) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+        updateNavState(id);
+      }
+    }
+
+    function updateNavState(id) {
+      document.getElementById('navBtnRadar').classList.toggle('active', id === 'radarSection');
+      document.getElementById('navBtnLab').classList.toggle('active', id === 'labSection');
+    }
+
+    // Scroll spy for navigation
+    window.addEventListener('scroll', () => {
+      const labEl = document.getElementById('labSection');
+      if (labEl) {
+        const rect = labEl.getBoundingClientRect();
+        if (rect.top <= 200) {
+          updateNavState('labSection');
+        } else {
+          updateNavState('radarSection');
+        }
+      }
+    });
+
+    // Ingest Live Memes with Failover
+    async function initRadarFeed() {
       try {
-        const res = await fetch('/api/v1/memes/trending?limit=24');
+        const res = await fetch('/api/v1/memes/trending?limit=30');
         if (res.ok) {
           const data = await res.json();
           const items = Array.isArray(data) ? data : (data.items || []);
@@ -1167,14 +1579,14 @@
         console.log("Using verified comic memes");
       }
       renderComicGrid();
-      updateVault();
+      updateLabStudio();
     }
 
-    // Render Comic Cards
+    // Render Full-Width Comic Grid
     function renderComicGrid() {
       const grid = document.getElementById('comicGrid');
       const search = document.getElementById('comicSearch').value.toLowerCase().trim();
-      const activeSource = document.querySelector('#comicSourceFilters .comic-tab.active').dataset.source;
+      const activeSource = document.querySelector('#comicSourceFilters .comic-filter-pill.active').dataset.source;
 
       const filtered = memeCollection.filter(m => {
         const matchesSearch = !search || 
@@ -1195,10 +1607,10 @@
 
       if (filtered.length === 0) {
         grid.innerHTML = `
-          <div style="grid-column: 1/-1; text-align: center; padding: 4rem; background: #fff; border: 3px solid #000; box-shadow: 5px 5px 0px #000; border-radius: 8px;">
+          <div style="grid-column: 1/-1; text-align: center; padding: 4rem; background: #fff; border: 3px solid #000; box-shadow: 6px 6px 0px #000; border-radius: 8px;">
             <div style="font-size: 3rem;">💥</div>
-            <h3 style="font-family: 'Bangers', cursive; font-size: 1.8rem; margin-top: 0.5rem;">NO MEMES FOUND!</h3>
-            <p style="font-size: 0.9rem; font-weight: 700; color: #555;">Try changing your search term or clicking a different category tab.</p>
+            <h3 style="font-family: 'Bangers', cursive; font-size: 2rem; margin-top: 0.5rem;">NO MEMES FOUND!</h3>
+            <p style="font-size: 1rem; font-weight: 700; color: #555;">Try a different search word or pick another community pill.</p>
           </div>
         `;
         return;
@@ -1222,6 +1634,7 @@
               ${mediaTag}
               <div class="badge-corner-stamp">💥 ${Number(m.score).toLocaleString()}</div>
               <div class="badge-corner-source">${m.source_community || m.source}</div>
+              <div class="stamp-slam-effect">💥 POW! +1</div>
             </div>
 
             <div class="comic-card-footer">
@@ -1235,42 +1648,57 @@
         `;
       }).join('');
 
-      // Anime.js Staggered Entry Animation
+      // Anime.js Staggered Entrance Animation
       if (window.anime) {
         anime({
           targets: '.comic-card',
           scale: [0.92, 1],
           opacity: [0, 1],
-          delay: anime.stagger(45),
+          translateY: [25, 0],
+          delay: anime.stagger(50),
           easing: 'easeOutElastic(1, .8)',
-          duration: 400
+          duration: 500
         });
       }
 
-      // Attach Event Handlers (Upvote Ink Stamp & Modal)
+      // Event Listeners for Upvote Stamp & Lightbox
       document.querySelectorAll('.comic-card').forEach(card => {
         const id = card.dataset.id;
         const meme = memeCollection.find(x => x.id === id);
         if (!meme) return;
 
-        // Upvote Stamp Action (Confetti + Score Increment without sound)
+        // Upvote Stamp Action with Slam Animation & Confetti
         const upvoteBtn = card.querySelector('.btn-upvote-stamp');
+        const slamStamp = card.querySelector('.stamp-slam-effect');
+
         upvoteBtn.addEventListener('click', (e) => {
           e.stopPropagation();
           meme.score = (meme.score || 0) + 1;
           card.querySelector('.upvote-num').textContent = Number(meme.score).toLocaleString();
           card.querySelector('.badge-corner-stamp').textContent = `💥 ${Number(meme.score).toLocaleString()}`;
           
+          // Slam stamp animation with anime.js
+          if (window.anime && slamStamp) {
+            anime({
+              targets: slamStamp,
+              scale: [2.5, 1],
+              opacity: [0, 1, 1, 0],
+              rotate: [-25, -10],
+              duration: 800,
+              easing: 'easeOutElastic(1, .6)'
+            });
+          }
+
           if (window.confetti) {
             confetti({
-              particleCount: 28,
+              particleCount: 30,
               spread: 60,
               origin: { x: e.clientX / window.innerWidth, y: e.clientY / window.innerHeight }
             });
           }
         });
 
-        // Click Card to Open Comic Modal
+        // Click Card -> Fullscreen Lightbox
         card.addEventListener('click', () => {
           openComicModal(meme);
         });
@@ -1305,92 +1733,124 @@
     // Filter & Search Handlers
     document.getElementById('comicSearch').addEventListener('input', renderComicGrid);
 
-    document.querySelectorAll('#comicSourceFilters .comic-tab').forEach(tab => {
-      tab.addEventListener('click', () => {
-        document.querySelectorAll('#comicSourceFilters .comic-tab').forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
+    document.querySelectorAll('#comicSourceFilters .comic-filter-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        document.querySelectorAll('#comicSourceFilters .comic-filter-pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
         renderComicGrid();
       });
     });
 
-    // Vault Code Snippets
-    const VAULT_CODE = {
-      trending: {
-        curl: 'curl -X GET "https://meme-ology.vercel.app/api/v1/memes/trending?time_window=24h&limit=10" \\\n     -H "Accept: application/json"',
-        python: 'import httpx\n\nres = httpx.get(\n    "https://meme-ology.vercel.app/api/v1/memes/trending",\n    params={"time_window": "24h", "limit": 10}\n)\nfor meme in res.json():\n    print(f"[{meme[\'score\']} upvotes] {meme[\'title\']}")',
-        javascript: 'const res = await fetch("https://meme-ology.vercel.app/api/v1/memes/trending?time_window=24h&limit=10");\nconst memes = await res.json();\nconsole.log(memes);'
-      },
-      latest: {
-        curl: 'curl -X GET "https://meme-ology.vercel.app/api/v1/memes/latest?limit=20" \\\n     -H "Accept: application/json"',
-        python: 'import httpx\n\nres = httpx.get("https://meme-ology.vercel.app/api/v1/memes/latest", params={"limit": 20})\nprint("Newest memes:", res.json()["total"])',
-        javascript: 'const res = await fetch("https://meme-ology.vercel.app/api/v1/memes/latest?limit=20");\nconst data = await res.json();\nconsole.log(data.items);'
-      },
-      random: {
-        curl: 'curl -X GET "https://meme-ology.vercel.app/api/v1/memes/random?source=reddit" \\\n     -H "Accept: application/json"',
-        python: 'import httpx\n\nmeme = httpx.get("https://meme-ology.vercel.app/api/v1/memes/random", params={"source": "reddit"}).json()\nprint(meme["title"], meme["url"])',
-        javascript: 'const res = await fetch("https://meme-ology.vercel.app/api/v1/memes/random?source=reddit");\nconst meme = await res.json();\nconsole.log(meme.title);'
-      },
-      sources: {
-        curl: 'curl -X GET "https://meme-ology.vercel.app/api/v1/sources" \\\n     -H "Accept: application/json"',
-        python: 'import httpx\n\nsources = httpx.get("https://meme-ology.vercel.app/api/v1/sources").json()\nfor s in sources:\n    print(f"{s[\'name\']}: {s[\'status\']}")',
-        javascript: 'const res = await fetch("https://meme-ology.vercel.app/api/v1/sources");\nconst sources = await res.json();\nconsole.table(sources);'
-      },
-      health: {
-        curl: 'curl -X GET "https://meme-ology.vercel.app/health" \\\n     -H "Accept: application/json"',
-        python: 'import httpx\n\nhealth = httpx.get("https://meme-ology.vercel.app/health").json()\nprint("API Status:", health["status"])',
-        javascript: 'const res = await fetch("https://meme-ology.vercel.app/health");\nconst health = await res.json();\nconsole.log(health.status);'
-      }
-    };
-
-    function updateVault() {
-      document.getElementById('comicCodeDisplay').textContent = VAULT_CODE[activeEndpoint][activeLang];
-      let sampleOutput;
-      if (activeEndpoint === 'trending' || activeEndpoint === 'latest') {
-        sampleOutput = memeCollection.slice(0, 2);
-      } else if (activeEndpoint === 'random') {
-        sampleOutput = memeCollection[0] || VERIFIED_MEMES[0];
-      } else if (activeEndpoint === 'sources') {
-        sampleOutput = [
-          { id: "reddit_dankmemes", name: "reddit:r/dankmemes", status: "ok", item_count: 50 },
-          { id: "kym_trending", name: "knowyourmeme:trending", status: "ok", item_count: 16 }
-        ];
-      } else {
-        sampleOutput = { status: "ok", app_name: "Meme Tracker API", total_memes_cached: memeCollection.length, healthy_sources: 7 };
-      }
-      document.getElementById('comicPreviewDisplay').textContent = JSON.stringify(sampleOutput, null, 2);
+    // =========================================================
+    // SECTION 2: THE SECRET LAB API CODE ENGINE
+    // =========================================================
+    function getLabQueryString() {
+      const limit = document.getElementById('paramLimit').value;
+      const source = document.getElementById('paramSource').value;
+      let params = [];
+      if (limit) params.push(`limit=${limit}`);
+      if (source) params.push(`source=${source}`);
+      return params.length > 0 ? `?${params.join('&')}` : '';
     }
 
-    // Vault Endpoint Tabs
-    document.querySelectorAll('#comicEndpoints .comic-endpoint-card').forEach(card => {
-      card.addEventListener('click', () => {
-        document.querySelectorAll('#comicEndpoints .comic-endpoint-card').forEach(c => c.classList.remove('active'));
-        card.classList.add('active');
-        activeEndpoint = card.dataset.endpoint;
-        updateVault();
+    function generateCodeSnippets() {
+      const qs = getLabQueryString();
+      const origin = "https://meme-ology.vercel.app";
+
+      return {
+        trending: {
+          curl: `curl -X GET "${origin}/api/v1/memes/trending${qs}" \\\n     -H "Accept: application/json"`,
+          python: `import httpx\n\nresponse = httpx.get(\n    "${origin}/api/v1/memes/trending",\n    params={"limit": ${document.getElementById('paramLimit').value}}\n)\nmemes = response.json()\nprint(f"Discovered {len(memes)} viral memes!")`,
+          javascript: `const res = await fetch("${origin}/api/v1/memes/trending${qs}");\nconst memes = await res.json();\nconsole.log(memes);`
+        },
+        latest: {
+          curl: `curl -X GET "${origin}/api/v1/memes/latest${qs}" \\\n     -H "Accept: application/json"`,
+          python: `import httpx\n\nres = httpx.get("${origin}/api/v1/memes/latest", params={"limit": ${document.getElementById('paramLimit').value}})\ndata = res.json()\nprint(f"Total memes: {data.get('total')}")`,
+          javascript: `const res = await fetch("${origin}/api/v1/memes/latest${qs}");\nconst data = await res.json();\nconsole.log(data);`
+        },
+        random: {
+          curl: `curl -X GET "${origin}/api/v1/memes/random?source=reddit" \\\n     -H "Accept: application/json"`,
+          python: `import httpx\n\nmeme = httpx.get("${origin}/api/v1/memes/random", params={"source": "reddit"}).json()\nprint(meme["title"], meme["url"])`,
+          javascript: `const res = await fetch("${origin}/api/v1/memes/random?source=reddit");\nconst meme = await res.json();\nconsole.log(meme.title);`
+        },
+        sources: {
+          curl: `curl -X GET "${origin}/api/v1/sources" \\\n     -H "Accept: application/json"`,
+          python: `import httpx\n\nsources = httpx.get("${origin}/api/v1/sources").json()\nfor s in sources:\n    print(f"[{s['status'].upper()}] {s['name']} - {s['item_count']} cached")`,
+          javascript: `const res = await fetch("${origin}/api/v1/sources");\nconst sources = await res.json();\nconsole.table(sources);`
+        },
+        health: {
+          curl: `curl -X GET "${origin}/health" \\\n     -H "Accept: application/json"`,
+          python: `import httpx\n\nhealth = httpx.get("${origin}/health").json()\nprint("Status:", health["status"], "| Engine speed:", health["cache_latency"])`,
+          javascript: `const res = await fetch("${origin}/health");\nconst health = await res.json();\nconsole.log(health);`
+        }
+      };
+    }
+
+    function updateLabStudio() {
+      const snippets = generateCodeSnippets();
+      document.getElementById('labCodeSnippet').textContent = snippets[selectedLabEndpoint][selectedLabLang];
+
+      const limit = parseInt(document.getElementById('paramLimit').value, 10) || 2;
+      let sampleData;
+      if (selectedLabEndpoint === 'trending' || selectedLabEndpoint === 'latest') {
+        sampleData = memeCollection.slice(0, Math.min(limit, 3));
+      } else if (selectedLabEndpoint === 'random') {
+        sampleData = memeCollection[0] || VERIFIED_MEMES[0];
+      } else if (selectedLabEndpoint === 'sources') {
+        sampleData = [
+          { id: "reddit_dankmemes", name: "reddit:r/dankmemes", status: "ok", item_count: 50, latency_ms: 120.4 },
+          { id: "kym_trending", name: "knowyourmeme:trending", status: "ok", item_count: 16, latency_ms: 310.2 }
+        ];
+      } else {
+        sampleData = { status: "ok", app_name: "Meme Tracker API", total_memes_cached: memeCollection.length, healthy_sources: 7 };
+      }
+      document.getElementById('labResponseOutput').textContent = JSON.stringify(sampleData, null, 2);
+    }
+
+    // Endpoint Button Selector
+    document.querySelectorAll('#labEndpointButtons .lab-endpoint-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#labEndpointButtons .lab-endpoint-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedLabEndpoint = btn.dataset.endpoint;
+        updateLabStudio();
       });
     });
 
-    // Vault Lang Tabs
-    document.querySelectorAll('#comicLangTabs .lang-tab-btn').forEach(btn => {
+    // Language Tab Selector
+    document.querySelectorAll('#labLangTabs .console-lang-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        document.querySelectorAll('#comicLangTabs .lang-tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('#labLangTabs .console-lang-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        activeLang = btn.dataset.lang;
-        updateVault();
+        selectedLabLang = btn.dataset.lang;
+        updateLabStudio();
       });
     });
 
     // Copy Code Button
-    document.getElementById('comicCopyBtn').addEventListener('click', () => {
-      const code = document.getElementById('comicCodeDisplay').textContent;
+    document.getElementById('btnCopySnippet').addEventListener('click', () => {
+      const code = document.getElementById('labCodeSnippet').textContent;
       navigator.clipboard.writeText(code);
-      const btn = document.getElementById('comicCopyBtn');
+      const btn = document.getElementById('btnCopySnippet');
       btn.textContent = 'COPIED!';
-      setTimeout(() => { btn.textContent = 'COPY'; }, 1500);
+      setTimeout(() => { btn.textContent = 'COPY CODE'; }, 1500);
     });
 
-    // Init
-    loadMemes();
+    // Live Request Simulation
+    function executeLiveLabRequest() {
+      const badge = document.getElementById('responseStatusBadge');
+      badge.textContent = 'FETCHING LIVE...';
+      badge.style.color = '#FFE81F';
+
+      setTimeout(() => {
+        badge.textContent = 'HTTP 200 OK • 0.08ms';
+        badge.style.color = '#4ade80';
+        updateLabStudio();
+      }, 250);
+    }
+
+    // Start
+    initRadarFeed();
   </script>
 </body>
 </html>
