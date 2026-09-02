@@ -107,7 +107,7 @@ def create_app() -> FastAPI:
         docs_url="/docs",
         redoc_url="/redoc",
         openapi_url="/openapi.json",
-        lifespan=lifespan,
+        lifespan=None if os.environ.get("VERCEL") else lifespan,
     )
 
     # Cross-Origin Resource Sharing (CORS)

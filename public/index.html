@@ -3,36 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Meme-ology — Real-Time Internet Meme Radar & API</title>
-  <meta name="description" content="High-performance, serverless-ready API and interactive radar tracking the newest and trending memes across Reddit and Know Your Meme.">
+  <title>MEME-OLOGY! — The Internet's Comic Meme Radar &amp; API</title>
+  <meta name="description" content="Comic-Book pop-art radar and API tracking trending memes across Reddit and Know Your Meme.">
   <meta name="referrer" content="no-referrer">
+
+  <!-- Google Fonts: Comic Bangers, Space Grotesk, and JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  
-  <!-- Interactive Animation & 3D Tilt Libraries -->
-  <script src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.8.1/dist/vanilla-tilt.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Space+Grotesk:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+
+  <!-- Canvas Confetti & Anime.js -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 
   <style>
     :root {
-      --bg: #09090b;
-      --surface: #121215;
-      --surface-card: #141418;
-      --surface-hover: #1c1c22;
-      --border: #27272a;
-      --border-focus: #3f3f46;
-      --text: #f4f4f5;
-      --text-muted: #a1a1aa;
-      --text-dim: #71717a;
-      --accent-purple: #a855f7;
-      --accent-orange: #f97316;
-      --accent-green: #22c55e;
-      --accent-cyan: #06b6d4;
-      --radius-lg: 16px;
-      --radius-md: 10px;
-      --radius-sm: 6px;
+      --comic-yellow: #FFE81F;
+      --comic-red: #FF2A42;
+      --comic-cyan: #00E5FF;
+      --comic-pink: #FF3B94;
+      --comic-lime: #22E576;
+      --comic-ink: #0C0C0F;
+      --comic-paper: #FFFDF7;
+      --border-ink: 3px solid #0C0C0F;
+      --shadow-hard: 5px 5px 0px #0C0C0F;
+      --shadow-heavy: 8px 8px 0px #0C0C0F;
+      --shadow-sm: 3px 3px 0px #0C0C0F;
     }
 
     * {
@@ -42,11 +38,12 @@
     }
 
     body {
-      background-color: var(--bg);
-      color: var(--text);
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      line-height: 1.5;
-      -webkit-font-smoothing: antialiased;
+      background-color: var(--comic-paper);
+      background-image: radial-gradient(rgba(12, 12, 15, 0.12) 15%, transparent 16%);
+      background-size: 16px 16px;
+      color: var(--comic-ink);
+      font-family: 'Space Grotesk', -apple-system, sans-serif;
+      line-height: 1.4;
       overflow-x: hidden;
     }
 
@@ -59,968 +56,1008 @@
       font-family: 'JetBrains Mono', monospace;
     }
 
-    /* Ambient Background Glow */
-    .ambient-glow {
-      position: absolute;
-      top: -120px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 700px;
-      height: 380px;
-      background: radial-gradient(circle, rgba(168, 85, 247, 0.12) 0%, rgba(249, 115, 22, 0.06) 50%, transparent 70%);
-      filter: blur(80px);
-      pointer-events: none;
-      z-index: 0;
+    /* Top Comic Banner */
+    .comic-top-banner {
+      background: var(--comic-ink);
+      color: #fff;
+      padding: 6px 1rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #000;
     }
 
-    /* Top Navigation */
+    .comic-top-banner span {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Navigation */
     header {
-      border-bottom: 1px solid var(--border);
+      background: var(--comic-yellow);
+      border-bottom: var(--border-ink);
       position: sticky;
       top: 0;
-      background: rgba(9, 9, 11, 0.9);
-      backdrop-filter: blur(12px);
       z-index: 100;
+      box-shadow: 0 4px 0px rgba(0,0,0,0.15);
     }
 
     .nav-container {
-      max-width: 1280px;
+      max-width: 1400px;
       margin: 0 auto;
-      padding: 0 1.5rem;
-      height: 64px;
+      padding: 0.75rem 1.5rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      position: relative;
     }
 
-    .logo-group {
+    .comic-logo-group {
       display: flex;
       align-items: center;
       gap: 0.75rem;
-      font-weight: 800;
-      font-size: 1.2rem;
-      letter-spacing: -0.03em;
     }
 
-    .logo-badge {
-      font-size: 0.7rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(249, 115, 22, 0.2));
-      border: 1px solid rgba(168, 85, 247, 0.4);
+    .comic-logo {
+      font-family: 'Bangers', cursive;
+      font-size: 2.2rem;
+      letter-spacing: 0.05em;
+      color: var(--comic-ink);
+      text-shadow: 2px 2px 0px #fff, 4px 4px 0px var(--comic-red);
+      line-height: 1;
+      transform: rotate(-1.5deg);
+      display: inline-block;
+    }
+
+    .comic-stamp-pill {
+      background: var(--comic-red);
+      color: #fff;
+      border: 2px solid #000;
       padding: 3px 8px;
-      border-radius: 9999px;
-      color: #e4e4e7;
+      font-size: 0.7rem;
+      font-weight: 800;
+      border-radius: 4px;
+      box-shadow: 2px 2px 0px #000;
+      transform: rotate(2deg);
     }
 
-    .nav-actions {
+    .nav-right-actions {
       display: flex;
       align-items: center;
       gap: 1rem;
     }
 
-    .sound-toggle-btn {
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      padding: 6px 12px;
-      border-radius: var(--radius-sm);
-      font-size: 0.8rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .sound-toggle-btn:hover {
-      border-color: var(--text-muted);
-      color: var(--text);
-    }
-
-    .btn-nav-primary {
-      background: #fafafa;
-      color: #09090b;
+    .btn-comic {
+      background: #fff;
+      border: var(--border-ink);
+      box-shadow: var(--shadow-sm);
       padding: 6px 14px;
-      border-radius: var(--radius-sm);
+      font-weight: 800;
       font-size: 0.85rem;
-      font-weight: 600;
-      transition: all 0.2s;
-      display: flex;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.12s ease;
+      display: inline-flex;
       align-items: center;
       gap: 0.4rem;
     }
 
-    .btn-nav-primary:hover {
-      background: #e4e4e7;
+    .btn-comic:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: var(--shadow-hard);
+      background: #fff;
+    }
+
+    .btn-comic:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0px #000;
+    }
+
+    .btn-comic-red {
+      background: var(--comic-red);
+      color: #fff;
+    }
+
+    .btn-comic-red:hover {
+      background: #ff122d;
+    }
+
+    .btn-comic-cyan {
+      background: var(--comic-cyan);
+      color: #000;
+    }
+
+    /* Comic Hero Marquee */
+    .comic-hero {
+      max-width: 1400px;
+      margin: 1.5rem auto 1rem;
+      padding: 0 1.5rem;
+    }
+
+    .hero-panel {
+      background: #fff;
+      border: var(--border-ink);
+      box-shadow: var(--shadow-heavy);
+      padding: 2rem;
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .hero-panel::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 8px;
+      background: repeating-linear-gradient(45deg, #000, #000 15px, var(--comic-yellow) 15px, var(--comic-yellow) 30px);
+    }
+
+    .hero-left h1 {
+      font-family: 'Bangers', cursive;
+      font-size: clamp(2.8rem, 5vw, 4.2rem);
+      letter-spacing: 0.03em;
+      line-height: 0.95;
+      margin-bottom: 1rem;
+      color: var(--comic-ink);
+      text-shadow: 3px 3px 0px var(--comic-yellow), 6px 6px 0px var(--comic-red);
+    }
+
+    .hero-left p {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #262626;
+      max-width: 600px;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Sticker Badges */
+    .sticker-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .comic-sticker {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 5px 12px;
+      border: var(--border-ink);
+      font-size: 0.8rem;
+      font-weight: 800;
+      box-shadow: var(--shadow-sm);
+      border-radius: 4px;
+      text-transform: uppercase;
+      transition: transform 0.15s ease;
+    }
+
+    .comic-sticker:hover {
+      transform: scale(1.08) rotate(0deg) !important;
+    }
+
+    .sticker-pow {
+      background: var(--comic-pink);
+      color: #fff;
+      transform: rotate(-3deg);
+    }
+
+    .sticker-bam {
+      background: var(--comic-yellow);
+      color: #000;
+      transform: rotate(2.5deg);
+    }
+
+    .sticker-zap {
+      background: var(--comic-cyan);
+      color: #000;
+      transform: rotate(-1.5deg);
+    }
+
+    .sticker-lime {
+      background: var(--comic-lime);
+      color: #000;
+      transform: rotate(3deg);
+    }
+
+    /* Hero Right Showcase */
+    .hero-right-card {
+      background: var(--comic-yellow);
+      border: var(--border-ink);
+      box-shadow: var(--shadow-hard);
+      padding: 1.25rem;
+      border-radius: 6px;
+      transform: rotate(1.5deg);
+      text-align: center;
+    }
+
+    .hero-right-card h3 {
+      font-family: 'Bangers', cursive;
+      font-size: 1.5rem;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+    }
+
+    .hero-stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .hero-stat-box {
+      background: #fff;
+      border: 2px solid #000;
+      padding: 0.5rem;
+      box-shadow: 2px 2px 0px #000;
+      border-radius: 4px;
+    }
+
+    .hero-stat-num {
+      font-family: 'Bangers', cursive;
+      font-size: 1.6rem;
+      color: var(--comic-red);
+      line-height: 1;
+    }
+
+    .hero-stat-lbl {
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    /* Main Split-Screen Layout */
+    .main-split-container {
+      max-width: 1400px;
+      margin: 1.5rem auto 4rem;
+      padding: 0 1.5rem;
+      display: grid;
+      grid-template-columns: 1.55fr 1.05fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    @media (max-width: 1050px) {
+      .hero-panel {
+        grid-template-columns: 1fr;
+      }
+      .main-split-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Left Pane: Comic Feed */
+    .comic-feed-pane {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .feed-controls {
+      background: #fff;
+      border: var(--border-ink);
+      box-shadow: var(--shadow-hard);
+      padding: 1.25rem;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .comic-search-bar {
+      position: relative;
+      width: 100%;
+    }
+
+    .comic-search-input {
+      width: 100%;
+      border: var(--border-ink);
+      box-shadow: var(--shadow-sm);
+      padding: 12px 1rem 12px 2.8rem;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      border-radius: 6px;
+      background: #fafafa;
+      outline: none;
+      transition: all 0.15s;
+    }
+
+    .comic-search-input:focus {
+      background: #fff;
+      box-shadow: var(--shadow-hard);
+      transform: translate(-1px, -1px);
+    }
+
+    .search-comic-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.1rem;
+      pointer-events: none;
+    }
+
+    .comic-filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .comic-tab {
+      background: #fff;
+      border: 2px solid #000;
+      box-shadow: 2px 2px 0px #000;
+      padding: 5px 12px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.12s;
+    }
+
+    .comic-tab:hover {
+      background: var(--comic-yellow);
       transform: translateY(-1px);
     }
 
-    /* Hero Section */
-    .hero {
-      padding: 4rem 1.5rem 3rem;
-      text-align: center;
-      max-width: 900px;
-      margin: 0 auto;
-      position: relative;
-      z-index: 1;
+    .comic-tab.active {
+      background: var(--comic-red);
+      color: #fff;
+      box-shadow: 3px 3px 0px #000;
+      transform: translate(-1px, -1px);
     }
 
-    .hero-pill {
+    /* Comic Meme Grid */
+    .comic-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.75rem;
+    }
+
+    /* Individual Comic Panel Card */
+    .comic-card {
+      background: #fff;
+      border: var(--border-ink);
+      box-shadow: var(--shadow-hard);
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .comic-card:nth-child(4n+1) { transform: rotate(-1.2deg); }
+    .comic-card:nth-child(4n+2) { transform: rotate(1deg); }
+    .comic-card:nth-child(4n+3) { transform: rotate(-0.8deg); }
+    .comic-card:nth-child(4n+4) { transform: rotate(1.4deg); }
+
+    .comic-card:hover {
+      transform: rotate(0deg) scale(1.02) translate(-2px, -2px) !important;
+      box-shadow: var(--shadow-heavy);
+      z-index: 10;
+    }
+
+    /* Speech Bubble for Title */
+    .speech-bubble-wrapper {
+      padding: 1rem 1rem 0.5rem;
+    }
+
+    .speech-bubble {
+      position: relative;
+      background: #fff;
+      border: var(--border-ink);
+      border-radius: 12px;
+      padding: 10px 14px;
+      box-shadow: var(--shadow-sm);
+      font-weight: 800;
+      font-size: 0.92rem;
+      line-height: 1.35;
+      color: #000;
+    }
+
+    .speech-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -11px;
+      left: 24px;
+      border-width: 11px 9px 0;
+      border-style: solid;
+      border-color: #fff transparent;
+      display: block;
+      width: 0;
+    }
+
+    .speech-bubble::before {
+      content: '';
+      position: absolute;
+      bottom: -15px;
+      left: 22px;
+      border-width: 14px 11px 0;
+      border-style: solid;
+      border-color: #000 transparent;
+      display: block;
+      width: 0;
+    }
+
+    .comic-card-media {
+      margin: 0.75rem 1rem 0;
+      border: 2px solid #000;
+      box-shadow: 2px 2px 0px #000;
+      height: 230px;
+      background: #f0ede6;
+      position: relative;
+      overflow: hidden;
+      border-radius: 4px;
+    }
+
+    .comic-card-media img, .comic-card-media video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s;
+    }
+
+    .comic-card:hover .comic-card-media img {
+      transform: scale(1.04);
+    }
+
+    .badge-corner-stamp {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: var(--comic-yellow);
+      border: 2px solid #000;
+      font-family: 'Bangers', cursive;
+      font-size: 1.1rem;
+      padding: 2px 8px;
+      box-shadow: 2px 2px 0px #000;
+      border-radius: 3px;
+      color: #000;
+      z-index: 2;
+      transform: rotate(-2deg);
+    }
+
+    .badge-corner-source {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: #fff;
+      border: 2px solid #000;
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      box-shadow: 2px 2px 0px #000;
+      border-radius: 3px;
+      z-index: 2;
+    }
+
+    .comic-card-footer {
+      padding: 0.9rem 1rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .comic-author-tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #666;
+    }
+
+    .btn-upvote-stamp {
+      background: var(--comic-red);
+      color: #fff;
+      border: 2px solid #000;
+      box-shadow: 2px 2px 0px #000;
+      padding: 4px 10px;
+      font-family: 'Bangers', cursive;
+      font-size: 1.05rem;
+      letter-spacing: 0.04em;
+      border-radius: 4px;
+      cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
-      padding: 6px 14px;
-      border-radius: 9999px;
-      border: 1px solid rgba(34, 197, 94, 0.3);
-      background: rgba(34, 197, 94, 0.08);
-      color: #86efac;
-      font-size: 0.78rem;
-      font-weight: 600;
-      margin-bottom: 1.5rem;
-      box-shadow: 0 0 20px rgba(34, 197, 94, 0.15);
+      gap: 0.3rem;
+      transition: transform 0.1s;
     }
 
-    .status-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #22c55e;
-      box-shadow: 0 0 8px #22c55e;
-      animation: pulse 2s infinite;
+    .btn-upvote-stamp:hover {
+      transform: scale(1.08);
+      background: #ff122d;
     }
 
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.3); opacity: 0.6; }
+    .btn-upvote-stamp:active {
+      transform: scale(0.92);
     }
 
-    .hero h1 {
-      font-size: clamp(2.4rem, 5.5vw, 4rem);
-      font-weight: 900;
-      letter-spacing: -0.04em;
-      line-height: 1.1;
-      margin-bottom: 1.25rem;
-    }
-
-    .hero h1 span {
-      background: linear-gradient(135deg, #ffffff 40%, #a1a1aa 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .hero-sub {
-      font-size: 1.125rem;
-      color: var(--text-muted);
-      max-width: 650px;
-      margin: 0 auto 2rem;
-      line-height: 1.6;
-    }
-
-    /* Metrics Bar (Kokonut UI style) */
-    .metrics-bar {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1rem;
-      max-width: 800px;
-      margin: 0 auto 2.5rem;
-      padding: 1rem;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-    }
-
-    .metric-item {
-      text-align: center;
-      padding: 0.5rem;
-    }
-
-    .metric-value {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 1.35rem;
-      font-weight: 700;
-      color: var(--text);
-    }
-
-    .metric-label {
-      font-size: 0.72rem;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-top: 0.2rem;
-    }
-
-    /* Hero CTA Buttons */
-    .hero-actions {
+    /* Right Pane: The Secret Lab (API Vault) */
+    .comic-vault-pane {
+      position: sticky;
+      top: 80px;
       display: flex;
-      justify-content: center;
-      gap: 1rem;
-      flex-wrap: wrap;
+      flex-direction: column;
+      gap: 1.5rem;
     }
 
-    .btn-hero {
-      padding: 10px 22px;
-      border-radius: var(--radius-sm);
-      font-size: 0.9rem;
-      font-weight: 600;
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-      cursor: pointer;
+    .vault-box {
+      background: #fff;
+      border: var(--border-ink);
+      box-shadow: var(--shadow-heavy);
+      border-radius: 8px;
+      overflow: hidden;
     }
 
-    .btn-hero-solid {
-      background: #fafafa;
-      color: #09090b;
-      border: 1px solid #fafafa;
+    .vault-header {
+      background: var(--comic-cyan);
+      border-bottom: var(--border-ink);
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
 
-    .btn-hero-solid:hover {
-      background: #e4e4e7;
-      transform: scale(1.03);
+    .vault-title {
+      font-family: 'Bangers', cursive;
+      font-size: 1.6rem;
+      letter-spacing: 0.05em;
+      color: #000;
     }
 
-    .btn-hero-outline {
-      background: var(--surface);
-      color: var(--text);
-      border: 1px solid var(--border);
+    .vault-badge {
+      background: #000;
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 3px;
+      text-transform: uppercase;
     }
 
-    .btn-hero-outline:hover {
-      border-color: var(--text-muted);
-      background: var(--surface-hover);
-      transform: scale(1.03);
-    }
-
-    /* Main Container */
-    .container {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 2rem 1.5rem 5rem;
-      position: relative;
-      z-index: 1;
-    }
-
-    /* Explorer Controls */
-    .controls-wrapper {
-      margin-bottom: 2rem;
+    .vault-body {
+      padding: 1.25rem;
       display: flex;
       flex-direction: column;
       gap: 1.25rem;
     }
 
-    .search-box {
-      position: relative;
-      width: 100%;
-    }
-
-    .search-icon {
-      position: absolute;
-      left: 1rem;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-dim);
-      pointer-events: none;
-      font-size: 1.1rem;
-    }
-
-    .search-input {
-      width: 100%;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 14px 1rem 14px 3rem;
-      color: var(--text);
-      font-size: 0.95rem;
-      outline: none;
-      transition: all 0.2s;
-    }
-
-    .search-input:focus {
-      border-color: var(--accent-purple);
-      box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.2);
-      background: #15151a;
-    }
-
-    .filter-row {
+    .endpoint-selector-grid {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .chip-group {
-      display: flex;
+      flex-direction: column;
       gap: 0.5rem;
-      flex-wrap: wrap;
     }
 
-    .chip {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      padding: 7px 14px;
-      border-radius: 9999px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      cursor: pointer;
-      transition: all 0.18s;
-      user-select: none;
-    }
-
-    .chip:hover {
-      color: var(--text);
-      border-color: var(--border-focus);
-      transform: translateY(-1px);
-    }
-
-    .chip.active {
+    .comic-endpoint-card {
       background: #fafafa;
-      color: #09090b;
-      border-color: #fafafa;
-      box-shadow: 0 0 14px rgba(255, 255, 255, 0.15);
-    }
-
-    /* 3D Kokonut UI Meme Cards Grid */
-    .meme-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 1.75rem;
-      perspective: 1000px;
-    }
-
-    /* 3D Card Container */
-    .meme-card {
-      background: var(--surface-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      position: relative;
+      border: 2px solid #000;
+      box-shadow: 2px 2px 0px #000;
+      border-radius: 4px;
+      padding: 8px 12px;
       cursor: pointer;
-      transform-style: preserve-3d;
-      transition: border-color 0.25s, box-shadow 0.25s;
+      transition: all 0.12s;
     }
 
-    .meme-card:hover {
-      border-color: rgba(168, 85, 247, 0.45);
-      box-shadow: 0 20px 40px -15px rgba(168, 85, 247, 0.2), 0 0 0 1px rgba(168, 85, 247, 0.2);
+    .comic-endpoint-card:hover {
+      background: var(--comic-yellow);
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0px #000;
     }
 
-    .card-media-wrapper {
-      position: relative;
-      width: 100%;
-      height: 250px;
-      background: #0d0d10;
-      overflow: hidden;
+    .comic-endpoint-card.active {
+      background: var(--comic-yellow);
+      border-color: #000;
+      box-shadow: 4px 4px 0px #000;
+      transform: translate(-1px, -1px);
+    }
+
+    .endpoint-title-row {
       display: flex;
       align-items: center;
-      justify-content: center;
+      gap: 0.5rem;
     }
 
-    .card-media-wrapper img, .card-media-wrapper video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .meme-card:hover .card-media-wrapper img {
-      transform: scale(1.05);
-    }
-
-    .card-badge-score {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      background: rgba(9, 9, 11, 0.85);
-      border: 1px solid rgba(249, 115, 22, 0.4);
-      padding: 4px 10px;
-      border-radius: 9999px;
-      font-size: 0.75rem;
+    .method-stamp {
+      background: #000;
+      color: #fff;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
       font-weight: 700;
-      color: #fdba74;
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-      backdrop-filter: blur(8px);
-      z-index: 2;
+      padding: 2px 6px;
+      border-radius: 2px;
     }
 
-    .card-badge-source {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      background: rgba(9, 9, 11, 0.85);
-      border: 1px solid var(--border);
-      padding: 4px 10px;
-      border-radius: 9999px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      backdrop-filter: blur(8px);
-      z-index: 2;
-    }
-
-    .card-body {
-      padding: 1.25rem;
-      display: flex;
-      flex-direction: column;
-      flex-grow: 1;
-      justify-content: space-between;
-      gap: 1rem;
-      transform: translateZ(20px);
-    }
-
-    .card-title {
-      font-size: 1rem;
+    .endpoint-path-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
       font-weight: 700;
-      color: var(--text);
-      line-height: 1.4;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
     }
 
-    .card-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
-      padding-top: 0.85rem;
-      font-size: 0.8rem;
-    }
-
-    .card-author {
-      color: var(--text-dim);
+    .endpoint-subtext {
+      font-size: 0.75rem;
+      color: #555;
+      margin-top: 3px;
       font-weight: 500;
     }
 
-    .card-actions {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .btn-upvote {
-      background: rgba(249, 115, 22, 0.12);
-      border: 1px solid rgba(249, 115, 22, 0.3);
-      color: #fb923c;
-      padding: 5px 11px;
-      border-radius: var(--radius-sm);
-      font-size: 0.78rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-    }
-
-    .btn-upvote:hover {
-      background: rgba(249, 115, 22, 0.25);
-      border-color: #fb923c;
-      transform: scale(1.08);
-    }
-
-    .btn-upvote:active {
-      transform: scale(0.92);
-    }
-
-    .btn-link-source {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      padding: 5px 10px;
-      border-radius: var(--radius-sm);
-      font-size: 0.78rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-
-    .btn-link-source:hover {
-      color: var(--text);
-      border-color: var(--text-muted);
-    }
-
-    /* Playground / Docs Section */
-    .playground-section {
-      margin-top: 4.5rem;
-      border-top: 1px solid var(--border);
-      padding-top: 3.5rem;
-    }
-
-    .section-title {
-      font-size: 1.85rem;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      margin-bottom: 0.5rem;
-    }
-
-    .section-desc {
-      color: var(--text-muted);
-      font-size: 0.95rem;
-      margin-bottom: 2rem;
-    }
-
-    .playground-grid {
-      display: grid;
-      grid-template-columns: 1fr 1.35fr;
-      gap: 1.5rem;
-    }
-
-    @media (max-width: 900px) {
-      .playground-grid {
-        grid-template-columns: 1fr;
-      }
-      .metrics-bar {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    .endpoint-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
-    .endpoint-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 1rem 1.25rem;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .endpoint-card:hover {
-      border-color: var(--border-focus);
-      background: var(--surface-hover);
-    }
-
-    .endpoint-card.active {
-      border-color: var(--accent-purple);
-      background: #14141c;
-      box-shadow: 0 0 16px rgba(168, 85, 247, 0.15);
-    }
-
-    .endpoint-header {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      margin-bottom: 0.35rem;
-    }
-
-    .method-get {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: #60a5fa;
-      background: rgba(96, 165, 250, 0.15);
-      padding: 2px 7px;
-      border-radius: 4px;
-    }
-
-    .endpoint-path {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.88rem;
-      font-weight: 600;
-    }
-
-    .endpoint-desc {
-      font-size: 0.8rem;
-      color: var(--text-dim);
-    }
-
-    .code-panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
+    /* Terminal Console Box */
+    .terminal-console {
+      background: #0c0c0f;
+      border: 2px solid #000;
+      box-shadow: 3px 3px 0px #000;
+      border-radius: 6px;
       overflow: hidden;
-      display: flex;
-      flex-direction: column;
     }
 
-    .code-panel-header {
+    .terminal-top {
+      background: #22222a;
+      border-bottom: 2px solid #000;
+      padding: 6px 12px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid var(--border);
-      padding: 0.6rem 1rem;
-      background: #0e0e12;
     }
 
-    .lang-tabs {
+    .lang-tab-row {
       display: flex;
-      gap: 0.5rem;
+      gap: 0.4rem;
     }
 
-    .lang-tab {
+    .lang-tab-btn {
       background: transparent;
-      border: none;
-      color: var(--text-dim);
+      border: 1px solid #444;
+      color: #aaa;
+      padding: 3px 8px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    .lang-tab-btn.active {
+      background: var(--comic-yellow);
+      color: #000;
+      border-color: #000;
+    }
+
+    .btn-copy-code {
+      background: #fff;
+      border: 1px solid #000;
+      color: #000;
+      padding: 3px 8px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      cursor: pointer;
+      border-radius: 3px;
+    }
+
+    .terminal-content {
+      padding: 1rem;
       font-size: 0.8rem;
-      font-weight: 600;
-      padding: 4px 10px;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-
-    .lang-tab:hover {
-      color: var(--text);
-    }
-
-    .lang-tab.active {
-      color: var(--text);
-      background: var(--surface);
-    }
-
-    .btn-copy {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      border-radius: 4px;
-      padding: 4px 9px;
-      font-size: 0.75rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-      transition: all 0.15s;
-    }
-
-    .btn-copy:hover {
-      color: var(--text);
-      border-color: var(--text-muted);
-    }
-
-    .code-display {
-      padding: 1.25rem;
-      font-size: 0.85rem;
-      color: #e4e4e7;
+      color: #4ade80;
+      line-height: 1.5;
       overflow-x: auto;
-      line-height: 1.6;
+      max-height: 200px;
+    }
+
+    .preview-header {
+      background: #18181f;
+      border-top: 2px solid #000;
+      border-bottom: 1px solid #333;
+      padding: 5px 12px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      color: #888;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .preview-content {
+      padding: 1rem;
+      font-size: 0.75rem;
+      color: #e4e4e7;
+      max-height: 180px;
+      overflow-y: auto;
       background: #0c0c0f;
     }
 
-    .response-preview-bar {
-      border-top: 1px solid var(--border);
-      padding: 0.5rem 1rem;
-      background: #0e0e12;
-      font-size: 0.72rem;
-      font-weight: 700;
-      color: var(--text-dim);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .response-preview {
-      padding: 1.25rem;
-      font-size: 0.8rem;
-      color: #a1a1aa;
-      background: #09090b;
-      max-height: 250px;
-      overflow-y: auto;
-      font-family: 'JetBrains Mono', monospace;
-    }
-
     /* Lightbox Modal */
-    .lightbox-modal {
+    .comic-modal {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(9, 9, 11, 0.85);
-      backdrop-filter: blur(16px);
+      background: rgba(12, 12, 15, 0.8);
+      backdrop-filter: blur(8px);
       z-index: 1000;
       display: none;
       align-items: center;
       justify-content: center;
-      padding: 2rem;
-      opacity: 0;
-      transition: opacity 0.25s ease;
+      padding: 1.5rem;
     }
 
-    .lightbox-modal.active {
+    .comic-modal.active {
       display: flex;
-      opacity: 1;
     }
 
-    .lightbox-content {
-      background: var(--surface-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      max-width: 680px;
+    .comic-modal-box {
+      background: #fff;
+      border: 4px solid #000;
+      box-shadow: 10px 10px 0px #000;
+      border-radius: 8px;
+      max-width: 650px;
       width: 100%;
       overflow: hidden;
-      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8);
       position: relative;
-      transform: scale(0.95);
-      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .lightbox-modal.active .lightbox-content {
-      transform: scale(1);
-    }
-
-    .lightbox-close {
+    .modal-close-btn {
       position: absolute;
-      top: 14px;
-      right: 14px;
-      background: rgba(9, 9, 11, 0.75);
-      border: 1px solid var(--border);
-      color: var(--text);
+      top: 10px;
+      right: 10px;
+      background: var(--comic-red);
+      color: #fff;
+      border: 2px solid #000;
       width: 32px;
       height: 32px;
       border-radius: 50%;
+      font-family: 'Bangers', cursive;
       font-size: 1.2rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       cursor: pointer;
       z-index: 10;
-      transition: all 0.15s;
+      box-shadow: 2px 2px 0px #000;
     }
 
-    .lightbox-close:hover {
-      background: #ef4444;
-      border-color: #ef4444;
-    }
-
-    .lightbox-img-wrap {
-      width: 100%;
-      max-height: 440px;
+    .modal-media-wrap {
       background: #000;
+      max-height: 420px;
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
     }
 
-    .lightbox-img-wrap img, .lightbox-img-wrap video {
+    .modal-media-wrap img, .modal-media-wrap video {
       max-width: 100%;
-      max-height: 440px;
+      max-height: 420px;
       object-fit: contain;
     }
 
-    .lightbox-info {
-      padding: 1.5rem;
+    .modal-content-details {
+      padding: 1.25rem;
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 0.75rem;
     }
 
     /* Footer */
     footer {
-      border-top: 1px solid var(--border);
-      padding: 3rem 1.5rem;
+      background: var(--comic-yellow);
+      border-top: var(--border-ink);
+      padding: 2.5rem 1.5rem;
       text-align: center;
-      color: var(--text-dim);
-      font-size: 0.85rem;
+      font-weight: 700;
+      font-size: 0.9rem;
     }
 
     footer a:hover {
-      color: var(--text);
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
 
-  <div class="ambient-glow"></div>
+  <!-- Comic Code Banner -->
+  <div class="comic-top-banner">
+    <span>★ APPROVED BY THE MEME-OLOGY CODE AUTHORITY • ISSUE #1 • 2026</span>
+    <span>100% FREE • SERVERLESS • OPEN SOURCE ★</span>
+  </div>
 
-  <!-- Header -->
+  <!-- Main Navigation -->
   <header>
     <div class="nav-container">
-      <div class="logo-group">
-        <span>MEME-OLOGY</span>
-        <span class="logo-badge">API v1.0</span>
+      <div class="comic-logo-group">
+        <span class="comic-logo">MEME-OLOGY!</span>
+        <span class="comic-stamp-pill">VOL. 1</span>
       </div>
 
-      <div class="nav-actions">
-        <button id="soundToggle" class="sound-toggle-btn" title="Toggle audio micro-interactions">
-          <span id="soundIcon">🔊</span>
-          <span id="soundLabel">Sound ON</span>
-        </button>
-        <a href="https://github.com/narcisoJavier/Meme-ology" target="_blank" class="btn-nav-primary">
-          <span>GitHub</span>
-          <span style="font-size: 0.75rem;">★</span>
+      <div class="nav-right-actions">
+        <a href="/docs" target="_blank" class="btn-comic btn-comic-cyan">
+          <span>⚡ Interactive Swagger</span>
+        </a>
+        <a href="https://github.com/narcisoJavier/Meme-ology" target="_blank" class="btn-comic btn-comic-red">
+          <span>★ GitHub Repo</span>
         </a>
       </div>
     </div>
   </header>
 
-  <!-- Hero -->
-  <section class="hero">
-    <div class="hero-pill">
-      <span class="status-dot"></span>
-      <span>REAL-TIME INGESTION ACTIVE • &lt; 0.1ms CACHE</span>
-    </div>
+  <!-- Hero Header -->
+  <section class="comic-hero">
+    <div class="hero-panel">
+      <div class="hero-left">
+        <h1>THE INTERNET'S MEME RADAR!</h1>
+        <p>
+          BAM! Track, deduplicate, and score the freshest viral memes across Reddit and Know Your Meme in sub-millisecond real time.
+        </p>
 
-    <h1>
-      The Internet's Meme Radar,<br/>
-      <span>Live &amp; On-Demand.</span>
-    </h1>
+        <div class="sticker-cloud">
+          <div class="comic-sticker sticker-pow">💥 DANK RATINGS</div>
+          <div class="comic-sticker sticker-bam">⚡ 0.08ms LATENCY</div>
+          <div class="comic-sticker sticker-zap">🛡️ ZERO BAN ARCHITECTURE</div>
+          <div class="comic-sticker sticker-lime">🚀 100% SERVERLESS</div>
+        </div>
+      </div>
 
-    <p class="hero-sub">
-      A lightning-fast, serverless-ready API and interactive dashboard that discovers, deduplicates, and ranks viral memes across Reddit and Know Your Meme before they hit LinkedIn.
-    </p>
-
-    <!-- Live Telemetry Metrics -->
-    <div class="metrics-bar">
-      <div class="metric-item">
-        <div class="metric-value" id="countMemes">250+</div>
-        <div class="metric-label">Memes Tracked</div>
+      <div class="hero-right-card">
+        <h3>RADAR TELEMETRY</h3>
+        <p style="font-size: 0.82rem; font-weight: 700;">LIVE INTERNET SIGNALS INDEXED</p>
+        <div class="hero-stat-grid">
+          <div class="hero-stat-box">
+            <div class="hero-stat-num" id="statMemes">350+</div>
+            <div class="hero-stat-lbl">MEMES TRACKED</div>
+          </div>
+          <div class="hero-stat-box">
+            <div class="hero-stat-num" style="color: var(--comic-pink);" id="statUpvotes">4.8M</div>
+            <div class="hero-stat-lbl">TOTAL UPVOTES</div>
+          </div>
+          <div class="hero-stat-box">
+            <div class="hero-stat-num" style="color: #059669;">0.08ms</div>
+            <div class="hero-stat-lbl">CACHE SPEED</div>
+          </div>
+          <div class="hero-stat-box">
+            <div class="hero-stat-num" style="color: #2563eb;">7 FEEDS</div>
+            <div class="hero-stat-lbl">MONITORED</div>
+          </div>
+        </div>
       </div>
-      <div class="metric-item">
-        <div class="metric-value" style="color: #fb923c;" id="countKarma">4.8M</div>
-        <div class="metric-label">Total Upvotes</div>
-      </div>
-      <div class="metric-item">
-        <div class="metric-value" style="color: #4ade80;">0.08ms</div>
-        <div class="metric-label">Query Latency</div>
-      </div>
-      <div class="metric-item">
-        <div class="metric-value" style="color: #38bdf8;">7 Feeds</div>
-        <div class="metric-label">Active Sources</div>
-      </div>
-    </div>
-
-    <div class="hero-actions">
-      <a href="#explorer" class="btn-hero btn-hero-solid">Explore Live Memes</a>
-      <a href="/docs" target="_blank" class="btn-hero btn-hero-outline">Open Swagger Docs</a>
     </div>
   </section>
 
-  <!-- Explorer Section -->
-  <main class="container" id="explorer">
-    <div class="controls-wrapper">
-      <div class="search-box">
-        <span class="search-icon">🔍</span>
-        <input 
-          type="text" 
-          id="memeSearch" 
-          class="search-input" 
-          placeholder="Search memes by caption, punchline, template, author, or community..."
-          autocomplete="off"
-        />
-      </div>
+  <!-- Split-Screen Experience -->
+  <main class="main-split-container">
 
-      <div class="filter-row">
-        <div class="chip-group" id="sourceFilters">
-          <div class="chip active" data-source="all">All Sources</div>
-          <div class="chip" data-source="r/dankmemes">r/dankmemes</div>
-          <div class="chip" data-source="r/memes">r/memes</div>
-          <div class="chip" data-source="r/me_irl">r/me_irl</div>
-          <div class="chip" data-source="r/wholesomememes">r/wholesomememes</div>
-          <div class="chip" data-source="knowyourmeme">Know Your Meme</div>
+    <!-- Left Pane: Comic Meme Stream -->
+    <div class="comic-feed-pane">
+      <div class="feed-controls">
+        <div class="comic-search-bar">
+          <span class="search-comic-icon">🔍</span>
+          <input 
+            type="text" 
+            id="comicSearch" 
+            class="comic-search-input" 
+            placeholder="Search memes by speech bubble caption, author, or community..."
+            autocomplete="off"
+          />
         </div>
 
-        <div class="chip-group" id="timeFilters">
-          <div class="chip" data-time="1h">Fresh (1h)</div>
-          <div class="chip" data-time="6h">Past 6 Hours</div>
-          <div class="chip active" data-time="24h">Trending (24h)</div>
-          <div class="chip" data-time="all">All Time</div>
+        <div class="comic-filter-row" id="comicSourceFilters">
+          <div class="comic-tab active" data-source="all">★ ALL COMICS</div>
+          <div class="comic-tab" data-source="r/dankmemes">r/dankmemes</div>
+          <div class="comic-tab" data-source="r/memes">r/memes</div>
+          <div class="comic-tab" data-source="r/me_irl">r/me_irl</div>
+          <div class="comic-tab" data-source="r/wholesomememes">r/wholesomememes</div>
+          <div class="comic-tab" data-source="knowyourmeme">Know Your Meme</div>
         </div>
       </div>
+
+      <!-- Live Comic Grid -->
+      <div class="comic-grid" id="comicGrid"></div>
     </div>
 
-    <!-- Live Meme Grid -->
-    <div class="meme-grid" id="memeGrid"></div>
-
-    <!-- Interactive Playground & Docs -->
-    <section class="playground-section">
-      <h2 class="section-title">API Documentation &amp; Code Playground</h2>
-      <p class="section-desc">Test real endpoints with instant code generation in cURL, Python, and JavaScript.</p>
-
-      <div class="playground-grid">
-        <div class="endpoint-list" id="endpointList">
-          <div class="endpoint-card active" data-endpoint="trending">
-            <div class="endpoint-header">
-              <span class="method-get">GET</span>
-              <span class="endpoint-path">/api/v1/memes/trending</span>
-            </div>
-            <div class="endpoint-desc">Top viral memes ranked by gravity virality formula.</div>
-          </div>
-
-          <div class="endpoint-card" data-endpoint="latest">
-            <div class="endpoint-header">
-              <span class="method-get">GET</span>
-              <span class="endpoint-path">/api/v1/memes/latest</span>
-            </div>
-            <div class="endpoint-desc">Chronological newest feed with pagination &amp; NSFW filter.</div>
-          </div>
-
-          <div class="endpoint-card" data-endpoint="random">
-            <div class="endpoint-header">
-              <span class="method-get">GET</span>
-              <span class="endpoint-path">/api/v1/memes/random</span>
-            </div>
-            <div class="endpoint-desc">Instant random meme picker with optional community filters.</div>
-          </div>
-
-          <div class="endpoint-card" data-endpoint="sources">
-            <div class="endpoint-header">
-              <span class="method-get">GET</span>
-              <span class="endpoint-path">/api/v1/sources</span>
-            </div>
-            <div class="endpoint-desc">Live sync timestamps, status telemetry, and latency per crawler.</div>
-          </div>
-
-          <div class="endpoint-card" data-endpoint="health">
-            <div class="endpoint-header">
-              <span class="method-get">GET</span>
-              <span class="endpoint-path">/health</span>
-            </div>
-            <div class="endpoint-desc">Operational health check, database status, and uptime.</div>
-          </div>
+    <!-- Right Pane: The Secret Lab (API Vault) -->
+    <aside class="comic-vault-pane">
+      <div class="vault-box">
+        <div class="vault-header">
+          <span class="vault-title">THE SECRET LAB: API VAULT</span>
+          <span class="vault-badge">REST v1.0</span>
         </div>
 
-        <div class="code-panel">
-          <div class="code-panel-header">
-            <div class="lang-tabs" id="langTabs">
-              <button class="lang-tab active" data-lang="curl">cURL</button>
-              <button class="lang-tab" data-lang="python">Python</button>
-              <button class="lang-tab" data-lang="javascript">JavaScript</button>
+        <div class="vault-body">
+          <p style="font-size: 0.85rem; font-weight: 700; color: #444;">
+            Select an endpoint to generate copyable code snippets and inspect live responses:
+          </p>
+
+          <div class="endpoint-selector-grid" id="comicEndpoints">
+            <div class="comic-endpoint-card active" data-endpoint="trending">
+              <div class="endpoint-title-row">
+                <span class="method-stamp">GET</span>
+                <span class="endpoint-path-text">/api/v1/memes/trending</span>
+              </div>
+              <div class="endpoint-subtext">Velocity-decay ranked viral memes.</div>
             </div>
-            <button class="btn-copy" id="copyCodeBtn">
-              <span>📋 Copy</span>
-            </button>
+
+            <div class="comic-endpoint-card" data-endpoint="latest">
+              <div class="endpoint-title-row">
+                <span class="method-stamp">GET</span>
+                <span class="endpoint-path-text">/api/v1/memes/latest</span>
+              </div>
+              <div class="endpoint-subtext">Chronological newest feed with pagination.</div>
+            </div>
+
+            <div class="comic-endpoint-card" data-endpoint="random">
+              <div class="endpoint-title-row">
+                <span class="method-stamp">GET</span>
+                <span class="endpoint-path-text">/api/v1/memes/random</span>
+              </div>
+              <div class="endpoint-subtext">Instant random meme with community filter.</div>
+            </div>
+
+            <div class="comic-endpoint-card" data-endpoint="sources">
+              <div class="endpoint-title-row">
+                <span class="method-stamp">GET</span>
+                <span class="endpoint-path-text">/api/v1/sources</span>
+              </div>
+              <div class="endpoint-subtext">Live health status, item counts &amp; sync latency.</div>
+            </div>
+
+            <div class="comic-endpoint-card" data-endpoint="health">
+              <div class="endpoint-title-row">
+                <span class="method-stamp">GET</span>
+                <span class="endpoint-path-text">/health</span>
+              </div>
+              <div class="endpoint-subtext">Operational health check and uptime.</div>
+            </div>
           </div>
-          <pre class="code-display" id="codeDisplay"></pre>
-          <div class="response-preview-bar">
-            <span>LIVE PREVIEW</span>
-            <span style="color: #4ade80;">HTTP 200 OK</span>
+
+          <!-- Terminal Box -->
+          <div class="terminal-console">
+            <div class="terminal-top">
+              <div class="lang-tab-row" id="comicLangTabs">
+                <button class="lang-tab-btn active" data-lang="curl">cURL</button>
+                <button class="lang-tab-btn" data-lang="python">Python</button>
+                <button class="lang-tab-btn" data-lang="javascript">JavaScript</button>
+              </div>
+              <button class="btn-copy-code" id="comicCopyBtn">COPY</button>
+            </div>
+            <pre class="terminal-content" id="comicCodeDisplay"></pre>
+
+            <div class="preview-header">
+              <span>LIVE SERVER RESPONSE</span>
+              <span style="color: #4ade80;">HTTP 200 OK</span>
+            </div>
+            <pre class="preview-content" id="comicPreviewDisplay"></pre>
           </div>
-          <pre class="response-preview" id="responseDisplay"></pre>
         </div>
       </div>
-    </section>
+    </aside>
+
   </main>
 
-  <!-- Lightbox Modal -->
-  <div class="lightbox-modal" id="lightboxModal">
-    <div class="lightbox-content">
-      <button class="lightbox-close" id="lightboxClose">&times;</button>
-      <div class="lightbox-img-wrap" id="lightboxMedia"></div>
-      <div class="lightbox-info">
-        <div style="display: flex; align-items: center; justify-content: space-between;">
-          <span id="lightboxSource" class="logo-badge" style="font-size: 0.8rem;">r/dankmemes</span>
-          <span id="lightboxScore" style="color: #fb923c; font-weight: 700; font-family: 'JetBrains Mono';">🔥 18,450 upvotes</span>
+  <!-- Comic Modal -->
+  <div class="comic-modal" id="comicModal">
+    <div class="comic-modal-box">
+      <button class="modal-close-btn" id="modalClose">&times;</button>
+      <div class="modal-media-wrap" id="modalMedia"></div>
+      <div class="modal-content-details">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span id="modalSource" class="comic-stamp-pill" style="font-size: 0.8rem;">r/dankmemes</span>
+          <span id="modalScore" style="font-family: 'Bangers', cursive; font-size: 1.4rem; color: var(--comic-red);">💥 24,500 UPVOTES</span>
         </div>
-        <h3 id="lightboxTitle" style="font-size: 1.15rem; font-weight: 700; line-height: 1.4;"></h3>
-        <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 1rem;">
-          <span id="lightboxAuthor" style="color: var(--text-dim); font-size: 0.85rem;"></span>
-          <div style="display: flex; gap: 0.5rem;">
-            <a id="lightboxLink" href="#" target="_blank" class="btn-nav-primary" style="font-size: 0.8rem; padding: 6px 12px;">
-              Open Original Post &rarr;
-            </a>
-          </div>
+        <h3 id="modalTitle" style="font-size: 1.2rem; font-weight: 800;"></h3>
+        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 2px solid #000; padding-top: 0.75rem;">
+          <span id="modalAuthor" style="font-size: 0.85rem; font-weight: 700; color: #555;"></span>
+          <a id="modalLink" href="#" target="_blank" class="btn-comic btn-comic-yellow" style="background: var(--comic-yellow);">
+            VIEW ORIGINAL POST &rarr;
+          </a>
         </div>
       </div>
     </div>
@@ -1028,77 +1065,20 @@
 
   <!-- Footer -->
   <footer>
-    <p>Crafted for meme lovers. Open-source under MIT License.</p>
-    <p style="margin-top: 0.5rem;">
-      <a href="https://github.com/narcisoJavier/Meme-ology" target="_blank">GitHub Repository</a> • 
-      <a href="/docs" target="_blank">Interactive Swagger Docs</a> • 
-      <a href="/health" target="_blank">API Health Status</a>
+    <p>MEME-OLOGY! © 2026 • APPROVED BY THE COMICS CODE AUTHORITY</p>
+    <p style="margin-top: 0.5rem; font-weight: 600;">
+      <a href="https://github.com/narcisoJavier/Meme-ology" target="_blank">GitHub</a> • 
+      <a href="/docs" target="_blank">Swagger API</a> • 
+      <a href="/health" target="_blank">Health Status</a>
     </p>
   </footer>
 
   <script>
-    // Web Audio Synthesizer for Zero-Dependency Tactile Sounds
-    const soundSynth = {
-      enabled: true,
-      ctx: null,
-      init() {
-        if (!this.ctx) {
-          const AudioCtx = window.AudioContext || window.webkitAudioContext;
-          if (AudioCtx) this.ctx = new AudioCtx();
-        }
-      },
-      playPop() {
-        if (!this.enabled) return;
-        try {
-          this.init();
-          if (!this.ctx) return;
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(340, this.ctx.currentTime);
-          osc.frequency.exponentialRampToValueAtTime(820, this.ctx.currentTime + 0.08);
-          gain.gain.setValueAtTime(0.18, this.ctx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.08);
-          osc.connect(gain);
-          gain.connect(this.ctx.destination);
-          osc.start();
-          osc.stop(this.ctx.currentTime + 0.08);
-        } catch (e) {}
-      },
-      playChime() {
-        if (!this.enabled) return;
-        try {
-          this.init();
-          if (!this.ctx) return;
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-          osc.type = 'triangle';
-          osc.frequency.setValueAtTime(523.25, this.ctx.currentTime); // C5
-          osc.frequency.setValueAtTime(659.25, this.ctx.currentTime + 0.06); // E5
-          gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.15);
-          osc.connect(gain);
-          gain.connect(this.ctx.destination);
-          osc.start();
-          osc.stop(this.ctx.currentTime + 0.15);
-        } catch (e) {}
-      }
-    };
-
-    // Toggle Sound Button
-    const soundToggle = document.getElementById('soundToggle');
-    soundToggle.addEventListener('click', () => {
-      soundSynth.enabled = !soundSynth.enabled;
-      document.getElementById('soundIcon').textContent = soundSynth.enabled ? '🔊' : '🔇';
-      document.getElementById('soundLabel').textContent = soundSynth.enabled ? 'Sound ON' : 'Sound OFF';
-      if (soundSynth.enabled) soundSynth.playPop();
-    });
-
-    // 100% Verified, Working Meme Media Fallback (High-Resolution & Permanent CDN)
-    const VERIFIED_FALLBACK_MEMES = [
+    // 100% Verified, Working High-Res Meme Media
+    const VERIFIED_MEMES = [
       {
-        id: "v_1",
-        title: "When you finally solve a bug by removing 1 line of code after 8 hours",
+        id: "c_1",
+        title: "When you finally solve a bug by removing 1 line of code after 8 hours of suffering",
         url: "https://api.memegen.link/images/fine.jpg",
         source: "reddit",
         source_community: "r/dankmemes",
@@ -1106,12 +1086,11 @@
         score: 24500,
         num_comments: 612,
         trending_score: 96.4,
-        permalink: "https://reddit.com/r/dankmemes",
-        created_at: new Date(Date.now() - 3600000 * 2).toISOString()
+        permalink: "https://reddit.com/r/dankmemes"
       },
       {
-        id: "v_2",
-        title: "Senior Dev looking at junior dev's 14-page pull request for a button change",
+        id: "c_2",
+        title: "Senior Dev looking at junior dev's 14-page pull request for a button padding change",
         url: "https://api.memegen.link/images/drake.jpg",
         source: "reddit",
         source_community: "r/memes",
@@ -1119,12 +1098,11 @@
         score: 18900,
         num_comments: 420,
         trending_score: 91.2,
-        permalink: "https://reddit.com/r/memes",
-        created_at: new Date(Date.now() - 3600000 * 4).toISOString()
+        permalink: "https://reddit.com/r/memes"
       },
       {
-        id: "v_3",
-        title: "Distracted Developer — New Framework vs Production Project",
+        id: "c_3",
+        title: "Distracted Developer — Shiny New Framework vs The Production Codebase",
         url: "https://api.memegen.link/images/distracted.jpg",
         source: "knowyourmeme",
         source_community: "confirmed",
@@ -1132,12 +1110,11 @@
         score: 14200,
         num_comments: 298,
         trending_score: 84.7,
-        permalink: "https://knowyourmeme.com/memes/distracted-boyfriend",
-        created_at: new Date(Date.now() - 3600000 * 7).toISOString()
+        permalink: "https://knowyourmeme.com/memes/distracted-boyfriend"
       },
       {
-        id: "v_4",
-        title: "Me pretending to listen in a 1-hour standup that could have been an email",
+        id: "c_4",
+        title: "Me pretending to listen intently in a 1-hour standup meeting that could have been a slack message",
         url: "https://api.memegen.link/images/doge.jpg",
         source: "reddit",
         source_community: "r/me_irl",
@@ -1145,12 +1122,11 @@
         score: 11400,
         num_comments: 182,
         trending_score: 78.3,
-        permalink: "https://reddit.com/r/me_irl",
-        created_at: new Date(Date.now() - 3600000 * 9).toISOString()
+        permalink: "https://reddit.com/r/me_irl"
       },
       {
-        id: "v_5",
-        title: "You can't have production outages if you never deploy on Fridays",
+        id: "c_5",
+        title: "You can never have a Friday production outage if you never deploy on Fridays",
         url: "https://api.memegen.link/images/rollsafe.jpg",
         source: "reddit",
         source_community: "r/dankmemes",
@@ -1158,12 +1134,11 @@
         score: 16750,
         num_comments: 310,
         trending_score: 89.1,
-        permalink: "https://reddit.com/r/dankmemes",
-        created_at: new Date(Date.now() - 3600000 * 12).toISOString()
+        permalink: "https://reddit.com/r/dankmemes"
       },
       {
-        id: "v_6",
-        title: "Found this dog looking like the happiest creature in the entire multiverse",
+        id: "c_6",
+        title: "Found this dog looking like the absolute happiest creature in the entire multiverse",
         url: "https://api.memegen.link/images/cheems.jpg",
         source: "reddit",
         source_community: "r/wholesomememes",
@@ -1171,40 +1146,37 @@
         score: 29800,
         num_comments: 890,
         trending_score: 99.1,
-        permalink: "https://reddit.com/r/wholesomememes",
-        created_at: new Date(Date.now() - 3600000 * 1).toISOString()
+        permalink: "https://reddit.com/r/wholesomememes"
       }
     ];
 
-    let currentMemes = [...VERIFIED_FALLBACK_MEMES];
-    let selectedEndpoint = 'trending';
-    let selectedLang = 'curl';
+    let memeCollection = [...VERIFIED_MEMES];
+    let activeEndpoint = 'trending';
+    let activeLang = 'curl';
 
-    // Fetch Live Memes with failover
-    async function loadLiveMemes() {
+    // Fetch Live Memes with Failover
+    async function loadMemes() {
       try {
         const res = await fetch('/api/v1/memes/trending?limit=24');
         if (res.ok) {
           const data = await res.json();
           const items = Array.isArray(data) ? data : (data.items || []);
-          if (items.length > 0) {
-            currentMemes = items;
-          }
+          if (items.length > 0) memeCollection = items;
         }
       } catch (e) {
-        console.log("Using verified fallback memes");
+        console.log("Using verified comic memes");
       }
-      renderMemes();
-      updatePlayground();
+      renderComicGrid();
+      updateVault();
     }
 
-    // Render Meme Cards with 3D Tilt & Staggered Anime.js Entry
-    function renderMemes() {
-      const grid = document.getElementById('memeGrid');
-      const search = document.getElementById('memeSearch').value.toLowerCase().trim();
-      const activeSource = document.querySelector('#sourceFilters .chip.active').dataset.source;
+    // Render Comic Cards
+    function renderComicGrid() {
+      const grid = document.getElementById('comicGrid');
+      const search = document.getElementById('comicSearch').value.toLowerCase().trim();
+      const activeSource = document.querySelector('#comicSourceFilters .comic-tab.active').dataset.source;
 
-      const filtered = currentMemes.filter(m => {
+      const filtered = memeCollection.filter(m => {
         const matchesSearch = !search || 
           (m.title && m.title.toLowerCase().includes(search)) || 
           (m.author && m.author.toLowerCase().includes(search)) ||
@@ -1223,10 +1195,10 @@
 
       if (filtered.length === 0) {
         grid.innerHTML = `
-          <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: var(--text-dim);">
-            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🐸</div>
-            <h3 style="font-size: 1.1rem; color: var(--text);">No memes found matching your filter</h3>
-            <p style="font-size: 0.85rem; margin-top: 0.25rem;">Try clearing the search or choosing a different community chip.</p>
+          <div style="grid-column: 1/-1; text-align: center; padding: 4rem; background: #fff; border: 3px solid #000; box-shadow: 5px 5px 0px #000; border-radius: 8px;">
+            <div style="font-size: 3rem;">💥</div>
+            <h3 style="font-family: 'Bangers', cursive; font-size: 1.8rem; margin-top: 0.5rem;">NO MEMES FOUND!</h3>
+            <p style="font-size: 0.9rem; font-weight: 700; color: #555;">Try changing your search term or clicking a different category tab.</p>
           </div>
         `;
         return;
@@ -1234,244 +1206,191 @@
 
       grid.innerHTML = filtered.map(m => {
         const isVideo = m.media_type === 'video' || (m.url && (m.url.endsWith('.mp4') || m.url.endsWith('.webm')));
-        const isGif = m.media_type === 'gif' || (m.url && m.url.endsWith('.gif'));
-        const mediaHtml = isVideo ? `
+        const mediaTag = isVideo ? `
           <video src="${m.url}" autoplay loop muted playsinline referrerpolicy="no-referrer"></video>
         ` : `
           <img src="${m.url}" alt="${m.title}" loading="lazy" referrerpolicy="no-referrer" onerror="this.src='https://api.memegen.link/images/fine.jpg';" />
         `;
 
         return `
-          <div class="meme-card" data-meme-id="${m.id}">
-            <div class="card-media-wrapper">
-              ${mediaHtml}
-              <div class="card-badge-score">🔥 ${Number(m.score).toLocaleString()}</div>
-              <div class="card-badge-source">${m.source_community || m.source}</div>
+          <div class="comic-card" data-id="${m.id}">
+            <div class="speech-bubble-wrapper">
+              <div class="speech-bubble">"${m.title}"</div>
             </div>
-            <div class="card-body">
-              <h3 class="card-title">${m.title}</h3>
-              <div class="card-footer">
-                <span class="card-author">${m.author || 'anonymous'}</span>
-                <div class="card-actions">
-                  <button class="btn-upvote" title="Upvote Meme">
-                    <span>🔥</span>
-                    <span class="upvote-count">${Number(m.score).toLocaleString()}</span>
-                  </button>
-                  <button class="btn-link-source" title="View Source">
-                    Source &rarr;
-                  </button>
-                </div>
-              </div>
+
+            <div class="comic-card-media">
+              ${mediaTag}
+              <div class="badge-corner-stamp">💥 ${Number(m.score).toLocaleString()}</div>
+              <div class="badge-corner-source">${m.source_community || m.source}</div>
+            </div>
+
+            <div class="comic-card-footer">
+              <span class="comic-author-tag">${m.author || 'anonymous'}</span>
+              <button class="btn-upvote-stamp" title="Stamp Upvote">
+                <span>🔥 POW!</span>
+                <span class="upvote-num">${Number(m.score).toLocaleString()}</span>
+              </button>
             </div>
           </div>
         `;
       }).join('');
 
-      // Apply Vanilla-Tilt 3D Parallax
-      if (window.VanillaTilt) {
-        VanillaTilt.init(document.querySelectorAll('.meme-card'), {
-          max: 12,
-          speed: 400,
-          glare: true,
-          "max-glare": 0.2,
-          scale: 1.02
-        });
-      }
-
-      // Anime.js Staggered Entrance
+      // Anime.js Staggered Entry Animation
       if (window.anime) {
         anime({
-          targets: '.meme-card',
-          translateY: [24, 0],
+          targets: '.comic-card',
+          scale: [0.92, 1],
           opacity: [0, 1],
-          delay: anime.stagger(40),
-          easing: 'easeOutQuad',
-          duration: 350
+          delay: anime.stagger(45),
+          easing: 'easeOutElastic(1, .8)',
+          duration: 400
         });
       }
 
-      // Attach Card Click Events (Lightbox & Upvote)
-      document.querySelectorAll('.meme-card').forEach(card => {
-        const memeId = card.dataset.memeId;
-        const meme = currentMemes.find(x => x.id === memeId);
+      // Attach Event Handlers (Upvote Ink Stamp & Modal)
+      document.querySelectorAll('.comic-card').forEach(card => {
+        const id = card.dataset.id;
+        const meme = memeCollection.find(x => x.id === id);
         if (!meme) return;
 
-        // Upvote button handler with confetti and sound
-        const upvoteBtn = card.querySelector('.btn-upvote');
+        // Upvote Stamp Action (Confetti + Score Increment without sound)
+        const upvoteBtn = card.querySelector('.btn-upvote-stamp');
         upvoteBtn.addEventListener('click', (e) => {
           e.stopPropagation();
-          soundSynth.playPop();
           meme.score = (meme.score || 0) + 1;
-          card.querySelector('.upvote-count').textContent = Number(meme.score).toLocaleString();
-          card.querySelector('.card-badge-score').textContent = `🔥 ${Number(meme.score).toLocaleString()}`;
+          card.querySelector('.upvote-num').textContent = Number(meme.score).toLocaleString();
+          card.querySelector('.badge-corner-stamp').textContent = `💥 ${Number(meme.score).toLocaleString()}`;
           
           if (window.confetti) {
             confetti({
-              particleCount: 22,
-              spread: 50,
+              particleCount: 28,
+              spread: 60,
               origin: { x: e.clientX / window.innerWidth, y: e.clientY / window.innerHeight }
             });
           }
         });
 
-        // Source button handler
-        const srcBtn = card.querySelector('.btn-link-source');
-        srcBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          if (meme.permalink) window.open(meme.permalink, '_blank');
-        });
-
-        // Card body click opens lightbox
+        // Click Card to Open Comic Modal
         card.addEventListener('click', () => {
-          openLightbox(meme);
+          openComicModal(meme);
         });
       });
     }
 
-    // Lightbox Modal Functions
-    const lightboxModal = document.getElementById('lightboxModal');
-    const lightboxClose = document.getElementById('lightboxClose');
+    // Modal Handlers
+    const modal = document.getElementById('comicModal');
+    const modalClose = document.getElementById('modalClose');
 
-    function openLightbox(meme) {
-      soundSynth.playChime();
-      document.getElementById('lightboxTitle').textContent = meme.title;
-      document.getElementById('lightboxSource').textContent = meme.source_community || meme.source;
-      document.getElementById('lightboxScore').textContent = `🔥 ${Number(meme.score).toLocaleString()} upvotes`;
-      document.getElementById('lightboxAuthor').textContent = `Posted by ${meme.author || 'anonymous'}`;
-      document.getElementById('lightboxLink').href = meme.permalink || '#';
+    function openComicModal(meme) {
+      document.getElementById('modalTitle').textContent = `"${meme.title}"`;
+      document.getElementById('modalSource').textContent = meme.source_community || meme.source;
+      document.getElementById('modalScore').textContent = `💥 ${Number(meme.score).toLocaleString()} UPVOTES`;
+      document.getElementById('modalAuthor').textContent = `Posted by ${meme.author || 'anonymous'}`;
+      document.getElementById('modalLink').href = meme.permalink || '#';
 
       const isVideo = meme.media_type === 'video' || (meme.url && (meme.url.endsWith('.mp4') || meme.url.endsWith('.webm')));
-      document.getElementById('lightboxMedia').innerHTML = isVideo ? `
+      document.getElementById('modalMedia').innerHTML = isVideo ? `
         <video src="${meme.url}" controls autoplay loop referrerpolicy="no-referrer"></video>
       ` : `
         <img src="${meme.url}" alt="${meme.title}" referrerpolicy="no-referrer" onerror="this.src='https://api.memegen.link/images/fine.jpg';" />
       `;
 
-      lightboxModal.classList.add('active');
+      modal.classList.add('active');
     }
 
-    lightboxClose.addEventListener('click', () => {
-      lightboxModal.classList.remove('active');
-    });
+    modalClose.addEventListener('click', () => modal.classList.remove('active'));
+    modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') modal.classList.remove('active'); });
 
-    lightboxModal.addEventListener('click', (e) => {
-      if (e.target === lightboxModal) {
-        lightboxModal.classList.remove('active');
-      }
-    });
+    // Filter & Search Handlers
+    document.getElementById('comicSearch').addEventListener('input', renderComicGrid);
 
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && lightboxModal.classList.contains('active')) {
-        lightboxModal.classList.remove('active');
-      }
-    });
-
-    // Search and Chip Filter Handlers
-    document.getElementById('memeSearch').addEventListener('input', renderMemes);
-
-    document.querySelectorAll('#sourceFilters .chip').forEach(chip => {
-      chip.addEventListener('click', () => {
-        soundSynth.playPop();
-        document.querySelectorAll('#sourceFilters .chip').forEach(c => c.classList.remove('active'));
-        chip.classList.add('active');
-        renderMemes();
+    document.querySelectorAll('#comicSourceFilters .comic-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('#comicSourceFilters .comic-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        renderComicGrid();
       });
     });
 
-    document.querySelectorAll('#timeFilters .chip').forEach(chip => {
-      chip.addEventListener('click', () => {
-        soundSynth.playPop();
-        document.querySelectorAll('#timeFilters .chip').forEach(c => c.classList.remove('active'));
-        chip.classList.add('active');
-        renderMemes();
-      });
-    });
-
-    // Playground Code Snippets
-    const CODE_SNIPPETS = {
+    // Vault Code Snippets
+    const VAULT_CODE = {
       trending: {
         curl: 'curl -X GET "https://meme-ology.vercel.app/api/v1/memes/trending?time_window=24h&limit=10" \\\n     -H "Accept: application/json"',
-        python: 'import httpx\n\nresponse = httpx.get(\n    "https://meme-ology.vercel.app/api/v1/memes/trending",\n    params={"time_window": "24h", "limit": 10}\n)\nmemes = response.json()\nprint(f"Ingested {len(memes)} viral memes!")',
+        python: 'import httpx\n\nres = httpx.get(\n    "https://meme-ology.vercel.app/api/v1/memes/trending",\n    params={"time_window": "24h", "limit": 10}\n)\nfor meme in res.json():\n    print(f"[{meme[\'score\']} upvotes] {meme[\'title\']}")',
         javascript: 'const res = await fetch("https://meme-ology.vercel.app/api/v1/memes/trending?time_window=24h&limit=10");\nconst memes = await res.json();\nconsole.log(memes);'
       },
       latest: {
-        curl: 'curl -X GET "https://meme-ology.vercel.app/api/v1/memes/latest?limit=20&nsfw=false" \\\n     -H "Accept: application/json"',
-        python: 'import httpx\n\nres = httpx.get("https://meme-ology.vercel.app/api/v1/memes/latest", params={"limit": 20})\ndata = res.json()\nprint(f"Total count: {data[\'total\']}")',
+        curl: 'curl -X GET "https://meme-ology.vercel.app/api/v1/memes/latest?limit=20" \\\n     -H "Accept: application/json"',
+        python: 'import httpx\n\nres = httpx.get("https://meme-ology.vercel.app/api/v1/memes/latest", params={"limit": 20})\nprint("Newest memes:", res.json()["total"])',
         javascript: 'const res = await fetch("https://meme-ology.vercel.app/api/v1/memes/latest?limit=20");\nconst data = await res.json();\nconsole.log(data.items);'
       },
       random: {
         curl: 'curl -X GET "https://meme-ology.vercel.app/api/v1/memes/random?source=reddit" \\\n     -H "Accept: application/json"',
-        python: 'import httpx\n\nmeme = httpx.get("https://meme-ology.vercel.app/api/v1/memes/random", params={"source": "reddit"}).json()\nprint(f"Random: {meme[\'title\']} -> {meme[\'url\']}")',
-        javascript: 'const res = await fetch("https://meme-ology.vercel.app/api/v1/memes/random?source=reddit");\nconst meme = await res.json();\nconsole.log(meme.title, meme.url);'
+        python: 'import httpx\n\nmeme = httpx.get("https://meme-ology.vercel.app/api/v1/memes/random", params={"source": "reddit"}).json()\nprint(meme["title"], meme["url"])',
+        javascript: 'const res = await fetch("https://meme-ology.vercel.app/api/v1/memes/random?source=reddit");\nconst meme = await res.json();\nconsole.log(meme.title);'
       },
       sources: {
         curl: 'curl -X GET "https://meme-ology.vercel.app/api/v1/sources" \\\n     -H "Accept: application/json"',
-        python: 'import httpx\n\nsources = httpx.get("https://meme-ology.vercel.app/api/v1/sources").json()\nfor s in sources:\n    print(f"[{s[\'status\'].upper()}] {s[\'name\']} ({s[\'item_count\']} memes)")',
+        python: 'import httpx\n\nsources = httpx.get("https://meme-ology.vercel.app/api/v1/sources").json()\nfor s in sources:\n    print(f"{s[\'name\']}: {s[\'status\']}")',
         javascript: 'const res = await fetch("https://meme-ology.vercel.app/api/v1/sources");\nconst sources = await res.json();\nconsole.table(sources);'
       },
       health: {
         curl: 'curl -X GET "https://meme-ology.vercel.app/health" \\\n     -H "Accept: application/json"',
-        python: 'import httpx\n\nhealth = httpx.get("https://meme-ology.vercel.app/health").json()\nprint(f"Status: {health[\'status\']} | Cached: {health[\'total_memes_cached\']}")',
-        javascript: 'const res = await fetch("https://meme-ology.vercel.app/health");\nconst health = await res.json();\nconsole.log(health);'
+        python: 'import httpx\n\nhealth = httpx.get("https://meme-ology.vercel.app/health").json()\nprint("API Status:", health["status"])',
+        javascript: 'const res = await fetch("https://meme-ology.vercel.app/health");\nconst health = await res.json();\nconsole.log(health.status);'
       }
     };
 
-    function updatePlayground() {
-      const code = CODE_SNIPPETS[selectedEndpoint][selectedLang];
-      document.getElementById('codeDisplay').textContent = code;
-
-      let previewData;
-      if (selectedEndpoint === 'trending' || selectedEndpoint === 'latest') {
-        previewData = currentMemes.slice(0, 2);
-      } else if (selectedEndpoint === 'random') {
-        previewData = currentMemes[0] || VERIFIED_FALLBACK_MEMES[0];
-      } else if (selectedEndpoint === 'sources') {
-        previewData = [
-          { id: "reddit_dankmemes", name: "reddit:r/dankmemes", status: "ok", item_count: 50, latency_ms: 120.4 },
-          { id: "kym_trending", name: "knowyourmeme:trending", status: "ok", item_count: 16, latency_ms: 310.2 }
+    function updateVault() {
+      document.getElementById('comicCodeDisplay').textContent = VAULT_CODE[activeEndpoint][activeLang];
+      let sampleOutput;
+      if (activeEndpoint === 'trending' || activeEndpoint === 'latest') {
+        sampleOutput = memeCollection.slice(0, 2);
+      } else if (activeEndpoint === 'random') {
+        sampleOutput = memeCollection[0] || VERIFIED_MEMES[0];
+      } else if (activeEndpoint === 'sources') {
+        sampleOutput = [
+          { id: "reddit_dankmemes", name: "reddit:r/dankmemes", status: "ok", item_count: 50 },
+          { id: "kym_trending", name: "knowyourmeme:trending", status: "ok", item_count: 16 }
         ];
       } else {
-        previewData = { status: "ok", app_name: "Meme Tracker API", total_memes_cached: currentMemes.length, healthy_sources: 7 };
+        sampleOutput = { status: "ok", app_name: "Meme Tracker API", total_memes_cached: memeCollection.length, healthy_sources: 7 };
       }
-      document.getElementById('responseDisplay').textContent = JSON.stringify(previewData, null, 2);
+      document.getElementById('comicPreviewDisplay').textContent = JSON.stringify(sampleOutput, null, 2);
     }
 
-    // Endpoint Selection
-    document.querySelectorAll('#endpointList .endpoint-card').forEach(card => {
+    // Vault Endpoint Tabs
+    document.querySelectorAll('#comicEndpoints .comic-endpoint-card').forEach(card => {
       card.addEventListener('click', () => {
-        soundSynth.playPop();
-        document.querySelectorAll('#endpointList .endpoint-card').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('#comicEndpoints .comic-endpoint-card').forEach(c => c.classList.remove('active'));
         card.classList.add('active');
-        selectedEndpoint = card.dataset.endpoint;
-        updatePlayground();
+        activeEndpoint = card.dataset.endpoint;
+        updateVault();
       });
     });
 
-    // Language Tab Selection
-    document.querySelectorAll('#langTabs .lang-tab').forEach(tab => {
-      tab.addEventListener('click', () => {
-        soundSynth.playPop();
-        document.querySelectorAll('#langTabs .lang-tab').forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        selectedLang = tab.dataset.lang;
-        updatePlayground();
+    // Vault Lang Tabs
+    document.querySelectorAll('#comicLangTabs .lang-tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#comicLangTabs .lang-tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeLang = btn.dataset.lang;
+        updateVault();
       });
     });
 
     // Copy Code Button
-    document.getElementById('copyCodeBtn').addEventListener('click', () => {
-      soundSynth.playChime();
-      const code = document.getElementById('codeDisplay').textContent;
+    document.getElementById('comicCopyBtn').addEventListener('click', () => {
+      const code = document.getElementById('comicCodeDisplay').textContent;
       navigator.clipboard.writeText(code);
-      const btn = document.getElementById('copyCodeBtn');
-      btn.innerHTML = '<span>✓ Copied!</span>';
-      setTimeout(() => {
-        btn.innerHTML = '<span>📋 Copy</span>';
-      }, 1500);
+      const btn = document.getElementById('comicCopyBtn');
+      btn.textContent = 'COPIED!';
+      setTimeout(() => { btn.textContent = 'COPY'; }, 1500);
     });
 
-    // Start
-    loadLiveMemes();
+    // Init
+    loadMemes();
   </script>
 </body>
 </html>
