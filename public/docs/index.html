@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meme-ology — Interactive Swagger API Documentation</title>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui.css" />
+  <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/favicon-32x32.png" sizes="32x32" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Space+Grotesk:wght@600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <style>
+    html {
+      box-sizing: border-box;
+      overflow-y: scroll;
+    }
+    *, *:before, *:after {
+      box-sizing: inherit;
+    }
+    body {
+      margin: 0;
+      background: #fdfbf7;
+      font-family: 'Space Grotesk', -apple-system, sans-serif;
+    }
+    .custom-topbar {
+      background: #FFE81F;
+      border-bottom: 3px solid #000;
+      padding: 12px 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 0px rgba(0,0,0,0.1);
+    }
+    .custom-logo {
+      font-family: 'Bangers', cursive;
+      font-size: 1.8rem;
+      letter-spacing: 0.05em;
+      color: #000;
+      text-decoration: none;
+      text-shadow: 2px 2px 0px #fff, 3px 3px 0px #FF2A42;
+    }
+    .btn-back {
+      background: #fff;
+      border: 2px solid #000;
+      box-shadow: 3px 3px 0px #000;
+      padding: 6px 14px;
+      font-weight: 800;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: #000;
+      border-radius: 4px;
+      transition: all 0.12s;
+    }
+    .btn-back:hover {
+      background: #FF2A42;
+      color: #fff;
+      transform: translate(-1px, -1px);
+    }
+    .swagger-ui .topbar {
+      display: none;
+    }
+    .swagger-ui .info {
+      margin: 25px 0;
+    }
+    .swagger-ui .scheme-container {
+      background: #fff;
+      border: 2px solid #000;
+      box-shadow: 4px 4px 0px #000;
+      border-radius: 6px;
+      margin: 20px 0;
+      padding: 15px;
+    }
+    .swagger-ui .opblock {
+      border: 2px solid #000 !important;
+      border-radius: 6px !important;
+      box-shadow: 3px 3px 0px #000 !important;
+      margin: 0 0 15px !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="custom-topbar">
+    <a href="/" class="custom-logo">MEME-OLOGY! API DOCS</a>
+    <a href="/" class="btn-back">&larr; Back to Comic Portal</a>
+  </div>
+
+  <div id="swagger-ui"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui-bundle.js" charset="UTF-8"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui-standalone-preset.js" charset="UTF-8"></script>
+  <script>
+    window.onload = function() {
+      window.ui = SwaggerUIBundle({
+        url: "/openapi.json",
+        dom_id: '#swagger-ui',
+        deepLinking: true,
+        presets: [
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIStandalonePreset
+        ],
+        plugins: [
+          SwaggerUIBundle.plugins.DownloadUrl
+        ],
+        layout: "BaseLayout"
+      });
+    };
+  </script>
+</body>
+</html>
