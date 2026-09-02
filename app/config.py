@@ -5,6 +5,7 @@ from typing import List, Union
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 import json
+import os
 
 
 class Settings(BaseSettings):
@@ -50,7 +51,7 @@ class Settings(BaseSettings):
 
     # Persistence & Storage
     DB_PATH: str = Field(
-        default="data/memes.db",
+        default="/tmp/memes.db" if os.environ.get("VERCEL") else "data/memes.db",
         description="Path to SQLite database file",
     )
 
