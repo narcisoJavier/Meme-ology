@@ -9,7 +9,7 @@
                                                |___/ |___/   
 ```
 
-### The Internet's Real-Time Meme Radar 📡🐸
+### The Internet's Real-Time Meme Radar 
 
 **A lightning-fast, serverless-ready API that continuously discovers, deduplicates, and ranks memes across Reddit and Know Your Meme before they get reposted on Facebook.**
 
