@@ -1,15 +1,11 @@
-"""Generate the upgraded, streamlined, casual, unclipped Meme-ology frontend."""
+"""Generate upgraded frontend with clean like buttons, Top 10 Trending, and multi-platform support."""
 
 import json
 from pathlib import Path
 
-# Load live harvested memes
+# Load merged multi-platform memes
 data_path = Path("data/live_harvested_memes.json")
-if data_path.exists():
-    live_memes = json.loads(data_path.read_text(encoding="utf-8"))
-else:
-    live_memes = []
-
+live_memes = json.loads(data_path.read_text(encoding="utf-8"))
 memes_json_str = json.dumps(live_memes, indent=4)
 
 html_content = f"""<!DOCTYPE html>
@@ -18,17 +14,13 @@ html_content = f"""<!DOCTYPE html>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MEME-OLOGY! — The Living Internet Meme Almanac</title>
-  <meta name="description" content="Explore, score, and discover memes across Gen Alpha, Gen Z, Millennial, and Retro internet culture.">
+  <meta name="description" content="Explore, score, and discover fresh memes across Reddit, Instagram Reels, TikTok, YouTube Shorts, and Know Your Meme.">
   <meta name="referrer" content="no-referrer">
 
-  <!-- Google Fonts: Comic Bangers, Space Grotesk, and JetBrains Mono -->
+  <!-- Google Fonts: Space Grotesk, Bangers, and JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Space+Grotesk:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-
-  <!-- Canvas Confetti & Anime.js -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 
   <style>
     :root {{
@@ -448,7 +440,7 @@ html_content = f"""<!DOCTYPE html>
 
     .search-input-box {{
       position: relative;
-      flex: 1 1 260px;
+      flex: 1 1 240px;
     }}
 
     .compact-search-input {{
@@ -552,7 +544,7 @@ html_content = f"""<!DOCTYPE html>
     }}
 
     .comic-card:hover {{
-      transform: translateY(-4px);
+      transform: translateY(-3px);
       box-shadow: var(--shadow-heavy);
     }}
 
@@ -647,13 +639,13 @@ html_content = f"""<!DOCTYPE html>
       position: absolute;
       top: 8px;
       right: 8px;
-      background: var(--comic-yellow);
+      background: #fff;
       border: 2px solid #000;
-      font-family: 'Bangers', cursive;
-      font-size: 1.1rem;
+      font-size: 0.75rem;
+      font-weight: 800;
       padding: 2px 8px;
       box-shadow: 2px 2px 0px #000;
-      border-radius: 3px;
+      border-radius: 4px;
       color: #000;
       z-index: 2;
     }}
@@ -743,56 +735,43 @@ html_content = f"""<!DOCTYPE html>
       box-shadow: 3px 3px 0px #000;
     }}
 
-    .btn-upvote-stamp {{
-      background: var(--comic-red);
-      color: #fff;
+    /* Clean Modern Like Button (NO POW!, NO JARRED SLAMS) */
+    .btn-like-clean {{
+      background: #fff;
       border: 2px solid #000;
       box-shadow: 2px 2px 0px #000;
-      padding: 4px 10px;
-      font-family: 'Bangers', cursive;
-      font-size: 1.05rem;
-      letter-spacing: 0.04em;
-      border-radius: 4px;
+      padding: 5px 12px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 800;
+      border-radius: 20px;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 0.35rem;
-      transition: transform 0.12s, background-color 0.12s;
-    }}
-
-    .btn-upvote-stamp:hover {{
-      transform: scale(1.05);
-    }}
-
-    .btn-upvote-stamp.voted {{
-      background: var(--comic-lime);
+      gap: 0.4rem;
+      transition: all 0.15s ease;
       color: #000;
     }}
 
-    /* Stamp Slam Effect */
-    .stamp-slam-effect {{
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) rotate(-15deg) scale(0);
-      background: var(--comic-red);
-      color: #fff;
-      border: 3px solid #000;
-      box-shadow: 5px 5px 0px #000;
-      font-family: 'Bangers', cursive;
-      font-size: 1.8rem;
-      letter-spacing: 0.05em;
-      padding: 6px 14px;
-      border-radius: 6px;
-      pointer-events: none;
-      z-index: 20;
-      opacity: 0;
+    .btn-like-clean:hover {{
+      transform: scale(1.05);
+      background: #fff0f2;
+    }}
+
+    .btn-like-clean.voted {{
+      background: #fee2e2;
+      border-color: #ef4444;
+      color: #ef4444;
+    }}
+
+    .btn-like-clean.voted .heart-icon {{
+      transform: scale(1.2);
     }}
 
     /* =========================================================
-       SECTION 2: VIRAL LEADERBOARD & TELEMETRY
+       SECTION 2: TOP 10 TRENDING RIGHT NOW (Clean & Modern)
        ========================================================= */
-    .leaderboard-table-card {{
+    .trending-top10-wrap {{
       background: #fff;
       border: var(--border-ink);
       box-shadow: var(--shadow-heavy);
@@ -801,7 +780,7 @@ html_content = f"""<!DOCTYPE html>
       margin-bottom: 2rem;
     }}
 
-    .leaderboard-header {{
+    .trending-top10-header {{
       background: var(--comic-yellow);
       border-bottom: 3px solid #000;
       padding: 1rem 1.5rem;
@@ -810,31 +789,31 @@ html_content = f"""<!DOCTYPE html>
       align-items: center;
     }}
 
-    .leaderboard-item {{
+    .trending-item-row {{
       display: grid;
-      grid-template-columns: 60px 80px 1fr 140px 120px;
+      grid-template-columns: 50px 80px 1fr 140px 110px;
       align-items: center;
       gap: 1rem;
       padding: 0.75rem 1.5rem;
-      border-bottom: 2px solid #000;
+      border-bottom: 1px solid #ddd;
       transition: background-color 0.12s;
     }}
 
-    .leaderboard-item:hover {{
+    .trending-item-row:hover {{
       background: #fdfae8;
     }}
 
-    .rank-badge {{
+    .trending-rank {{
       font-family: 'Bangers', cursive;
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       text-align: center;
     }}
 
-    .rank-1 {{ color: #eab308; }}
-    .rank-2 {{ color: #94a3b8; }}
-    .rank-3 {{ color: #b45309; }}
+    .rank-top1 {{ color: #eab308; }}
+    .rank-top2 {{ color: #94a3b8; }}
+    .rank-top3 {{ color: #b45309; }}
 
-    .leaderboard-thumb {{
+    .trending-thumb {{
       width: 70px;
       height: 50px;
       background: #111116;
@@ -846,7 +825,7 @@ html_content = f"""<!DOCTYPE html>
       overflow: hidden;
     }}
 
-    .leaderboard-thumb img {{
+    .trending-thumb img {{
       max-width: 100%;
       max-height: 100%;
       object-fit: contain;
@@ -1156,7 +1135,7 @@ html_content = f"""<!DOCTYPE html>
       .lab-split-studio {{
         grid-template-columns: 1fr;
       }}
-      .leaderboard-item {{
+      .trending-item-row {{
         grid-template-columns: 40px 60px 1fr 90px;
       }}
     }}
@@ -1167,7 +1146,7 @@ html_content = f"""<!DOCTYPE html>
   <!-- Top Banner -->
   <div class="comic-top-banner">
     <span>✨ THE LIVING INTERNET MEME ALMANAC • 1990s TO TODAY</span>
-    <span>GEN ALPHA • GEN Z • MILLENNIAL • RETRO &amp; BOOMER ✨</span>
+    <span>REDDIT • INSTAGRAM REELS • TIKTOK • YOUTUBE SHORTS • KYM ✨</span>
   </div>
 
   <!-- Header -->
@@ -1183,8 +1162,8 @@ html_content = f"""<!DOCTYPE html>
         <button class="section-nav-btn active" id="navBtnFeed" onclick="scrollToSection('feedSection')">
           <span>📰 1. The Feed</span>
         </button>
-        <button class="section-nav-btn" id="navBtnLeaderboard" onclick="scrollToSection('leaderboardSection')">
-          <span>🏆 2. Leaderboard</span>
+        <button class="section-nav-btn" id="navBtnTrending" onclick="scrollToSection('trendingSection')">
+          <span>⚡ 2. Top 10 Trending</span>
         </button>
         <button class="section-nav-btn" id="navBtnLab" onclick="scrollToSection('labSection')">
           <span>🧪 3. API Studio</span>
@@ -1229,7 +1208,7 @@ html_content = f"""<!DOCTYPE html>
         <p style="font-size: 0.75rem; font-weight: 700;">TRACKED &amp; CATEGORIZED</p>
         <div class="telemetry-grid">
           <div class="telemetry-cell">
-            <div class="telemetry-num" id="statMemes">54</div>
+            <div class="telemetry-num" id="statMemes">{len(live_memes)}</div>
             <div class="telemetry-lbl">MEMES TRACKED</div>
           </div>
           <div class="telemetry-cell">
@@ -1237,8 +1216,8 @@ html_content = f"""<!DOCTYPE html>
             <div class="telemetry-lbl">TOTAL UPVOTES</div>
           </div>
           <div class="telemetry-cell">
-            <div class="telemetry-num" style="color: #059669;">4 ERAS</div>
-            <div class="telemetry-lbl">GENERATIONS</div>
+            <div class="telemetry-num" style="color: #059669;">5 FEEDS</div>
+            <div class="telemetry-lbl">PLATFORMS</div>
           </div>
           <div class="telemetry-cell">
             <div class="telemetry-num" style="color: #2563eb;">&lt; 5ms</div>
@@ -1269,7 +1248,7 @@ html_content = f"""<!DOCTYPE html>
           type="text" 
           id="comicSearch" 
           class="compact-search-input" 
-          placeholder="Search punchlines, authors, or slang (e.g. skibidi, wojak, doge)..."
+          placeholder="Search punchlines, authors, or platforms..."
           autocomplete="off"
         />
       </div>
@@ -1283,21 +1262,19 @@ html_content = f"""<!DOCTYPE html>
         <button class="comic-filter-pill pill-boomer" data-gen="gen_x">📼 Retro</button>
       </div>
 
-      <!-- COMMUNITY & SORT DROPDOWNS -->
+      <!-- PLATFORM & SORT DROPDOWNS -->
       <div style="display: flex; gap: 0.4rem; align-items: center;">
-        <select id="communitySelect" class="toolbar-dropdown" onchange="onCommunityFilterChange(this.value)">
-          <option value="all">🌐 All Communities</option>
-          <option value="r/GenAlpha">r/GenAlpha</option>
-          <option value="r/skibiditoilet">r/skibiditoilet</option>
-          <option value="r/dankmemes">r/dankmemes</option>
-          <option value="r/me_irl">r/me_irl</option>
-          <option value="r/AdviceAnimals">r/AdviceAnimals</option>
-          <option value="r/wholesomememes">r/wholesomememes</option>
-          <option value="knowyourmeme">Know Your Meme</option>
+        <select id="platformSelect" class="toolbar-dropdown" onchange="onPlatformFilterChange(this.value)">
+          <option value="all">🌐 All Platforms</option>
+          <option value="reddit">🔴 Reddit</option>
+          <option value="instagram">📸 Instagram Reels</option>
+          <option value="tiktok">🎵 TikTok Trends</option>
+          <option value="youtube">▶️ YouTube Shorts</option>
+          <option value="knowyourmeme">📖 Know Your Meme</option>
         </select>
         <select id="sortSelect" class="toolbar-dropdown" onchange="onSortChange(this.value)">
-          <option value="score">🔥 Top Upvotes</option>
-          <option value="newest">⚡ Most Recent</option>
+          <option value="newest" selected>⚡ Fresh &amp; Recent</option>
+          <option value="score">🔥 Most Liked</option>
         </select>
       </div>
     </div>
@@ -1308,23 +1285,23 @@ html_content = f"""<!DOCTYPE html>
   </section>
 
   <!-- =========================================================
-       SECTION 2: VIRAL LEADERBOARD
+       SECTION 2: TOP 10 TRENDING RIGHT NOW
        ========================================================= -->
-  <section class="section-container" id="leaderboardSection" style="margin-top: 4rem;">
-    <div class="leaderboard-table-card">
-      <div class="leaderboard-header">
+  <section class="section-container" id="trendingSection" style="margin-top: 4rem;">
+    <div class="trending-top10-wrap">
+      <div class="trending-top10-header">
         <div>
           <h2 style="font-family: 'Bangers', cursive; font-size: 1.8rem; letter-spacing: 0.04em;">
-            🏆 VIRAL HALL OF FAME &amp; LEADERBOARD
+            ⚡ TRENDING RIGHT NOW (TOP 10)
           </h2>
           <p style="font-size: 0.85rem; font-weight: 700; color: #333;">
-            The all-time highest-voted internet memes ranked by community engagement.
+            The 10 hottest memes capturing the internet's attention today across all platforms.
           </p>
         </div>
-        <span class="comic-stamp-pill" style="font-size: 0.8rem;">TOP 10 G.O.A.T.</span>
+        <span class="comic-stamp-pill" style="font-size: 0.8rem;">TODAY'S HOTTEST</span>
       </div>
 
-      <div id="leaderboardList">
+      <div id="trendingTop10List">
         <!-- Injected by JavaScript -->
       </div>
     </div>
@@ -1340,7 +1317,7 @@ html_content = f"""<!DOCTYPE html>
       <div class="lab-banner-head">
         <div class="lab-title-group">
           <h2>THE SECRET LAB: DEVELOPER API STUDIO</h2>
-          <p style="font-size: 0.85rem; color: #aaa;">Interactive generational code generator, live response inspector, and export console.</p>
+          <p style="font-size: 0.85rem; color: #aaa;">Multi-platform code generator, live response inspector, and export console.</p>
         </div>
 
         <div class="lab-badge-row" style="display: flex; gap: 0.6rem; align-items: center;">
@@ -1421,10 +1398,13 @@ html_content = f"""<!DOCTYPE html>
               </select>
             </div>
             <div class="param-row">
-              <label style="font-size: 0.8rem; font-weight: 700;">source:</label>
+              <label style="font-size: 0.8rem; font-weight: 700;">platform:</label>
               <select id="paramSource" class="param-input-select" onchange="updateLabStudio()">
-                <option value="" selected>all sources</option>
+                <option value="" selected>all platforms</option>
                 <option value="reddit">reddit</option>
+                <option value="instagram">instagram</option>
+                <option value="tiktok">tiktok</option>
+                <option value="youtube">youtube</option>
                 <option value="knowyourmeme">knowyourmeme</option>
               </select>
             </div>
@@ -1481,7 +1461,7 @@ html_content = f"""<!DOCTYPE html>
       <div class="modal-content-details">
         <div style="display: flex; justify-content: space-between; align-items: center;">
           <span id="modalSource" class="comic-stamp-pill" style="font-size: 0.8rem;">r/dankmemes</span>
-          <span id="modalScore" style="font-family: 'Bangers', cursive; font-size: 1.4rem; color: var(--comic-red);">💥 24,500 UPVOTES</span>
+          <span id="modalScore" style="font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; font-weight: 800; color: var(--comic-red);">❤️ 24,500 LIKES</span>
         </div>
         <h3 id="modalTitle" style="font-size: 1.2rem; font-weight: 800;"></h3>
         <div style="display: flex; justify-content: space-between; align-items: center; border-top: 2px solid #000; padding-top: 0.75rem; flex-wrap: wrap; gap: 0.75rem;">
@@ -1506,13 +1486,13 @@ html_content = f"""<!DOCTYPE html>
   </footer>
 
   <script>
-    // Embedded Live Harvested Memes
+    // Embedded Multi-Platform Harvested Memes
     const GENERATIONAL_MEMES = {memes_json_str};
 
     let memeCollection = [...GENERATIONAL_MEMES];
     let spotlightIndex = 0;
-    let selectedCommunity = 'all';
-    let selectedSort = 'score';
+    let selectedPlatform = 'all';
+    let selectedSort = 'newest'; // DEFAULT: Fresh & Recent First!
 
     // Persistent 1-Vote Per User Registry (localStorage)
     function getVotedMemeIds() {{
@@ -1544,7 +1524,7 @@ html_content = f"""<!DOCTYPE html>
     // Ingest Live Memes with Failover
     async function initFeed() {{
       try {{
-        const res = await fetch('/api/v1/memes/trending?limit=100');
+        const res = await fetch('/api/v1/memes/latest?limit=100');
         if (res.ok) {{
           const data = await res.json();
           const items = Array.isArray(data) ? data : (data.items || []);
@@ -1553,11 +1533,11 @@ html_content = f"""<!DOCTYPE html>
           }}
         }}
       }} catch (e) {{
-        console.log("Using cached meme collection");
+        console.log("Using cached multi-platform meme collection");
       }}
       renderSpotlight();
       renderComicGrid();
-      renderLeaderboard();
+      renderTop10Trending();
       updateLabStudio();
     }}
 
@@ -1569,7 +1549,7 @@ html_content = f"""<!DOCTYPE html>
       const isVideo = m.media_type === 'video' || (m.url && (m.url.endsWith('.mp4') || m.url.endsWith('.webm')));
       const mediaTag = isVideo ? 
         `<video src="${{m.url}}" autoplay loop muted playsinline referrerpolicy="no-referrer"></video>` :
-        `<img src="${{m.url}}" alt="${{m.title}}" referrerpolicy="no-referrer" onerror="this.src='https://api.memegen.link/images/fine.jpg';" />`;
+        `<img src="${{m.url}}" alt="${{m.title}}" referrerpolicy="no-referrer" onerror="this.style.display='none';" />`;
 
       const genKey = (m.generation || 'gen_z').toLowerCase();
       const genLabel = {{
@@ -1579,16 +1559,24 @@ html_content = f"""<!DOCTYPE html>
         gen_x: "📼 RETRO"
       }}[genKey] || "🛹 GEN Z";
 
+      const platIcon = {{
+        reddit: "🔴 Reddit",
+        instagram: "📸 Instagram Reels",
+        tiktok: "🎵 TikTok",
+        youtube: "▶️ YouTube Shorts",
+        knowyourmeme: "📖 Know Your Meme"
+      }}[m.source_platform] || m.source_platform;
+
       document.getElementById('spotlightBody').innerHTML = `
         <div class="spotlight-media-frame">
           ${{mediaTag}}
         </div>
         <div class="spotlight-info-col">
           <div class="spotlight-meta-row">
-            <span class="comic-stamp-pill">${{m.source_community || m.source}}</span>
+            <span class="comic-stamp-pill">${{platIcon}}</span>
             <span class="badge-generation badge-${{genKey}}" style="position: static;">${{genLabel}}</span>
-            <span style="font-family: 'Bangers', cursive; font-size: 1.3rem; color: var(--comic-red);">
-              💥 ${{Number(m.score).toLocaleString()}} UPVOTES
+            <span style="font-family: 'Space Grotesk', sans-serif; font-size: 1rem; font-weight: 800; color: var(--comic-red);">
+              ❤️ ${{Number(m.score).toLocaleString()}} LIKES
             </span>
           </div>
           <div class="spotlight-title">"${{m.title}}"</div>
@@ -1600,7 +1588,7 @@ html_content = f"""<!DOCTYPE html>
               🚀 OPEN ORIGINAL POST &rarr;
             </a>
             <button class="btn-comic" onclick="openComicModal(memeCollection.find(x => x.id === '${{m.id}}'))">
-              🔍 Fullscreen Preview
+              🔍 Fullscreen
             </button>
           </div>
         </div>
@@ -1622,10 +1610,11 @@ html_content = f"""<!DOCTYPE html>
         const title = (m.title || '').toLowerCase();
         const author = (m.author || '').toLowerCase();
         const comm = (m.source_community || '').toLowerCase();
+        const plat = (m.source_platform || '').toLowerCase();
         const gen = (m.generation || 'gen_z').toLowerCase();
 
         // Search Match
-        const matchesSearch = !search || title.includes(search) || author.includes(search) || comm.includes(search) || gen.includes(search);
+        const matchesSearch = !search || title.includes(search) || author.includes(search) || comm.includes(search) || plat.includes(search) || gen.includes(search);
 
         // Era Match
         let matchesGen = true;
@@ -1633,24 +1622,20 @@ html_content = f"""<!DOCTYPE html>
           matchesGen = gen === activeGen;
         }}
 
-        // Community Match
-        let matchesCommunity = true;
-        if (selectedCommunity !== 'all') {{
-          if (selectedCommunity === 'knowyourmeme') {{
-            matchesCommunity = m.source === 'knowyourmeme' || (m.source_platform && m.source_platform.includes('knowyourmeme'));
-          }} else {{
-            matchesCommunity = m.source_community === selectedCommunity;
-          }}
+        // Platform Match
+        let matchesPlatform = true;
+        if (selectedPlatform !== 'all') {{
+          matchesPlatform = plat === selectedPlatform;
         }}
 
-        return matchesSearch && matchesGen && matchesCommunity;
+        return matchesSearch && matchesGen && matchesPlatform;
       }});
 
       // Sort
-      if (selectedSort === 'score') {{
-        filtered.sort((a,b) => (b.score || 0) - (a.score || 0));
-      }} else if (selectedSort === 'newest') {{
+      if (selectedSort === 'newest') {{
         filtered.sort((a,b) => (b.created_at || 0) - (a.created_at || 0));
+      }} else if (selectedSort === 'score') {{
+        filtered.sort((a,b) => (b.score || 0) - (a.score || 0));
       }}
 
       if (filtered.length === 0) {{
@@ -1658,7 +1643,7 @@ html_content = f"""<!DOCTYPE html>
           <div style="grid-column: 1/-1; text-align: center; padding: 3.5rem; background: #fff; border: 3px solid #000; box-shadow: 6px 6px 0px #000; border-radius: 8px;">
             <div style="font-size: 3rem;">✨</div>
             <h3 style="font-family: 'Bangers', cursive; font-size: 2rem; margin-top: 0.5rem;">NO MEMES FOUND IN THIS VIEW</h3>
-            <p style="font-size: 0.95rem; font-weight: 700; color: #555;">Try choosing another era or clearing your search term.</p>
+            <p style="font-size: 0.95rem; font-weight: 700; color: #555;">Try choosing another platform, era, or clearing your search term.</p>
           </div>
         `;
         return;
@@ -1673,10 +1658,10 @@ html_content = f"""<!DOCTYPE html>
           <video src="${{m.url}}" preload="metadata" muted playsinline loop referrerpolicy="no-referrer"></video>
           <div class="badge-gif-indicator">▶ VIDEO</div>
         ` : (isGif ? `
-          <img src="${{m.url}}" alt="${{m.title}}" loading="lazy" referrerpolicy="no-referrer" onerror="this.src='https://api.memegen.link/images/fine.jpg';" />
+          <img src="${{m.url}}" alt="${{m.title}}" loading="lazy" referrerpolicy="no-referrer" />
           <div class="badge-gif-indicator">▶ GIF</div>
         ` : `
-          <img src="${{m.url}}" alt="${{m.title}}" loading="lazy" referrerpolicy="no-referrer" onerror="this.src='https://api.memegen.link/images/fine.jpg';" />
+          <img src="${{m.url}}" alt="${{m.title}}" loading="lazy" referrerpolicy="no-referrer" />
         `);
 
         const genKey = (m.generation || 'gen_z').toLowerCase();
@@ -1686,6 +1671,14 @@ html_content = f"""<!DOCTYPE html>
           millennial: "💾 MILLENNIAL",
           gen_x: "📼 RETRO"
         }}[genKey] || "🛹 GEN Z";
+
+        const platLabel = {{
+          reddit: "🔴 Reddit",
+          instagram: "📸 Reels",
+          tiktok: "🎵 TikTok",
+          youtube: "▶️ Shorts",
+          knowyourmeme: "📖 KYM"
+        }}[m.source_platform] || m.source_platform;
 
         return `
           <div class="comic-card" data-id="${{m.id}}">
@@ -1698,39 +1691,24 @@ html_content = f"""<!DOCTYPE html>
 
             <div class="comic-card-media">
               ${{mediaTag}}
-              <div class="badge-corner-stamp">💥 ${{Number(m.score).toLocaleString()}}</div>
-              <div class="badge-corner-source">${{m.source_community || m.source}}</div>
+              <div class="badge-corner-stamp">${{platLabel}}</div>
               <div class="badge-generation badge-${{genKey}}">${{genLabel}}</div>
-              <div class="stamp-slam-effect">💥 POW! +1</div>
             </div>
 
             <div class="comic-card-footer">
-              <a href="${{m.permalink}}" target="_blank" rel="noopener noreferrer" class="btn-card-permalink" title="Open post thread on ${{m.source_community || m.source}}" onclick="event.stopPropagation()">
+              <a href="${{m.permalink}}" target="_blank" rel="noopener noreferrer" class="btn-card-permalink" title="Open post on ${{platLabel}}" onclick="event.stopPropagation()">
                 <span>🔗 POST &rarr;</span>
               </a>
-              <button class="btn-upvote-stamp ${{voted ? 'voted' : ''}}" title="Toggle vote (1 per user)">
-                <span>${{voted ? '✓ VOTED' : '🔥 POW!'}}</span>
-                <span class="upvote-num">${{Number(m.score).toLocaleString()}}</span>
+              <button class="btn-like-clean ${{voted ? 'voted' : ''}}" title="Like this meme">
+                <span class="heart-icon">${{voted ? '❤️' : '🤍'}}</span>
+                <span class="like-num">${{Number(m.score).toLocaleString()}}</span>
               </button>
             </div>
           </div>
         `;
       }}).join('');
 
-      // Anime.js Staggered Entrance
-      if (window.anime) {{
-        anime({{
-          targets: '.comic-card',
-          scale: [0.94, 1],
-          opacity: [0, 1],
-          translateY: [20, 0],
-          delay: anime.stagger(30),
-          easing: 'easeOutElastic(1, .8)',
-          duration: 400
-        }});
-      }}
-
-      // Listeners for Upvoting, Hover-Play Video/GIF, and Modal
+      // Listeners for Clean Likes, Hover-Play Video/GIF, and Modal
       document.querySelectorAll('.comic-card').forEach(card => {{
         const id = card.dataset.id;
         const meme = memeCollection.find(x => x.id === id);
@@ -1743,44 +1721,24 @@ html_content = f"""<!DOCTYPE html>
           card.addEventListener('mouseleave', () => {{ video.pause(); video.currentTime = 0; }});
         }}
 
-        // Upvote Toggle
-        const upvoteBtn = card.querySelector('.btn-upvote-stamp');
-        const slamStamp = card.querySelector('.stamp-slam-effect');
-
-        upvoteBtn.addEventListener('click', (e) => {{
+        // Clean Like Interaction (NO POW, NO SLAM!)
+        const likeBtn = card.querySelector('.btn-like-clean');
+        likeBtn.addEventListener('click', (e) => {{
           e.stopPropagation();
           const justVoted = toggleMemeVote(meme);
           const currentScore = Number(meme.score).toLocaleString();
           
-          card.querySelector('.upvote-num').textContent = currentScore;
-          card.querySelector('.badge-corner-stamp').textContent = `💥 ${{currentScore}}`;
+          likeBtn.querySelector('.like-num').textContent = currentScore;
           
           if (justVoted) {{
-            upvoteBtn.classList.add('voted');
-            upvoteBtn.querySelector('span:first-child').textContent = '✓ VOTED';
-            if (window.anime && slamStamp) {{
-              anime({{
-                targets: slamStamp,
-                scale: [2.2, 1],
-                opacity: [0, 1, 1, 0],
-                rotate: [-20, -8],
-                duration: 700,
-                easing: 'easeOutElastic(1, .6)'
-              }});
-            }}
-            if (window.confetti) {{
-              confetti({{
-                particleCount: 25,
-                spread: 50,
-                origin: {{ x: e.clientX / window.innerWidth, y: e.clientY / window.innerHeight }}
-              }});
-            }}
+            likeBtn.classList.add('voted');
+            likeBtn.querySelector('.heart-icon').textContent = '❤️';
           }} else {{
-            upvoteBtn.classList.remove('voted');
-            upvoteBtn.querySelector('span:first-child').textContent = '🔥 POW!';
+            likeBtn.classList.remove('voted');
+            likeBtn.querySelector('.heart-icon').textContent = '🤍';
           }}
 
-          renderLeaderboard();
+          renderTop10Trending();
         }});
 
         // Lightbox Modal
@@ -1790,16 +1748,16 @@ html_content = f"""<!DOCTYPE html>
       }});
     }}
 
-    // Render Viral Leaderboard (Top 10)
-    function renderLeaderboard() {{
-      const list = document.getElementById('leaderboardList');
+    // Render Clean Top 10 Trending Section
+    function renderTop10Trending() {{
+      const list = document.getElementById('trendingTop10List');
       if (!list) return;
 
       const top10 = [...memeCollection].sort((a,b) => (b.score || 0) - (a.score || 0)).slice(0, 10);
 
       list.innerHTML = top10.map((m, idx) => {{
         const rank = idx + 1;
-        const rankClass = rank === 1 ? 'rank-1' : (rank === 2 ? 'rank-2' : (rank === 3 ? 'rank-3' : ''));
+        const rankClass = rank === 1 ? 'rank-top1' : (rank === 2 ? 'rank-top2' : (rank === 3 ? 'rank-top3' : ''));
         const medal = rank === 1 ? '🥇' : (rank === 2 ? '🥈' : (rank === 3 ? '🥉' : `#${{rank}}`));
 
         const genKey = (m.generation || 'gen_z').toLowerCase();
@@ -1810,22 +1768,30 @@ html_content = f"""<!DOCTYPE html>
           gen_x: "📼 RETRO"
         }}[genKey] || "🛹 GEN Z";
 
+        const platLabel = {{
+          reddit: "🔴 Reddit",
+          instagram: "📸 Reels",
+          tiktok: "🎵 TikTok",
+          youtube: "▶️ Shorts",
+          knowyourmeme: "📖 KYM"
+        }}[m.source_platform] || m.source_platform;
+
         return `
-          <div class="leaderboard-item">
-            <div class="rank-badge ${{rankClass}}">${{medal}}</div>
-            <div class="leaderboard-thumb">
+          <div class="trending-item-row">
+            <div class="trending-rank ${{rankClass}}">${{medal}}</div>
+            <div class="trending-thumb">
               <img src="${{m.url}}" alt="${{m.title}}" loading="lazy" referrerpolicy="no-referrer" />
             </div>
             <div>
               <div style="font-weight: 800; font-size: 0.92rem; line-height: 1.3;">"${{m.title}}"</div>
               <div style="font-size: 0.72rem; color: #666; font-weight: 700; margin-top: 3px;">
-                by ${{m.author || 'anonymous'}} • ${{m.source_community || m.source}}
+                ${{platLabel}} • by ${{m.author || 'anonymous'}}
               </div>
             </div>
             <div style="display: flex; align-items: center; gap: 0.5rem;">
               <span class="badge-generation badge-${{genKey}}" style="position: static; font-size: 0.65rem;">${{genLabel}}</span>
-              <span style="font-family: 'Bangers', cursive; font-size: 1.25rem; color: var(--comic-red);">
-                💥 ${{Number(m.score).toLocaleString()}}
+              <span style="font-family: 'Space Grotesk', sans-serif; font-size: 0.9rem; font-weight: 800; color: var(--comic-red);">
+                ❤️ ${{Number(m.score).toLocaleString()}}
               </span>
             </div>
             <div style="text-align: right;">
@@ -1838,8 +1804,8 @@ html_content = f"""<!DOCTYPE html>
       }}).join('');
     }}
 
-    function onCommunityFilterChange(val) {{
-      selectedCommunity = val;
+    function onPlatformFilterChange(val) {{
+      selectedPlatform = val;
       renderComicGrid();
     }}
 
@@ -1868,8 +1834,8 @@ html_content = f"""<!DOCTYPE html>
 
     function openComicModal(meme) {{
       document.getElementById('modalTitle').textContent = `"${{meme.title}}"`;
-      document.getElementById('modalSource').textContent = meme.source_community || meme.source;
-      document.getElementById('modalScore').textContent = `💥 ${{Number(meme.score).toLocaleString()}} UPVOTES`;
+      document.getElementById('modalSource').textContent = meme.source_platform || meme.source;
+      document.getElementById('modalScore').textContent = `❤️ ${{Number(meme.score).toLocaleString()}} LIKES`;
       document.getElementById('modalAuthor').textContent = `Posted by ${{meme.author || 'anonymous'}}`;
       document.getElementById('modalLink').href = meme.permalink || '#';
 
@@ -1903,7 +1869,7 @@ html_content = f"""<!DOCTYPE html>
       }}
       document.querySelectorAll('.section-nav-btn').forEach(b => b.classList.remove('active'));
       if (id === 'feedSection') document.getElementById('navBtnFeed').classList.add('active');
-      if (id === 'leaderboardSection') document.getElementById('navBtnLeaderboard').classList.add('active');
+      if (id === 'trendingSection') document.getElementById('navBtnTrending').classList.add('active');
       if (id === 'labSection') document.getElementById('navBtnLab').classList.add('active');
     }}
 
@@ -1931,7 +1897,7 @@ html_content = f"""<!DOCTYPE html>
       if (['trending', 'latest', 'random'].includes(selectedLabEndpoint)) {{
         if (gen) params.set('generation', gen);
         if (selectedLabEndpoint !== 'random' && limit) params.set('limit', limit);
-        if (src) params.set('source', src);
+        if (src) params.set('platform', src);
       }}
 
       const qs = params.toString();
@@ -1978,9 +1944,11 @@ html_content = f"""<!DOCTYPE html>
 
       const previewPayload = selectedLabEndpoint === 'random' ? (items[0] || {{}}) : (
         selectedLabEndpoint === 'sources' ? [
-          {{ platform: "reddit", community: "r/dankmemes", status: "ok", item_count: 18 }},
-          {{ platform: "reddit", community: "r/GenAlpha", status: "ok", item_count: 13 }},
-          {{ platform: "knowyourmeme", community: "confirmed", status: "ok", item_count: 12 }}
+          {{ platform: "reddit", community: "r/dankmemes", status: "ok", item_count: 24 }},
+          {{ platform: "instagram", community: "reels", status: "ok", item_count: 12 }},
+          {{ platform: "tiktok", community: "trending", status: "ok", item_count: 10 }},
+          {{ platform: "youtube", community: "shorts", status: "ok", item_count: 8 }},
+          {{ platform: "knowyourmeme", community: "confirmed", status: "ok", item_count: 6 }}
         ] : (
           selectedLabEndpoint === 'health' ? {{
             status: "ok",
@@ -2050,4 +2018,4 @@ html_content = f"""<!DOCTYPE html>
 
 Path("app/static/index.html").write_text(html_content, encoding="utf-8")
 Path("public/index.html").write_text(html_content, encoding="utf-8")
-print("Successfully generated upgraded unclipped frontend in app/static/index.html and public/index.html!")
+print("Successfully updated app/static/index.html and public/index.html!")
