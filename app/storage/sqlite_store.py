@@ -19,13 +19,20 @@ class SqliteStore:
     """Async SQLite repository for persistent meme storage."""
 
     def __init__(self, database_path: Optional[str] = None) -> None:
-        self.database_path = database_path or get_settings().DB_PATH
+        import os
+        if os.environ.get("VERCEL"):
+            self.database_path = "/tmp/memes.db"
+        else:
+            self.database_path = database_path or get_settings().DB_PATH
         self._db_path = Path(self.database_path)
         self._initialized = False
 
     async def initialize(self) -> None:
         """Initialize database schema, apply PRAGMAs (WAL mode), and build indices."""
-        self._db_path.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            self._db_path.parent.mkdir(parents=True, exist_ok=True)
+        except Exception as err:
+            logger.warning("Could not create db directory %s: %s", self._db_path.parent, err)
 
         async with aiosqlite.connect(self.database_path) as db:
             await db.execute("PRAGMA journal_mode=WAL;")

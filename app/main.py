@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import os
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import AsyncGenerator
@@ -47,16 +48,20 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         app.state.memory_store = memory_store
     await memory_store.hydrate_from_db(sqlite_store)
 
-    # 3. Initialize and start background polling worker
-    poller = getattr(app.state, "poller", None)
-    if poller is None:
-        poller = MemePollingWorker(
-            memory_store=memory_store,
-            sqlite_store=sqlite_store,
-            poll_interval_seconds=settings.POLL_INTERVAL_SECONDS,
-        )
-        app.state.poller = poller
-    await poller.start()
+    # 3. Initialize and start background polling worker (skip on Vercel serverless)
+    is_vercel = os.environ.get("VERCEL") is not None
+    if not is_vercel:
+        poller = getattr(app.state, "poller", None)
+        if poller is None:
+            poller = MemePollingWorker(
+                memory_store=memory_store,
+                sqlite_store=sqlite_store,
+                poll_interval_seconds=settings.POLL_INTERVAL_SECONDS,
+            )
+            app.state.poller = poller
+        await poller.start()
+    else:
+        logger.info("Running on Vercel serverless: skipping continuous polling daemon.")
 
     logger.info("Application startup complete. Cache contains %d items.", memory_store.count())
 

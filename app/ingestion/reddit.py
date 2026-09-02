@@ -324,6 +324,64 @@ class RedditFetcher(BaseSourceFetcher):
         finally:
             self.subreddit = orig_sub
 
+    def parse_gateway_dict(self, payload: Any, sub_override: Optional[str] = None) -> List[NormalizedMeme]:
+        """Parse meme-api.com gateway payload into normalized memes."""
+        if not isinstance(payload, dict):
+            return []
+        items = payload.get("memes", [])
+        if not isinstance(items, list):
+            return []
+
+        results: List[NormalizedMeme] = []
+        now = time.time()
+        sub = (sub_override or self.subreddit).lstrip("r/").strip()
+
+        for item in items:
+            if not isinstance(item, dict):
+                continue
+            url = item.get("url", "")
+            title = item.get("title", "")
+            if not url or not title:
+                continue
+
+            post_link = item.get("postLink", "")
+            post_id = post_link.rstrip("/").split("/")[-1] if post_link else ""
+            meme_id = f"reddit_{sub}_{post_id}" if post_id else f"reddit_{sub}_{str(now)}"
+
+            lower_url = url.lower()
+            media_type = MediaType.IMAGE
+            if lower_url.endswith(".gif"):
+                media_type = MediaType.GIF
+            elif lower_url.endswith((".mp4", ".webm")):
+                media_type = MediaType.VIDEO
+
+            score = int(item.get("ups", 0))
+            comments = max(10, score // 30)
+            trending = calculate_trending_score(score, comments, now)
+            chash = compute_content_hash(url, title)
+
+            results.append(
+                NormalizedMeme(
+                    id=meme_id,
+                    raw_id=post_id,
+                    title=title,
+                    media_url=url,
+                    media_type=media_type,
+                    source_platform=SourcePlatform.REDDIT,
+                    source_community=f"r/{item.get('subreddit', sub)}",
+                    permalink=post_link or f"https://reddit.com/r/{sub}",
+                    author=str(item.get("author", "reddit_user")),
+                    score=score,
+                    num_comments=comments,
+                    created_at=now,
+                    is_nsfw=bool(item.get("nsfw", False)),
+                    domain="i.redd.it",
+                    content_hash=chash,
+                    trending_score=trending,
+                )
+            )
+        return results
+
     async def fetch_memes(self) -> List[NormalizedMeme]:
         """Fetch memes from live Reddit endpoints with retry and fallback to fixtures."""
         settings = get_settings()
@@ -332,11 +390,6 @@ class RedditFetcher(BaseSourceFetcher):
             return self.load_offline_fixtures()
 
         start_time = time.monotonic()
-        endpoints = [
-            f"https://www.reddit.com/r/{self.subreddit}/hot.json?limit=50&raw_json=1",
-            f"https://old.reddit.com/r/{self.subreddit}/hot.json?limit=50&raw_json=1",
-        ]
-
         client = self._custom_client or httpx.AsyncClient(
             timeout=settings.REQUEST_TIMEOUT_SECONDS,
             follow_redirects=True,
@@ -344,6 +397,24 @@ class RedditFetcher(BaseSourceFetcher):
         should_close = self._custom_client is None
 
         try:
+            # 1. Primary: High-availability gateway to avoid Reddit datacenter 403 blocks
+            try:
+                gateway_url = f"https://meme-api.com/gimme/{self.subreddit}/30"
+                gw_resp = await client.get(gateway_url, timeout=5.0)
+                if gw_resp.status_code == 200:
+                    gateway_memes = self.parse_gateway_dict(gw_resp.json())
+                    if gateway_memes:
+                        latency_ms = (time.monotonic() - start_time) * 1000.0
+                        self.update_success(len(gateway_memes), latency_ms)
+                        return gateway_memes
+            except Exception as gw_err:
+                logger.debug(f"Gateway fallback check: {gw_err}")
+
+            # 2. Secondary: Direct Reddit JSON
+            endpoints = [
+                f"https://www.reddit.com/r/{self.subreddit}/hot.json?limit=50&raw_json=1",
+                f"https://old.reddit.com/r/{self.subreddit}/hot.json?limit=50&raw_json=1",
+            ]
             for endpoint in endpoints:
                 for attempt in range(settings.MAX_RETRIES):
                     try:
