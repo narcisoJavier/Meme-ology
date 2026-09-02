@@ -1,32 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MEME-OLOGY! — The Living Internet Meme Almanac</title>
-  <meta name="description" content="Explore, score, and discover fresh memes across Reddit, Instagram Reels, TikTok, YouTube Shorts, and Know Your Meme.">
+  <title>MEME-OLOGY — The Open Internet Meme API &amp; Feed</title>
+  <meta name="description" content="High-performance meme curation engine. Ingesting, categorizing, and scoring internet culture across generations in real-time.">
   <meta name="referrer" content="no-referrer">
 
-  <!-- Google Fonts: Space Grotesk, Bangers, and JetBrains Mono -->
+  <!-- Inter and JetBrains Mono Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Space+Grotesk:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --comic-yellow: #FFE81F;
-      --comic-red: #FF2A42;
-      --comic-cyan: #00E5FF;
-      --comic-pink: #FF3B94;
-      --comic-lime: #22E576;
-      --comic-purple: #8B5CF6;
-      --comic-orange: #F97316;
-      --comic-ink: #0C0C0F;
-      --comic-paper: #FFFDF7;
-      --border-ink: 3px solid #0C0C0F;
-      --shadow-sm: 3px 3px 0px #0C0C0F;
-      --shadow-hard: 6px 6px 0px #0C0C0F;
-      --shadow-heavy: 10px 10px 0px #0C0C0F;
+      --bg-base: #09090b;
+      --bg-surface: #121215;
+      --bg-surface-elevated: #18181c;
+      --bg-surface-hover: #222228;
+      --border-subtle: #27272a;
+      --border-focus: #3f3f46;
+      --text-primary: #f4f4f5;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+      --accent-emerald: #10b981;
+      --accent-indigo: #6366f1;
+      --accent-purple: #8b5cf6;
+      --accent-cyan: #06b6d4;
+      --accent-amber: #f59e0b;
+      --accent-rose: #f43f5e;
     }
 
     * {
@@ -37,47 +39,29 @@
 
     html {
       scroll-behavior: smooth;
+      background-color: var(--bg-base);
+      color: var(--text-primary);
     }
 
     body {
-      background-color: var(--comic-paper);
-      background-image: 
-        radial-gradient(#0C0C0F 12%, transparent 12%),
-        radial-gradient(#0C0C0F 12%, transparent 12%);
-      background-size: 28px 28px;
-      background-position: 0 0, 14px 14px;
-      background-attachment: fixed;
-      color: var(--comic-ink);
-      font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       min-height: 100vh;
       overflow-x: hidden;
       line-height: 1.5;
+      background-color: var(--bg-base);
+      background-image: 
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.12), transparent 70%),
+        linear-gradient(to bottom, transparent, rgba(9, 9, 11, 0.8));
     }
 
-    /* Top Strip Banner */
-    .comic-top-banner {
-      background: var(--comic-ink);
-      color: #fff;
-      padding: 6px 1.5rem;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 2px solid #000;
-    }
-
-    /* Navigation */
+    /* Global Header */
     header {
-      background: var(--comic-yellow);
-      border-bottom: var(--border-ink);
       position: sticky;
       top: 0;
       z-index: 100;
-      box-shadow: 0 4px 0px rgba(0,0,0,0.15);
+      background: rgba(9, 9, 11, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
     }
 
     .nav-container {
@@ -88,727 +72,489 @@
       align-items: center;
       justify-content: space-between;
       gap: 1rem;
-      flex-wrap: wrap;
     }
 
-    .comic-logo-group {
+    .logo-group {
       display: flex;
       align-items: center;
       gap: 0.75rem;
-    }
-
-    .comic-logo {
-      font-family: 'Bangers', cursive;
-      font-size: 2.2rem;
-      letter-spacing: 0.05em;
-      color: var(--comic-ink);
-      text-shadow: 2px 2px 0px #fff, 4px 4px 0px var(--comic-red);
-      line-height: 1;
-      transform: rotate(-1.5deg);
-      display: inline-block;
       text-decoration: none;
-      transition: transform 0.2s;
     }
 
-    .comic-logo:hover {
-      transform: rotate(1deg) scale(1.05);
-    }
-
-    .comic-stamp-pill {
-      background: var(--comic-red);
+    .brand-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
       color: #fff;
-      border: 2px solid #000;
-      padding: 3px 8px;
-      font-size: 0.7rem;
-      font-weight: 800;
-      border-radius: 4px;
-      box-shadow: 2px 2px 0px #000;
-      transform: rotate(2deg);
-    }
-
-    /* Tri-Section Navigation Switcher */
-    .section-nav-switcher {
       display: flex;
-      background: #fff;
-      border: var(--border-ink);
-      border-radius: 30px;
-      padding: 4px;
-      box-shadow: var(--shadow-sm);
-      gap: 4px;
+      align-items: center;
+      gap: 0.4rem;
     }
 
-    .section-nav-btn {
-      border: none;
-      background: transparent;
-      padding: 6px 14px;
-      font-family: 'Space Grotesk', sans-serif;
-      font-weight: 800;
-      font-size: 0.82rem;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      cursor: pointer;
+    .brand-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      font-weight: 600;
+      padding: 2px 6px;
+      background: #1e1e24;
+      border: 1px solid #33333d;
+      border-radius: 4px;
+      color: var(--text-secondary);
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 3px 8px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.25);
       border-radius: 20px;
+      color: var(--accent-emerald);
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--accent-emerald);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--accent-emerald);
+    }
+
+    /* Navigation Switcher */
+    .nav-switcher {
+      display: flex;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 3px;
+      gap: 2px;
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 6px;
+      cursor: pointer;
       transition: all 0.15s ease;
       display: flex;
       align-items: center;
       gap: 0.35rem;
     }
 
-    .section-nav-btn:hover {
-      background: #f4f4f5;
-    }
-
-    .section-nav-btn.active {
-      background: var(--comic-red);
+    .nav-btn:hover {
       color: #fff;
-      box-shadow: 2px 2px 0px #000;
+      background: var(--bg-surface-elevated);
     }
 
-    .nav-right-actions {
+    .nav-btn.active {
+      color: #fff;
+      background: #27272f;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+    }
+
+    .nav-actions {
       display: flex;
       align-items: center;
-      gap: 0.6rem;
+      gap: 0.5rem;
     }
 
-    .btn-comic {
-      background: #fff;
-      border: var(--border-ink);
-      box-shadow: var(--shadow-sm);
-      padding: 6px 12px;
-      font-weight: 800;
-      font-size: 0.82rem;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      cursor: pointer;
-      border-radius: 4px;
-      transition: all 0.12s ease;
+    .btn-action {
       display: inline-flex;
       align-items: center;
       gap: 0.35rem;
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border-radius: 6px;
       text-decoration: none;
-      color: #000;
+      transition: all 0.15s ease;
+      cursor: pointer;
     }
 
-    .btn-comic:hover {
-      transform: translate(-1px, -1px);
-      box-shadow: var(--shadow-hard);
-      background: #fff;
+    .btn-secondary {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
     }
 
-    .btn-comic-cyan {
-      background: var(--comic-cyan);
-      color: #000;
-    }
-
-    .btn-comic-red {
-      background: var(--comic-red);
+    .btn-secondary:hover {
+      background: var(--bg-surface-hover);
+      border-color: var(--border-focus);
       color: #fff;
     }
 
-    /* Main Container */
-    .section-container {
+    .btn-primary {
+      background: #fff;
+      border: 1px solid #fff;
+      color: #000;
+    }
+
+    .btn-primary:hover {
+      background: #e4e4e7;
+    }
+
+    /* Container */
+    .main-container {
       max-width: 1400px;
-      margin: 1.5rem auto;
-      padding: 0 1.5rem;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
     }
 
-    /* Friendly Casual Hero Header */
-    .section-header-box {
-      background: #fff;
-      border: var(--border-ink);
-      box-shadow: var(--shadow-heavy);
-      padding: 1.75rem 2rem;
-      border-radius: 8px;
-      position: relative;
-      margin-bottom: 1.5rem;
-      display: grid;
-      grid-template-columns: 1.7fr 1fr;
-      gap: 1.5rem;
-      align-items: center;
-      overflow: hidden;
-    }
-
-    .section-header-box::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 8px;
-      background: repeating-linear-gradient(45deg, #000, #000 15px, var(--comic-yellow) 15px, var(--comic-yellow) 30px);
-    }
-
-    .section-badge-tag {
-      display: inline-block;
-      background: var(--comic-cyan);
-      border: 2px solid #000;
-      box-shadow: 2px 2px 0px #000;
-      padding: 3px 10px;
-      font-family: 'Bangers', cursive;
-      font-size: 1.05rem;
-      letter-spacing: 0.05em;
-      margin-bottom: 0.5rem;
-      transform: rotate(-1deg);
-    }
-
-    .hero-title {
-      font-family: 'Bangers', cursive;
-      font-size: clamp(2.4rem, 4.5vw, 3.6rem);
-      letter-spacing: 0.03em;
-      line-height: 1;
-      margin-bottom: 0.75rem;
-      color: var(--comic-ink);
-      text-shadow: 2px 2px 0px var(--comic-yellow), 4px 4px 0px var(--comic-red);
-    }
-
-    .hero-desc {
-      font-size: 1rem;
-      font-weight: 600;
-      color: #333;
-      max-width: 620px;
-      margin-bottom: 1rem;
-    }
-
-    .sticker-cloud {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      align-items: center;
-    }
-
-    .comic-sticker {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3rem;
-      padding: 4px 10px;
-      border: var(--border-ink);
-      font-size: 0.78rem;
-      font-weight: 800;
-      box-shadow: var(--shadow-sm);
-      border-radius: 4px;
-      text-transform: uppercase;
-      cursor: default;
-    }
-
-    .sticker-alpha { background: var(--comic-purple); color: #fff; transform: rotate(-2deg); }
-    .sticker-z { background: var(--comic-lime); color: #000; transform: rotate(1.5deg); }
-    .sticker-millennial { background: var(--comic-cyan); color: #000; transform: rotate(-1deg); }
-    .sticker-boomer { background: var(--comic-orange); color: #fff; transform: rotate(2deg); }
-
-    /* Telemetry Box */
-    .radar-telemetry-box {
-      background: var(--comic-yellow);
-      border: var(--border-ink);
-      box-shadow: var(--shadow-hard);
-      padding: 1.2rem;
-      border-radius: 6px;
-      text-align: center;
-    }
-
-    .radar-telemetry-box h3 {
-      font-family: 'Bangers', cursive;
-      font-size: 1.4rem;
-      letter-spacing: 0.04em;
-      margin-bottom: 0.2rem;
-    }
-
-    .telemetry-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.6rem;
-      margin-top: 0.75rem;
-    }
-
-    .telemetry-cell {
-      background: #fff;
-      border: 2px solid #000;
-      padding: 0.5rem;
-      box-shadow: 2px 2px 0px #000;
-      border-radius: 4px;
-    }
-
-    .telemetry-num {
-      font-family: 'Bangers', cursive;
-      font-size: 1.5rem;
-      color: var(--comic-red);
-      line-height: 1;
-    }
-
-    .telemetry-lbl {
-      font-size: 0.68rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      margin-top: 2px;
-    }
-
-    /* =========================================================
-       FEATURED MEME OF THE DAY (SPOTLIGHT HERO)
-       ========================================================= */
-    .featured-spotlight-card {
-      background: #fff;
-      border: var(--border-ink);
-      box-shadow: var(--shadow-heavy);
-      border-radius: 8px;
-      margin-bottom: 1.5rem;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .spotlight-badge-tab {
-      background: var(--comic-yellow);
-      border-bottom: 3px solid #000;
-      padding: 6px 16px;
+    /* Hero Section */
+    .hero-banner {
+      padding: 2rem 0 2.5rem;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 2rem;
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      font-family: 'Bangers', cursive;
-      font-size: 1.25rem;
-      letter-spacing: 0.05em;
-    }
-
-    .spotlight-body {
-      padding: 1.25rem 1.5rem;
-      display: grid;
-      grid-template-columns: 320px 1fr;
-      gap: 1.5rem;
-      align-items: center;
-    }
-
-    .spotlight-media-frame {
-      height: 240px;
-      background: #111116;
-      border: 2px solid #000;
-      box-shadow: 3px 3px 0px #000;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
-
-    .spotlight-media-frame img, .spotlight-media-frame video {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-    }
-
-    .spotlight-info-col {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
-    .spotlight-title {
-      font-size: 1.35rem;
-      font-weight: 800;
-      line-height: 1.3;
-    }
-
-    .spotlight-meta-row {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
+      align-items: flex-end;
+      gap: 2rem;
       flex-wrap: wrap;
     }
 
-    /* =========================================================
-       STREAMLINED COMPACT TOOLBAR
-       ========================================================= */
-    .streamlined-toolbar {
-      background: #fff;
-      border: var(--border-ink);
-      box-shadow: var(--shadow-hard);
+    .hero-text h1 {
+      font-size: clamp(2rem, 3.5vw, 2.75rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      color: #fff;
+      margin-bottom: 0.75rem;
+    }
+
+    .hero-text p {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      max-width: 620px;
+      line-height: 1.6;
+    }
+
+    .quick-curl-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
       border-radius: 8px;
       padding: 0.75rem 1rem;
-      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: #e4e4e7;
+    }
+
+    .curl-tag {
+      color: var(--accent-emerald);
+      font-weight: 700;
+    }
+
+    /* Streamlined API Toolbar */
+    .api-toolbar {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 0.6rem 0.85rem;
+      margin-bottom: 2rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 0.75rem;
+      gap: 1rem;
       flex-wrap: wrap;
     }
 
-    .search-input-box {
+    .search-wrapper {
       position: relative;
       flex: 1 1 240px;
     }
 
-    .compact-search-input {
+    .search-input {
       width: 100%;
-      border: 2px solid #000;
-      box-shadow: 2px 2px 0px #000;
-      padding: 7px 10px 7px 2.2rem;
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 0.88rem;
-      font-weight: 700;
-      border-radius: 4px;
+      background: #09090c;
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      padding: 6px 10px 6px 2rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      color: #fff;
       outline: none;
-      background: #fafafa;
+      transition: border-color 0.15s ease;
     }
 
-    .compact-search-input:focus {
-      background: #fff;
-      box-shadow: 3px 3px 0px #000;
+    .search-input:focus {
+      border-color: var(--accent-indigo);
     }
 
     .search-icon {
       position: absolute;
-      left: 0.7rem;
+      left: 0.65rem;
       top: 50%;
       transform: translateY(-50%);
-      font-size: 0.95rem;
+      color: var(--text-muted);
+      font-size: 0.85rem;
       pointer-events: none;
     }
 
-    .compact-era-pills {
+    .era-pills {
       display: flex;
       align-items: center;
-      gap: 0.4rem;
+      gap: 0.35rem;
       flex-wrap: wrap;
     }
 
-    .comic-filter-pill {
-      background: #fff;
-      border: 2px solid #000;
-      box-shadow: 2px 2px 0px #000;
-      padding: 5px 12px;
-      font-size: 0.8rem;
-      font-weight: 800;
+    .era-pill {
+      background: transparent;
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-secondary);
       cursor: pointer;
-      border-radius: 4px;
       transition: all 0.12s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3rem;
     }
 
-    .comic-filter-pill:hover {
-      background: var(--comic-yellow);
-      transform: translateY(-1px);
-    }
-
-    .comic-filter-pill.active {
-      background: var(--comic-red);
+    .era-pill:hover {
       color: #fff;
-      box-shadow: 2px 2px 0px #000;
+      border-color: var(--border-focus);
     }
 
-    .pill-alpha.active { background: var(--comic-purple); }
-    .pill-z.active { background: var(--comic-lime); color: #000; }
-    .pill-millennial.active { background: var(--comic-cyan); color: #000; }
-    .pill-boomer.active { background: var(--comic-orange); }
+    .era-pill.active {
+      background: #272730;
+      color: #fff;
+      border-color: #52525b;
+    }
 
-    .toolbar-dropdown {
-      border: 2px solid #000;
-      box-shadow: 2px 2px 0px #000;
+    .toolbar-select {
+      background: #09090c;
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
       padding: 6px 10px;
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 0.82rem;
-      font-weight: 800;
-      border-radius: 4px;
-      background: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
       cursor: pointer;
       outline: none;
     }
 
-    /* =========================================================
-       UNCLIPPED COMIC MEME GRID & CARDS
-       ========================================================= */
-    .comic-grid {
+    /* Meme Grid */
+    .memes-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-      gap: 1.75rem;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
     }
 
-    .comic-card {
-      background: #fff;
-      border: var(--border-ink);
-      border-radius: 6px;
-      box-shadow: var(--shadow-hard);
+    .meme-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
-      position: relative;
-      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
       cursor: pointer;
-      overflow: hidden;
     }
 
-    .comic-card:hover {
-      transform: translateY(-3px);
-      box-shadow: var(--shadow-heavy);
+    .meme-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--border-focus);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
     }
 
-    /* Speech Bubble with Author Tag Inside */
-    .speech-bubble-wrapper {
-      padding: 1rem 1rem 0;
-      position: relative;
-      z-index: 5;
+    .card-top {
+      padding: 0.85rem 1rem 0.65rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
-    .speech-bubble {
-      position: relative;
-      background: #fff;
-      border: var(--border-ink);
-      border-radius: 10px;
-      padding: 10px 14px;
-      box-shadow: var(--shadow-sm);
-    }
-
-    .speech-quote {
-      font-weight: 800;
-      font-size: 0.92rem;
-      line-height: 1.35;
-      color: #000;
-      display: block;
-    }
-
-    .speech-author {
-      display: block;
-      margin-top: 5px;
+    .community-badge {
+      font-family: 'JetBrains Mono', monospace;
       font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: #1a1a20;
+      border: 1px solid #2a2a34;
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+
+    .era-tag {
+      font-size: 0.68rem;
       font-weight: 700;
-      color: #555;
       text-transform: uppercase;
       letter-spacing: 0.04em;
-    }
-
-    .speech-bubble::after {
-      content: '';
-      position: absolute;
-      bottom: -11px;
-      left: 24px;
-      border-width: 11px 9px 0;
-      border-style: solid;
-      border-color: #fff transparent;
-      display: block;
-      width: 0;
-    }
-
-    .speech-bubble::before {
-      content: '';
-      position: absolute;
-      bottom: -15px;
-      left: 22px;
-      border-width: 14px 11px 0;
-      border-style: solid;
-      border-color: #000 transparent;
-      display: block;
-      width: 0;
-    }
-
-    /* UNCLIPPED Media Box (object-fit: contain) */
-    .comic-card-media {
-      margin: 0.75rem 1rem 0;
-      border: 2px solid #000;
-      box-shadow: 2px 2px 0px #000;
-      height: 280px;
-      background: #111116; /* Clean dark comic backdrop so no text is ever cropped */
-      position: relative;
-      overflow: hidden;
+      padding: 2px 6px;
       border-radius: 4px;
+    }
+
+    .era-gen_alpha { background: rgba(139, 92, 246, 0.15); color: #c4b5fd; border: 1px solid rgba(139, 92, 246, 0.3); }
+    .era-gen_z { background: rgba(16, 185, 129, 0.15); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .era-millennial { background: rgba(6, 182, 212, 0.15); color: #67e8f9; border: 1px solid rgba(6, 182, 212, 0.3); }
+    .era-gen_x { background: rgba(245, 158, 11, 0.15); color: #fcd34d; border: 1px solid rgba(245, 158, 11, 0.3); }
+
+    /* UNCLIPPED Media Frame */
+    .card-media-frame {
+      height: 270px;
+      background: #050507;
       display: flex;
       align-items: center;
       justify-content: center;
+      overflow: hidden;
+      position: relative;
+      border-top: 1px solid #1c1c22;
+      border-bottom: 1px solid #1c1c22;
     }
 
-    .comic-card-media img, .comic-card-media video {
+    .card-media-frame img, .card-media-frame video {
       max-width: 100%;
       max-height: 100%;
       width: auto;
       height: auto;
-      object-fit: contain; /* NEVER clip or crop punchlines */
-      transition: transform 0.25s ease;
+      object-fit: contain;
+      transition: transform 0.2s ease;
     }
 
-    .comic-card:hover .comic-card-media img,
-    .comic-card:hover .comic-card-media video {
-      transform: scale(1.02);
-    }
-
-    .badge-corner-stamp {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      background: #fff;
-      border: 2px solid #000;
-      font-size: 0.75rem;
-      font-weight: 800;
-      padding: 2px 8px;
-      box-shadow: 2px 2px 0px #000;
-      border-radius: 4px;
-      color: #000;
-      z-index: 2;
-    }
-
-    .badge-corner-source {
-      position: absolute;
-      top: 8px;
-      left: 8px;
-      background: #fff;
-      border: 2px solid #000;
-      font-size: 0.7rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      padding: 2px 7px;
-      box-shadow: 2px 2px 0px #000;
-      border-radius: 3px;
-      z-index: 2;
-    }
-
-    .badge-generation {
-      position: absolute;
-      bottom: 8px;
-      left: 8px;
-      border: 2px solid #000;
-      font-size: 0.7rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      padding: 2px 7px;
-      box-shadow: 2px 2px 0px #000;
-      border-radius: 3px;
-      z-index: 2;
-    }
-
-    .badge-gen_alpha { background: var(--comic-purple); color: #fff; }
-    .badge-gen_z { background: var(--comic-lime); color: #000; }
-    .badge-millennial { background: var(--comic-cyan); color: #000; }
-    .badge-gen_x { background: var(--comic-orange); color: #fff; }
-
-    .badge-gif-indicator {
-      position: absolute;
-      bottom: 8px;
-      right: 8px;
-      background: #000;
-      color: #FFE81F;
-      border: 2px solid #FFE81F;
-      padding: 2px 6px;
-      font-size: 0.68rem;
-      font-weight: 800;
-      border-radius: 3px;
-      z-index: 3;
-      pointer-events: none;
-      box-shadow: 1px 1px 0px #000;
-    }
-
-    /* Card Footer & Action Bar */
-    .comic-card-footer {
-      padding: 0.85rem 1rem;
+    .card-content {
+      padding: 1rem;
       display: flex;
-      align-items: center;
-      justify-content: space-between;
+      flex-direction: column;
       gap: 0.5rem;
-      border-top: 1px solid #eee;
-      margin-top: 0.75rem;
+      flex: 1;
     }
 
-    .btn-card-permalink {
-      background: var(--comic-yellow);
-      color: #000;
-      border: 2px solid #000;
-      box-shadow: 2px 2px 0px #000;
-      padding: 4px 10px;
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #f4f4f5;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-meta {
       font-size: 0.75rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      border-radius: 4px;
-      cursor: pointer;
-      text-decoration: none;
+      color: var(--text-muted);
+    }
+
+    .card-footer {
+      padding: 0.75rem 1rem;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #0d0d10;
+    }
+
+    .btn-upvote {
+      background: #18181e;
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      padding: 4px 9px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-secondary);
       display: inline-flex;
       align-items: center;
-      gap: 0.3rem;
+      gap: 0.35rem;
+      cursor: pointer;
       transition: all 0.12s ease;
     }
 
-    .btn-card-permalink:hover {
-      background: var(--comic-cyan);
-      transform: translate(-1px, -1px);
-      box-shadow: 3px 3px 0px #000;
+    .btn-upvote:hover {
+      background: #23232c;
+      border-color: var(--border-focus);
+      color: #fff;
     }
 
-    /* Clean Modern Like Button (NO POW!, NO JARRED SLAMS) */
-    .btn-like-clean {
-      background: #fff;
-      border: 2px solid #000;
-      box-shadow: 2px 2px 0px #000;
-      padding: 5px 12px;
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 0.85rem;
-      font-weight: 800;
-      border-radius: 20px;
-      cursor: pointer;
+    .btn-upvote.voted {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: rgba(16, 185, 129, 0.4);
+      color: var(--accent-emerald);
+    }
+
+    .btn-permalink {
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-decoration: none;
       display: inline-flex;
       align-items: center;
-      gap: 0.4rem;
-      transition: all 0.15s ease;
-      color: #000;
+      gap: 0.25rem;
+      padding: 4px 8px;
+      border-radius: 4px;
+      transition: color 0.12s ease;
     }
 
-    .btn-like-clean:hover {
-      transform: scale(1.05);
-      background: #fff0f2;
+    .btn-permalink:hover {
+      color: #fff;
+      background: #1a1a20;
     }
 
-    .btn-like-clean.voted {
-      background: #fee2e2;
-      border-color: #ef4444;
-      color: #ef4444;
-    }
-
-    .btn-like-clean.voted .heart-icon {
-      transform: scale(1.2);
-    }
-
-    /* =========================================================
-       SECTION 2: TOP 10 TRENDING RIGHT NOW (Clean & Modern)
-       ========================================================= */
-    .trending-top10-wrap {
-      background: #fff;
-      border: var(--border-ink);
-      box-shadow: var(--shadow-heavy);
-      border-radius: 8px;
+    /* Top 10 Trending Table Section */
+    .section-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
       overflow: hidden;
-      margin-bottom: 2rem;
+      margin-bottom: 2.5rem;
     }
 
-    .trending-top10-header {
-      background: var(--comic-yellow);
-      border-bottom: 3px solid #000;
-      padding: 1rem 1.5rem;
+    .section-card-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border-subtle);
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    .trending-item-row {
+    .section-card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .trending-row {
       display: grid;
-      grid-template-columns: 50px 80px 1fr 140px 110px;
+      grid-template-columns: 50px 70px 1fr 140px 100px 90px;
       align-items: center;
       gap: 1rem;
       padding: 0.75rem 1.5rem;
-      border-bottom: 1px solid #ddd;
-      transition: background-color 0.12s;
+      border-bottom: 1px solid #1a1a20;
+      transition: background 0.12s ease;
     }
 
-    .trending-item-row:hover {
-      background: #fdfae8;
+    .trending-row:hover {
+      background: #15151b;
     }
 
     .trending-rank {
-      font-family: 'Bangers', cursive;
-      font-size: 1.4rem;
-      text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-muted);
     }
 
-    .rank-top1 { color: #eab308; }
-    .rank-top2 { color: #94a3b8; }
-    .rank-top3 { color: #b45309; }
-
     .trending-thumb {
-      width: 70px;
-      height: 50px;
-      background: #111116;
-      border: 2px solid #000;
+      width: 60px;
+      height: 44px;
+      background: #050507;
       border-radius: 4px;
+      border: 1px solid #27272a;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -821,222 +567,112 @@
       object-fit: contain;
     }
 
-    /* =========================================================
-       SECTION 3: SECRET LAB (API STUDIO)
-       ========================================================= */
-    .lab-section-wrap {
-      background: #121217;
-      border: var(--border-ink);
-      box-shadow: var(--shadow-heavy);
-      border-radius: 8px;
-      color: #fff;
-      overflow: hidden;
-    }
-
-    .lab-banner-head {
-      background: #1c1c24;
-      border-bottom: 3px solid #000;
-      padding: 1.25rem 1.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    .lab-title-group h2 {
-      font-family: 'Bangers', cursive;
-      font-size: 1.8rem;
-      letter-spacing: 0.04em;
-      color: var(--comic-yellow);
-    }
-
-    .lab-split-studio {
+    /* API Studio Playground */
+    .studio-grid {
       display: grid;
-      grid-template-columns: 360px 1fr;
+      grid-template-columns: 320px 1fr;
     }
 
-    .lab-left-control-panel {
-      background: #18181f;
-      border-right: 2px solid #27272a;
+    .studio-sidebar {
+      background: #0e0e12;
+      border-right: 1px solid var(--border-subtle);
       padding: 1.25rem;
       display: flex;
       flex-direction: column;
       gap: 1.25rem;
     }
 
-    .endpoint-buttons-column {
+    .endpoint-item {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      padding: 8px 10px;
+      cursor: pointer;
+      transition: all 0.12s ease;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+    }
+
+    .endpoint-item:hover {
+      border-color: var(--border-focus);
+    }
+
+    .endpoint-item.active {
+      background: #1f1f28;
+      border-color: var(--accent-indigo);
+      color: #fff;
+    }
+
+    .studio-right {
       display: flex;
       flex-direction: column;
+      background: #070709;
+    }
+
+    .studio-toolbar {
+      padding: 0.65rem 1.25rem;
+      border-bottom: 1px solid var(--border-subtle);
+      background: #0d0d10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       gap: 0.5rem;
     }
 
-    .lab-endpoint-btn {
-      background: #22222c;
-      border: 2px solid #333342;
-      border-radius: 6px;
-      padding: 10px 12px;
+    .lang-tabs {
+      display: flex;
+      gap: 0.25rem;
+    }
+
+    .lang-tab {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      padding: 4px 8px;
+      border-radius: 4px;
       cursor: pointer;
-      text-align: left;
-      transition: all 0.12s;
     }
 
-    .lab-endpoint-btn.active {
-      background: var(--comic-yellow);
-      border-color: #000;
-      color: #000;
-      box-shadow: 2px 2px 0px #000;
+    .lang-tab.active {
+      background: #1c1c24;
+      border-color: #2e2e3a;
+      color: #fff;
     }
 
-    .endpoint-method {
-      display: inline-block;
-      background: var(--comic-lime);
-      color: #000;
-      font-size: 0.65rem;
-      font-weight: 800;
-      padding: 2px 6px;
-      border-radius: 3px;
-      margin-right: 6px;
-    }
-
-    .endpoint-path {
+    .code-view {
+      padding: 1rem 1.25rem;
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.8rem;
-      font-weight: 700;
-    }
-
-    .param-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.75rem;
-      margin-top: 0.5rem;
-    }
-
-    .param-input-select {
-      background: #272733;
-      border: 1px solid #444455;
-      color: #fff;
-      padding: 4px 8px;
-      font-size: 0.8rem;
-      font-family: 'Space Grotesk', sans-serif;
-      border-radius: 4px;
-      outline: none;
-    }
-
-    .lab-right-console {
-      display: flex;
-      flex-direction: column;
-      background: #09090b;
-    }
-
-    .console-header-bar {
-      background: #18181f;
-      border-bottom: 2px solid #27272a;
-      padding: 8px 1.25rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-
-    .console-lang-tabs {
-      display: flex;
-      gap: 0.35rem;
-    }
-
-    .console-lang-btn {
-      background: #22222c;
-      border: 1px solid #3f3f4e;
-      color: #aaa;
-      padding: 4px 10px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      cursor: pointer;
-      border-radius: 4px;
-    }
-
-    .console-lang-btn.active {
-      background: var(--comic-yellow);
-      color: #000;
-      border-color: #000;
-    }
-
-    .console-actions-group {
-      display: flex;
-      gap: 0.4rem;
-      flex-wrap: wrap;
-    }
-
-    .btn-console-action {
-      background: #fff;
-      border: 1px solid #000;
-      box-shadow: 2px 2px 0px #000;
-      color: #000;
-      padding: 4px 8px;
-      font-size: 0.72rem;
-      font-weight: 800;
-      cursor: pointer;
-      border-radius: 4px;
-    }
-
-    .btn-run-request {
-      background: var(--comic-lime);
-      color: #000;
-      border: 1px solid #000;
-      box-shadow: 2px 2px 0px #000;
-      padding: 4px 10px;
-      font-size: 0.75rem;
-      font-weight: 800;
-      cursor: pointer;
-      border-radius: 4px;
-    }
-
-    .console-code-snippet {
-      padding: 1rem 1.25rem;
-      font-size: 0.82rem;
-      color: #4ade80;
+      color: #34d399;
       line-height: 1.5;
       overflow-x: auto;
-      border-bottom: 2px solid #27272a;
-      min-height: 120px;
-      background: #09090b;
-      font-family: 'JetBrains Mono', monospace;
+      background: #070709;
+      border-bottom: 1px solid var(--border-subtle);
+      min-height: 100px;
     }
 
-    .console-response-header {
-      background: #18181f;
-      padding: 6px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: #888;
-      border-bottom: 1px solid #27272a;
-    }
-
-    .console-response-output {
+    .response-view {
       padding: 1rem 1.25rem;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.8rem;
-      color: #e4e4e7;
+      font-size: 0.78rem;
+      color: #d4d4d8;
+      background: #070709;
       overflow-x: auto;
-      max-height: 400px;
-      background: #09090b;
+      max-height: 380px;
       line-height: 1.5;
     }
 
     /* Lightbox Modal */
-    .comic-modal {
+    .modal-overlay {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(12, 12, 15, 0.85);
-      backdrop-filter: blur(4px);
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
       z-index: 1000;
       display: none;
       align-items: center;
@@ -1044,56 +680,57 @@
       padding: 1.5rem;
     }
 
-    .comic-modal.active {
+    .modal-overlay.active {
       display: flex;
     }
 
-    .comic-modal-box {
-      background: #fff;
-      border: 4px solid #000;
-      box-shadow: 12px 12px 0px #000;
-      border-radius: 8px;
-      max-width: 800px;
+    .modal-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+      max-width: 820px;
       width: 100%;
       max-height: 90vh;
       overflow-y: auto;
       position: relative;
     }
 
-    .modal-close-btn {
+    .modal-close {
       position: absolute;
       top: 12px;
       right: 12px;
-      background: var(--comic-red);
+      background: #27272f;
+      border: 1px solid #3f3f4a;
       color: #fff;
-      border: 2px solid #000;
-      width: 32px;
-      height: 32px;
-      font-family: 'Bangers', cursive;
-      font-size: 1.25rem;
-      cursor: pointer;
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
-      box-shadow: 2px 2px 0px #000;
-      z-index: 10;
-    }
-
-    .modal-media-wrap {
-      background: #111116;
+      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      max-height: 520px;
+      font-size: 1rem;
+      z-index: 10;
+    }
+
+    .modal-media {
+      background: #050507;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      max-height: 540px;
       overflow: hidden;
     }
 
-    .modal-media-wrap img, .modal-media-wrap video {
+    .modal-media img, .modal-media video {
       max-width: 100%;
-      max-height: 520px;
+      max-height: 540px;
       object-fit: contain;
     }
 
-    .modal-content-details {
-      padding: 1.25rem 1.5rem;
+    .modal-info {
+      padding: 1.5rem;
       display: flex;
       flex-direction: column;
       gap: 0.75rem;
@@ -1102,362 +739,268 @@
     /* Footer */
     footer {
       margin-top: 4rem;
-      border-top: var(--border-ink);
-      background: var(--comic-yellow);
-      padding: 2rem 1.5rem;
+      border-top: 1px solid var(--border-subtle);
+      padding: 2.5rem 1.5rem;
       text-align: center;
+      color: var(--text-muted);
       font-size: 0.85rem;
-      font-weight: 700;
     }
 
     footer a {
-      color: #000;
+      color: var(--text-secondary);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      color: #fff;
       text-decoration: underline;
     }
 
     @media (max-width: 900px) {
-      .section-header-box {
+      .studio-grid {
         grid-template-columns: 1fr;
       }
-      .spotlight-body {
-        grid-template-columns: 1fr;
+      .trending-row {
+        grid-template-columns: 40px 60px 1fr 80px;
       }
-      .lab-split-studio {
-        grid-template-columns: 1fr;
-      }
-      .trending-item-row {
-        grid-template-columns: 40px 60px 1fr 90px;
+      .trending-row > div:nth-child(4),
+      .trending-row > div:nth-child(6) {
+        display: none;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- Top Banner -->
-  <div class="comic-top-banner">
-    <span>✨ THE LIVING INTERNET MEME ALMANAC • 1990s TO TODAY</span>
-    <span>REDDIT • INSTAGRAM REELS • TIKTOK • YOUTUBE SHORTS • KYM ✨</span>
-  </div>
-
   <!-- Header -->
   <header>
     <div class="nav-container">
-      <div class="comic-logo-group">
-        <a href="#feedSection" class="comic-logo">MEME-OLOGY!</a>
-        <span class="comic-stamp-pill">VOL. 1</span>
+      <div class="logo-group">
+        <span class="brand-title">
+          <span>⚡ MEME-OLOGY</span>
+        </span>
+        <span class="brand-badge">v1.2</span>
+        <div class="status-pill">
+          <span class="status-dot"></span>
+          <span>API ONLINE</span>
+        </div>
       </div>
 
-      <!-- Tri-Section Navigation Switcher -->
-      <nav class="section-nav-switcher">
-        <button class="section-nav-btn active" id="navBtnFeed" onclick="scrollToSection('feedSection')">
-          <span>📰 1. The Feed</span>
+      <nav class="nav-switcher">
+        <button class="nav-btn active" id="navBtnFeed" onclick="scrollToSection('feedSection')">
+          Feed Explorer
         </button>
-        <button class="section-nav-btn" id="navBtnTrending" onclick="scrollToSection('trendingSection')">
-          <span>⚡ 2. Top 10 Trending</span>
+        <button class="nav-btn" id="navBtnTrending" onclick="scrollToSection('trendingSection')">
+          Top 10 Trending
         </button>
-        <button class="section-nav-btn" id="navBtnLab" onclick="scrollToSection('labSection')">
-          <span>🧪 3. API Studio</span>
+        <button class="nav-btn" id="navBtnLab" onclick="scrollToSection('labSection')">
+          API Studio
         </button>
       </nav>
 
-      <div class="nav-right-actions">
-        <a href="/docs" target="_blank" class="btn-comic btn-comic-cyan">
-          <span>⚡ Swagger Docs</span>
+      <div class="nav-actions">
+        <a href="/docs" target="_blank" class="btn-action btn-secondary">
+          <span>Swagger Docs ↗</span>
         </a>
-        <a href="https://github.com/narcisoJavier/Meme-ology" target="_blank" class="btn-comic btn-comic-red">
+        <a href="https://github.com/narcisoJavier/Meme-ology" target="_blank" class="btn-action btn-primary">
           <span>★ GitHub</span>
         </a>
       </div>
     </div>
   </header>
 
-  <!-- =========================================================
-       SECTION 1: THE MEME FEED
-       ========================================================= -->
-  <section class="section-container" id="feedSection">
-    
-    <!-- Hero Header Panel -->
-    <div class="section-header-box">
-      <div class="hero-left-col">
-        <span class="section-badge-tag">✨ INTERNET HUMOR THROUGH THE AGES</span>
-        <h1 class="hero-title">THE LIVING MEME ALMANAC</h1>
-        <p class="hero-desc">
-          A live collection of the internet's favorite jokes, from early forum classics to today's chaotic humor. Pick an era or just scroll through what's funny right now.
+  <!-- Main Container -->
+  <main class="main-container">
+
+    <!-- Hero Banner -->
+    <section class="hero-banner" id="feedSection">
+      <div class="hero-text">
+        <h1>The Open Internet Meme Engine</h1>
+        <p>
+          Real-time curation, classification, and engagement scoring across internet culture eras.
+          100% authentic, verified posts served with sub-5ms edge latency.
         </p>
-
-        <div class="sticker-cloud">
-          <div class="comic-sticker sticker-alpha">👾 Gen Alpha</div>
-          <div class="comic-sticker sticker-z">🛹 Gen Z</div>
-          <div class="comic-sticker sticker-millennial">💾 Millennial</div>
-          <div class="comic-sticker sticker-boomer">📼 Retro &amp; Boomer</div>
-        </div>
       </div>
 
-      <div class="radar-telemetry-box">
-        <h3>COMMUNITY PULSE</h3>
-        <p style="font-size: 0.75rem; font-weight: 700;">TRACKED &amp; CATEGORIZED</p>
-        <div class="telemetry-grid">
-          <div class="telemetry-cell">
-            <div class="telemetry-num" id="statMemes">57</div>
-            <div class="telemetry-lbl">MEMES TRACKED</div>
-          </div>
-          <div class="telemetry-cell">
-            <div class="telemetry-num" style="color: var(--comic-pink);" id="statUpvotes">4.8M</div>
-            <div class="telemetry-lbl">TOTAL UPVOTES</div>
-          </div>
-          <div class="telemetry-cell">
-            <div class="telemetry-num" style="color: #059669;">5 FEEDS</div>
-            <div class="telemetry-lbl">PLATFORMS</div>
-          </div>
-          <div class="telemetry-cell">
-            <div class="telemetry-num" style="color: #2563eb;">&lt; 5ms</div>
-            <div class="telemetry-lbl">EDGE SPEED</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- FEATURED MEME OF THE DAY (SPOTLIGHT) -->
-    <div class="featured-spotlight-card" id="spotlightCard">
-      <div class="spotlight-badge-tab">
-        <span>👑 TODAY'S FEATURED MEME</span>
-        <button class="btn-comic" style="padding: 3px 8px; font-size: 0.75rem;" onclick="rollNextSpotlight()">
-          🎲 Next Spotlight
+      <div class="quick-curl-box">
+        <span class="curl-tag">GET</span>
+        <span>/api/v1/memes/trending?generation=gen_z</span>
+        <button class="btn-action btn-secondary" style="padding: 3px 8px; font-size: 0.7rem;" onclick="copyQuickCurl()">
+          Copy
         </button>
       </div>
-      <div class="spotlight-body" id="spotlightBody">
-        <!-- Injected by JavaScript -->
-      </div>
-    </div>
+    </section>
 
-    <!-- STREAMLINED COMPACT TOOLBAR -->
-    <div class="streamlined-toolbar">
-      <div class="search-input-box">
-        <span class="search-icon">🔍</span>
+    <!-- Sleek API Toolbar -->
+    <div class="api-toolbar">
+      <div class="search-wrapper">
+        <span class="search-icon">⌕</span>
         <input 
           type="text" 
-          id="comicSearch" 
-          class="compact-search-input" 
-          placeholder="Search punchlines, authors, or platforms..."
+          id="memeSearch" 
+          class="search-input" 
+          placeholder="Filter by title, author, or keyword..."
           autocomplete="off"
         />
       </div>
 
-      <!-- ERA PILLS -->
-      <div class="compact-era-pills" id="comicGenerationFilters">
-        <button class="comic-filter-pill active" data-gen="all">✨ All Eras</button>
-        <button class="comic-filter-pill pill-alpha" data-gen="gen_alpha">👾 Gen Alpha</button>
-        <button class="comic-filter-pill pill-z" data-gen="gen_z">🛹 Gen Z</button>
-        <button class="comic-filter-pill pill-millennial" data-gen="millennial">💾 Millennial</button>
-        <button class="comic-filter-pill pill-boomer" data-gen="gen_x">📼 Retro</button>
+      <!-- Era Pills -->
+      <div class="era-pills" id="generationFilters">
+        <button class="era-pill active" data-gen="all">All Eras</button>
+        <button class="era-pill" data-gen="gen_alpha">Gen Alpha</button>
+        <button class="era-pill" data-gen="gen_z">Gen Z</button>
+        <button class="era-pill" data-gen="millennial">Millennial</button>
+        <button class="era-pill" data-gen="gen_x">Retro / Gen X</button>
       </div>
 
-      <!-- PLATFORM & SORT DROPDOWNS -->
-      <div style="display: flex; gap: 0.4rem; align-items: center;">
-        <select id="platformSelect" class="toolbar-dropdown" onchange="onPlatformFilterChange(this.value)">
-          <option value="all">🌐 All Platforms</option>
-          <option value="reddit">🔴 Reddit</option>
-          <option value="instagram">📸 Instagram Reels</option>
-          <option value="tiktok">🎵 TikTok Trends</option>
-          <option value="youtube">▶️ YouTube Shorts</option>
-          <option value="knowyourmeme">📖 Know Your Meme</option>
+      <!-- Dropdown Dials -->
+      <div style="display: flex; gap: 0.5rem;">
+        <select id="communitySelect" class="toolbar-select" onchange="onCommunityFilter(this.value)">
+          <option value="all">All Communities</option>
+          <option value="r/dankmemes">r/dankmemes</option>
+          <option value="r/me_irl">r/me_irl</option>
+          <option value="r/GenAlpha">r/GenAlpha</option>
+          <option value="r/skibiditoilet">r/skibiditoilet</option>
+          <option value="r/wholesomememes">r/wholesomememes</option>
+          <option value="r/AdviceAnimals">r/AdviceAnimals</option>
+          <option value="knowyourmeme">Know Your Meme</option>
         </select>
-        <select id="sortSelect" class="toolbar-dropdown" onchange="onSortChange(this.value)">
-          <option value="newest" selected>⚡ Fresh &amp; Recent</option>
-          <option value="score">🔥 Most Liked</option>
+        <select id="sortSelect" class="toolbar-select" onchange="onSortFilter(this.value)">
+          <option value="newest" selected>Fresh &amp; Recent</option>
+          <option value="score">Top Score</option>
         </select>
       </div>
     </div>
 
-    <!-- FULL-WIDTH UNCLIPPED COMIC GRID -->
-    <div class="comic-grid" id="comicGrid"></div>
+    <!-- Memes Grid (Unclipped, Professional) -->
+    <div class="memes-grid" id="memesGrid"></div>
 
-  </section>
-
-  <!-- =========================================================
-       SECTION 2: TOP 10 TRENDING RIGHT NOW
-       ========================================================= -->
-  <section class="section-container" id="trendingSection" style="margin-top: 4rem;">
-    <div class="trending-top10-wrap">
-      <div class="trending-top10-header">
-        <div>
-          <h2 style="font-family: 'Bangers', cursive; font-size: 1.8rem; letter-spacing: 0.04em;">
-            ⚡ TRENDING RIGHT NOW (TOP 10)
-          </h2>
-          <p style="font-size: 0.85rem; font-weight: 700; color: #333;">
-            The 10 hottest memes capturing the internet's attention today across all platforms.
-          </p>
+    <!-- Section 2: Top 10 Trending Right Now -->
+    <section class="section-card" id="trendingSection" style="margin-top: 4rem;">
+      <div class="section-card-header">
+        <div class="section-card-title">
+          <span>⚡ Top 10 Trending Right Now</span>
         </div>
-        <span class="comic-stamp-pill" style="font-size: 0.8rem;">TODAY'S HOTTEST</span>
+        <span class="status-pill" style="font-size: 0.68rem;">LIVE RANKED</span>
       </div>
 
-      <div id="trendingTop10List">
-        <!-- Injected by JavaScript -->
+      <div id="trendingTable">
+        <!-- Rendered by JavaScript -->
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- =========================================================
-       SECTION 3: SECRET LAB (API STUDIO)
-       ========================================================= -->
-  <section class="section-container" id="labSection" style="margin-top: 4rem;">
-    <div class="lab-section-wrap">
-      
-      <!-- Studio Header -->
-      <div class="lab-banner-head">
-        <div class="lab-title-group">
-          <h2>THE SECRET LAB: DEVELOPER API STUDIO</h2>
-          <p style="font-size: 0.85rem; color: #aaa;">Multi-platform code generator, live response inspector, and export console.</p>
+    <!-- Section 3: Developer API Studio -->
+    <section class="section-card" id="labSection" style="margin-top: 4rem;">
+      <div class="section-card-header">
+        <div class="section-card-title">
+          <span>🧪 Developer API Studio &amp; Playground</span>
         </div>
-
-        <div class="lab-badge-row" style="display: flex; gap: 0.6rem; align-items: center;">
-          <a href="/docs" target="_blank" class="btn-comic btn-comic-yellow" style="background: var(--comic-yellow);">
-            OPEN SWAGGER &rarr;
-          </a>
+        <div style="display: flex; gap: 0.5rem;">
+          <button class="btn-action btn-secondary" style="font-size: 0.75rem;" onclick="copyApiUrl()">
+            Copy Endpoint URL
+          </button>
+          <button class="btn-action btn-secondary" style="font-size: 0.75rem;" onclick="downloadJson()">
+            Download JSON
+          </button>
         </div>
       </div>
 
-      <!-- Studio Split -->
-      <div class="lab-split-studio">
-        
-        <!-- Left: Endpoints & Params -->
-        <div class="lab-left-control-panel">
-          <div style="font-size: 0.75rem; font-weight: 800; color: #888; text-transform: uppercase;">
-            ⚙️ SELECT ENDPOINT
+      <div class="studio-grid">
+        <!-- Sidebar Controls -->
+        <div class="studio-sidebar">
+          <div style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em;">
+            Endpoints
           </div>
 
-          <div class="endpoint-buttons-column" id="labEndpointButtons">
-            <div class="lab-endpoint-btn active" data-endpoint="trending">
-              <div>
-                <span class="endpoint-method">GET</span>
-                <span class="endpoint-path">/api/v1/memes/trending</span>
-              </div>
+          <div style="display: flex; flex-direction: column; gap: 0.4rem;" id="endpointSelector">
+            <div class="endpoint-item active" data-endpoint="trending">
+              <span style="color: var(--accent-emerald); font-weight: 700;">GET</span> /api/v1/memes/trending
             </div>
-
-            <div class="lab-endpoint-btn" data-endpoint="latest">
-              <div>
-                <span class="endpoint-method">GET</span>
-                <span class="endpoint-path">/api/v1/memes/latest</span>
-              </div>
+            <div class="endpoint-item" data-endpoint="latest">
+              <span style="color: var(--accent-emerald); font-weight: 700;">GET</span> /api/v1/memes/latest
             </div>
-
-            <div class="lab-endpoint-btn" data-endpoint="random">
-              <div>
-                <span class="endpoint-method">GET</span>
-                <span class="endpoint-path">/api/v1/memes/random</span>
-              </div>
+            <div class="endpoint-item" data-endpoint="random">
+              <span style="color: var(--accent-emerald); font-weight: 700;">GET</span> /api/v1/memes/random
             </div>
-
-            <div class="lab-endpoint-btn" data-endpoint="sources">
-              <div>
-                <span class="endpoint-method">GET</span>
-                <span class="endpoint-path">/api/v1/sources</span>
-              </div>
+            <div class="endpoint-item" data-endpoint="sources">
+              <span style="color: var(--accent-emerald); font-weight: 700;">GET</span> /api/v1/sources
             </div>
-
-            <div class="lab-endpoint-btn" data-endpoint="health">
-              <div>
-                <span class="endpoint-method">GET</span>
-                <span class="endpoint-path">/health</span>
-              </div>
+            <div class="endpoint-item" data-endpoint="health">
+              <span style="color: var(--accent-emerald); font-weight: 700;">GET</span> /health
             </div>
           </div>
 
-          <!-- Dials -->
-          <div style="border-top: 1px solid #272733; padding-top: 0.75rem;">
-            <div style="font-size: 0.75rem; font-weight: 800; color: #888; text-transform: uppercase; margin-bottom: 0.5rem;">
-              ⚡ QUERY PARAMETERS
+          <div style="border-top: 1px solid var(--border-subtle); padding-top: 1rem;">
+            <div style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.6rem;">
+              Query Parameters
             </div>
-            <div class="param-row">
-              <label style="font-size: 0.8rem; font-weight: 700;">generation:</label>
-              <select id="paramGeneration" class="param-input-select" onchange="updateLabStudio()">
-                <option value="" selected>all eras</option>
-                <option value="gen_alpha">gen_alpha (brainrot)</option>
-                <option value="gen_z">gen_z (surreal)</option>
-                <option value="millennial">millennial (classics)</option>
-                <option value="gen_x">gen_x (retro)</option>
-              </select>
-            </div>
-            <div class="param-row">
-              <label style="font-size: 0.8rem; font-weight: 700;">limit:</label>
-              <select id="paramLimit" class="param-input-select" onchange="updateLabStudio()">
-                <option value="5">5 memes</option>
-                <option value="10" selected>10 memes</option>
-                <option value="25">25 memes</option>
-                <option value="50">50 memes</option>
-              </select>
-            </div>
-            <div class="param-row">
-              <label style="font-size: 0.8rem; font-weight: 700;">platform:</label>
-              <select id="paramSource" class="param-input-select" onchange="updateLabStudio()">
-                <option value="" selected>all platforms</option>
-                <option value="reddit">reddit</option>
-                <option value="instagram">instagram</option>
-                <option value="tiktok">tiktok</option>
-                <option value="youtube">youtube</option>
-                <option value="knowyourmeme">knowyourmeme</option>
-              </select>
+            <div style="display: flex; flex-direction: column; gap: 0.6rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <label style="font-size: 0.78rem; color: var(--text-secondary);">generation</label>
+                <select id="apiParamGen" class="toolbar-select" style="font-size: 0.75rem; padding: 4px 8px;" onchange="updateStudio()">
+                  <option value="">all</option>
+                  <option value="gen_alpha">gen_alpha</option>
+                  <option value="gen_z">gen_z</option>
+                  <option value="millennial">millennial</option>
+                  <option value="gen_x">gen_x</option>
+                </select>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <label style="font-size: 0.78rem; color: var(--text-secondary);">limit</label>
+                <select id="apiParamLimit" class="toolbar-select" style="font-size: 0.75rem; padding: 4px 8px;" onchange="updateStudio()">
+                  <option value="5">5</option>
+                  <option value="10" selected>10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                </select>
+              </div>
             </div>
           </div>
-
         </div>
 
-        <!-- Right: Code Snippet & Output -->
-        <div class="lab-right-console">
-          <div class="console-header-bar">
-            <div class="console-lang-tabs" id="labLangTabs">
-              <button class="console-lang-btn active" data-lang="curl">cURL</button>
-              <button class="console-lang-btn" data-lang="python">Python</button>
-              <button class="console-lang-btn" data-lang="javascript">JavaScript</button>
-              <button class="console-lang-btn" data-lang="go">Go</button>
+        <!-- Right Studio Console -->
+        <div class="studio-right">
+          <div class="studio-toolbar">
+            <div class="lang-tabs" id="langTabs">
+              <button class="lang-tab active" data-lang="curl">cURL</button>
+              <button class="lang-tab" data-lang="python">Python</button>
+              <button class="lang-tab" data-lang="javascript">JavaScript</button>
+              <button class="lang-tab" data-lang="go">Go</button>
             </div>
-
-            <div class="console-actions-group">
-              <button class="btn-console-action" id="btnCopyApiUrl" onclick="copyLiveApiUrl()">
-                📋 COPY URL
-              </button>
-              <button class="btn-console-action" id="btnDownloadJson" onclick="downloadCurrentJson()">
-                💾 DOWNLOAD JSON
-              </button>
-              <button class="btn-console-action" id="btnCopySnippet">
-                COPY CODE
-              </button>
-              <button class="btn-run-request" id="btnRunRequest" onclick="executeLiveLabRequest()">
-                ▶ EXECUTE
-              </button>
-            </div>
+            <button class="btn-action btn-secondary" style="font-size: 0.72rem; padding: 3px 8px;" onclick="copyCodeSnippet()">
+              Copy Code
+            </button>
           </div>
 
-          <pre class="console-code-snippet" id="labCodeSnippet"></pre>
+          <pre class="code-view" id="codeSnippet"></pre>
 
-          <div class="console-response-header">
-            <span>LIVE HTTP RESPONSE PAYLOAD</span>
-            <span style="color: #4ade80;" id="responseStatusBadge">HTTP 200 OK • &lt; 5ms</span>
+          <div style="padding: 6px 1.25rem; background: #0c0c10; border-bottom: 1px solid var(--border-subtle); display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--text-muted);">
+            <span>RESPONSE PAYLOAD</span>
+            <span style="color: var(--accent-emerald);">HTTP 200 OK • &lt; 5ms</span>
           </div>
 
-          <pre class="console-response-output" id="labResponseOutput"></pre>
+          <pre class="response-view" id="responseViewer"></pre>
         </div>
-
       </div>
+    </section>
 
-    </div>
-  </section>
+  </main>
 
-  <!-- Comic Modal -->
-  <div class="comic-modal" id="comicModal">
-    <div class="comic-modal-box">
-      <button class="modal-close-btn" id="modalClose">&times;</button>
-      <div class="modal-media-wrap" id="modalMedia"></div>
-      <div class="modal-content-details">
+  <!-- Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-card">
+      <button class="modal-close" id="modalClose">&times;</button>
+      <div class="modal-media" id="modalMedia"></div>
+      <div class="modal-info">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-          <span id="modalSource" class="comic-stamp-pill" style="font-size: 0.8rem;">r/dankmemes</span>
-          <span id="modalScore" style="font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; font-weight: 800; color: var(--comic-red);">❤️ 24,500 LIKES</span>
+          <span class="community-badge" id="modalBadge">r/dankmemes</span>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--accent-emerald);" id="modalScore">▲ 1,200</span>
         </div>
-        <h3 id="modalTitle" style="font-size: 1.2rem; font-weight: 800;"></h3>
-        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 2px solid #000; padding-top: 0.75rem; flex-wrap: wrap; gap: 0.75rem;">
-          <span id="modalAuthor" style="font-size: 0.85rem; font-weight: 700; color: #555;"></span>
-          <a id="modalLink" href="#" target="_blank" rel="noopener noreferrer" class="btn-comic btn-comic-yellow" style="background: var(--comic-yellow); padding: 8px 18px; font-size: 0.95rem; box-shadow: 4px 4px 0px #000;">
-            🚀 OPEN ORIGINAL POST &rarr;
+        <h3 style="font-size: 1.15rem; font-weight: 700; color: #fff;" id="modalTitle"></h3>
+        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-subtle); padding-top: 0.75rem; margin-top: 0.5rem;">
+          <span style="font-size: 0.8rem; color: var(--text-muted);" id="modalAuthor"></span>
+          <a href="#" target="_blank" rel="noopener noreferrer" class="btn-action btn-primary" id="modalLink">
+            Open Original Discussion ↗
           </a>
         </div>
       </div>
@@ -1466,37 +1009,18 @@
 
   <!-- Footer -->
   <footer>
-    <p>MEME-OLOGY! © 2026 • THE LIVING INTERNET MEME ALMANAC</p>
-    <p style="margin-top: 0.5rem; font-weight: 600;">
-      <a href="https://github.com/narcisoJavier/Meme-ology" target="_blank">GitHub</a> • 
-      <a href="/docs" target="_blank">Swagger API</a> • 
-      <a href="/openapi.json" target="_blank">OpenAPI Spec</a> • 
+    <p>Meme-ology API © 2026 • Real-time Internet Culture &amp; Historical Humor Engine</p>
+    <p style="margin-top: 0.5rem;">
+      <a href="https://github.com/narcisoJavier/Meme-ology" target="_blank">GitHub Repository</a> • 
+      <a href="/docs" target="_blank">Interactive Swagger UI</a> • 
+      <a href="/openapi.json" target="_blank">OpenAPI 3.1 Spec</a> • 
       <a href="#feedSection">Back to Top &uarr;</a>
     </p>
   </footer>
 
   <script>
-    // Embedded Multi-Platform Harvested Memes
-    const GENERATIONAL_MEMES = [
-    {
-        "id": "yt_short_1",
-        "title": "Animation logic: Why gravity doesn't work until you look down",
-        "url": "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=800&auto=format&fit=crop&q=80",
-        "media_url": "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=800&auto=format&fit=crop&q=80",
-        "media_type": "image",
-        "source": "youtube",
-        "source_platform": "youtube",
-        "source_community": "shorts",
-        "permalink": "https://www.youtube.com/hashtag/shorts",
-        "author": "@ToonShortsHQ",
-        "score": 53000,
-        "num_comments": 1780,
-        "created_at": 1788379371.3973083,
-        "is_nsfw": false,
-        "domain": "youtube.com",
-        "trending_score": 97.0,
-        "generation": "gen_z"
-    },
+    // 100% Authentic Live Dataset
+    const MEMES_DATA = [
     {
         "id": "reddit_GenAlpha_1w2ed3i",
         "title": "I hate comments on edits",
@@ -1574,25 +1098,6 @@
         "generation": "gen_alpha"
     },
     {
-        "id": "tiktok_trend_1",
-        "title": "When the new surreal sound trend takes over everyone's FYP simultaneously",
-        "url": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800&auto=format&fit=crop&q=80",
-        "media_url": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800&auto=format&fit=crop&q=80",
-        "media_type": "image",
-        "source": "tiktok",
-        "source_platform": "tiktok",
-        "source_community": "trending",
-        "permalink": "https://www.tiktok.com/tag/memes",
-        "author": "@tiktok_trends",
-        "score": 62500,
-        "num_comments": 2100,
-        "created_at": 1788378771.3973083,
-        "is_nsfw": false,
-        "domain": "tiktok.com",
-        "trending_score": 98.2,
-        "generation": "gen_alpha"
-    },
-    {
         "id": "reddit_GenAlpha_1vywcmq",
         "title": "School year tierlist",
         "url": "https://i.redd.it/h709zzrovplh1.png",
@@ -1647,25 +1152,6 @@
         "is_nsfw": false,
         "domain": "i.redd.it",
         "trending_score": 29.8,
-        "generation": "gen_alpha"
-    },
-    {
-        "id": "yt_short_2",
-        "title": "Skibidi Toilet Episode 77 Secret Details You Definitely Missed",
-        "url": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80",
-        "media_url": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80",
-        "media_type": "image",
-        "source": "youtube",
-        "source_platform": "youtube",
-        "source_community": "shorts",
-        "permalink": "https://www.youtube.com/hashtag/skibiditoilet",
-        "author": "@DaFuqTheorist",
-        "score": 41800,
-        "num_comments": 2300,
-        "created_at": 1788378371.3973083,
-        "is_nsfw": false,
-        "domain": "youtube.com",
-        "trending_score": 94.6,
         "generation": "gen_alpha"
     },
     {
@@ -1802,25 +1288,6 @@
         "generation": "gen_z"
     },
     {
-        "id": "ig_reel_1",
-        "title": "When your brain plays that one specific viral sound on repeat at 3 AM",
-        "url": "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=800&auto=format&fit=crop&q=80",
-        "media_url": "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=800&auto=format&fit=crop&q=80",
-        "media_type": "image",
-        "source": "instagram",
-        "source_platform": "instagram",
-        "source_community": "reels",
-        "permalink": "https://www.instagram.com/reels/",
-        "author": "@reels_comedy_hub",
-        "score": 48200,
-        "num_comments": 1240,
-        "created_at": 1788377571.3973083,
-        "is_nsfw": false,
-        "domain": "instagram.com",
-        "trending_score": 96.5,
-        "generation": "gen_z"
-    },
-    {
         "id": "reddit_dankmemes_1w3zzyr",
         "title": "A title (about relationships)",
         "url": "https://i.redd.it/17dkh032ttmh1.png",
@@ -1913,25 +1380,6 @@
         "is_nsfw": false,
         "domain": "i.redd.it",
         "trending_score": 24.0,
-        "generation": "gen_z"
-    },
-    {
-        "id": "tiktok_trend_2",
-        "title": "Doing the dramatic turn around trend with absolute zero rehearsal",
-        "url": "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=800&auto=format&fit=crop&q=80",
-        "media_url": "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=800&auto=format&fit=crop&q=80",
-        "media_type": "image",
-        "source": "tiktok",
-        "source_platform": "tiktok",
-        "source_community": "trending",
-        "permalink": "https://www.tiktok.com/tag/comedy",
-        "author": "@viral_skits",
-        "score": 45100,
-        "num_comments": 1420,
-        "created_at": 1788376971.3973083,
-        "is_nsfw": false,
-        "domain": "tiktok.com",
-        "trending_score": 95.1,
         "generation": "gen_z"
     },
     {
@@ -2030,25 +1478,6 @@
         "generation": "gen_z"
     },
     {
-        "id": "kym_gucci_morty",
-        "title": "Gucci Morty / High-Fashion Rick and Morty AI Edits",
-        "url": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&auto=format&fit=crop&q=80",
-        "media_url": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&auto=format&fit=crop&q=80",
-        "media_type": "image",
-        "source": "knowyourmeme",
-        "source_platform": "knowyourmeme",
-        "source_community": "confirmed",
-        "permalink": "https://knowyourmeme.com/memes/gucci-morty",
-        "author": "KYM Staff",
-        "score": 26400,
-        "num_comments": 480,
-        "created_at": 1788376371.3973083,
-        "is_nsfw": false,
-        "domain": "knowyourmeme.com",
-        "trending_score": 89.2,
-        "generation": "gen_z"
-    },
-    {
         "id": "reddit_me_irl_1w2r0on",
         "title": "me_irl",
         "url": "https://i.redd.it/ejg4r5r3ekmh1.png",
@@ -2142,25 +1571,6 @@
         "domain": "i.redd.it",
         "trending_score": 2257.0,
         "generation": "gen_z"
-    },
-    {
-        "id": "ig_reel_2",
-        "title": "POV: Trying to explain modern internet brainrot humor to your parents",
-        "url": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80",
-        "media_url": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80",
-        "media_type": "image",
-        "source": "instagram",
-        "source_platform": "instagram",
-        "source_community": "reels",
-        "permalink": "https://www.instagram.com/reels/",
-        "author": "@content_daily",
-        "score": 39400,
-        "num_comments": 950,
-        "created_at": 1788375771.3973083,
-        "is_nsfw": false,
-        "domain": "instagram.com",
-        "trending_score": 93.8,
-        "generation": "gen_alpha"
     },
     {
         "id": "reddit_me_irl_1w2yoa2",
@@ -2294,25 +1704,6 @@
         "domain": "i.redd.it",
         "trending_score": 2979.8,
         "generation": "millennial"
-    },
-    {
-        "id": "kym_la_peace",
-        "title": "La Peace / Peaceful Hands Internet Trend",
-        "url": "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=800&auto=format&fit=crop&q=80",
-        "media_url": "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=800&auto=format&fit=crop&q=80",
-        "media_type": "image",
-        "source": "knowyourmeme",
-        "source_platform": "knowyourmeme",
-        "source_community": "confirmed",
-        "permalink": "https://knowyourmeme.com/memes/la-peace",
-        "author": "KYM Staff",
-        "score": 19800,
-        "num_comments": 310,
-        "created_at": 1788374971.3973083,
-        "is_nsfw": false,
-        "domain": "knowyourmeme.com",
-        "trending_score": 86.4,
-        "generation": "gen_z"
     },
     {
         "id": "reddit_AdviceAnimals_1w2ld55",
@@ -2467,25 +1858,6 @@
         "generation": "gen_x"
     },
     {
-        "id": "ig_reel_3",
-        "title": "The exact moment you realize you opened Instagram to check one thing and lost 2 hours",
-        "url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&auto=format&fit=crop&q=80",
-        "media_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&auto=format&fit=crop&q=80",
-        "media_type": "image",
-        "source": "instagram",
-        "source_platform": "instagram",
-        "source_community": "reels",
-        "permalink": "https://www.instagram.com/reels/",
-        "author": "@scrolling_relatable",
-        "score": 31200,
-        "num_comments": 810,
-        "created_at": 1788373971.3973083,
-        "is_nsfw": false,
-        "domain": "instagram.com",
-        "trending_score": 91.0,
-        "generation": "gen_z"
-    },
-    {
         "id": "reddit_wholesomememes_1uj6bej",
         "title": "Wisdom of the Universe",
         "url": "https://i.redd.it/792ww1mbnaah1.png",
@@ -2541,336 +1913,196 @@
         "domain": "i.redd.it",
         "trending_score": 3817.9,
         "generation": "gen_x"
-    },
-    {
-        "id": "ig_reel_4",
-        "title": "Millennials trying to keep up with slang every single month",
-        "url": "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=800&auto=format&fit=crop&q=80",
-        "media_url": "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=800&auto=format&fit=crop&q=80",
-        "media_type": "image",
-        "source": "instagram",
-        "source_platform": "instagram",
-        "source_community": "reels",
-        "permalink": "https://www.instagram.com/reels/",
-        "author": "@vintage_vibes_2000s",
-        "score": 28400,
-        "num_comments": 670,
-        "created_at": 1788372171.3973083,
-        "is_nsfw": false,
-        "domain": "instagram.com",
-        "trending_score": 88.5,
-        "generation": "millennial"
     }
 ];
 
-    let memeCollection = [...GENERATIONAL_MEMES];
-    let spotlightIndex = 0;
-    let selectedPlatform = 'all';
-    let selectedSort = 'newest'; // DEFAULT: Fresh & Recent First!
+    let memes = [...MEMES_DATA];
+    let activeGen = 'all';
+    let activeCommunity = 'all';
+    let activeSort = 'newest';
 
-    // Persistent 1-Vote Per User Registry (localStorage)
-    function getVotedMemeIds() {
+    // LocalStorage 1-vote registry
+    function getVotedSet() {
       try {
-        return JSON.parse(localStorage.getItem('memeology_voted_ids') || '[]');
+        return new Set(JSON.parse(localStorage.getItem('memeology_voter_ids') || '[]'));
       } catch (e) {
-        return [];
+        return new Set();
       }
     }
 
-    function isMemeVoted(id) {
-      return getVotedMemeIds().includes(id);
-    }
-
-    function toggleMemeVote(meme) {
-      let votedIds = getVotedMemeIds();
-      const alreadyVoted = votedIds.includes(meme.id);
-      if (alreadyVoted) {
-        votedIds = votedIds.filter(x => x !== meme.id);
+    function toggleVote(meme) {
+      const voted = getVotedSet();
+      const has = voted.has(meme.id);
+      if (has) {
+        voted.delete(meme.id);
         meme.score = Math.max(0, (meme.score || 1) - 1);
       } else {
-        votedIds.push(meme.id);
+        voted.add(meme.id);
         meme.score = (meme.score || 0) + 1;
       }
-      localStorage.setItem('memeology_voted_ids', JSON.stringify(votedIds));
-      return !alreadyVoted;
+      localStorage.setItem('memeology_voter_ids', JSON.stringify(Array.from(voted)));
+      return !has;
     }
 
-    // Ingest Live Memes with Failover
-    async function initFeed() {
+    // Ingest live from API with fallback
+    async function init() {
       try {
         const res = await fetch('/api/v1/memes/latest?limit=100');
         if (res.ok) {
           const data = await res.json();
           const items = Array.isArray(data) ? data : (data.items || []);
           if (items.length > 0) {
-            memeCollection = items;
+            memes = items;
           }
         }
       } catch (e) {
-        console.log("Using cached multi-platform meme collection");
+        console.log("Using cached dataset");
       }
-      renderSpotlight();
-      renderComicGrid();
-      renderTop10Trending();
-      updateLabStudio();
+      renderFeed();
+      renderTrendingTable();
+      updateStudio();
     }
 
-    // Render Featured Meme of the Day Spotlight
-    function renderSpotlight() {
-      if (!memeCollection.length) return;
-      const sorted = [...memeCollection].sort((a,b) => (b.score || 0) - (a.score || 0));
-      const m = sorted[spotlightIndex % sorted.length];
-      const isVideo = m.media_type === 'video' || (m.url && (m.url.endsWith('.mp4') || m.url.endsWith('.webm')));
-      const mediaTag = isVideo ? 
-        `<video src="${m.url}" autoplay loop muted playsinline referrerpolicy="no-referrer"></video>` :
-        `<img src="${m.url}" alt="${m.title}" referrerpolicy="no-referrer" onerror="this.style.display='none';" />`;
+    // Render Clean Memes Grid
+    function renderFeed() {
+      const grid = document.getElementById('memesGrid');
+      const search = document.getElementById('memeSearch').value.toLowerCase().trim();
+      const votedSet = getVotedSet();
 
-      const genKey = (m.generation || 'gen_z').toLowerCase();
-      const genLabel = {
-        gen_alpha: "👾 GEN ALPHA",
-        gen_z: "🛹 GEN Z",
-        millennial: "💾 MILLENNIAL",
-        gen_x: "📼 RETRO"
-      }[genKey] || "🛹 GEN Z";
-
-      const platIcon = {
-        reddit: "🔴 Reddit",
-        instagram: "📸 Instagram Reels",
-        tiktok: "🎵 TikTok",
-        youtube: "▶️ YouTube Shorts",
-        knowyourmeme: "📖 Know Your Meme"
-      }[m.source_platform] || m.source_platform;
-
-      document.getElementById('spotlightBody').innerHTML = `
-        <div class="spotlight-media-frame">
-          ${mediaTag}
-        </div>
-        <div class="spotlight-info-col">
-          <div class="spotlight-meta-row">
-            <span class="comic-stamp-pill">${platIcon}</span>
-            <span class="badge-generation badge-${genKey}" style="position: static;">${genLabel}</span>
-            <span style="font-family: 'Space Grotesk', sans-serif; font-size: 1rem; font-weight: 800; color: var(--comic-red);">
-              ❤️ ${Number(m.score).toLocaleString()} LIKES
-            </span>
-          </div>
-          <div class="spotlight-title">"${m.title}"</div>
-          <div style="font-size: 0.85rem; font-weight: 700; color: #555;">
-            Posted by <strong>${m.author || 'anonymous'}</strong>
-          </div>
-          <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
-            <a href="${m.permalink}" target="_blank" rel="noopener noreferrer" class="btn-card-permalink" style="padding: 6px 14px; font-size: 0.85rem;">
-              🚀 OPEN ORIGINAL POST &rarr;
-            </a>
-            <button class="btn-comic" onclick="openComicModal(memeCollection.find(x => x.id === '${m.id}'))">
-              🔍 Fullscreen
-            </button>
-          </div>
-        </div>
-      `;
-    }
-
-    function rollNextSpotlight() {
-      spotlightIndex++;
-      renderSpotlight();
-    }
-
-    // Render Full-Width Unclipped Grid
-    function renderComicGrid() {
-      const grid = document.getElementById('comicGrid');
-      const search = document.getElementById('comicSearch').value.toLowerCase().trim();
-      const activeGen = document.querySelector('#comicGenerationFilters .comic-filter-pill.active').dataset.gen;
-
-      let filtered = memeCollection.filter(m => {
+      let filtered = memes.filter(m => {
         const title = (m.title || '').toLowerCase();
         const author = (m.author || '').toLowerCase();
         const comm = (m.source_community || '').toLowerCase();
-        const plat = (m.source_platform || '').toLowerCase();
         const gen = (m.generation || 'gen_z').toLowerCase();
 
-        // Search Match
-        const matchesSearch = !search || title.includes(search) || author.includes(search) || comm.includes(search) || plat.includes(search) || gen.includes(search);
+        const matchSearch = !search || title.includes(search) || author.includes(search) || comm.includes(search);
+        const matchGen = activeGen === 'all' || gen === activeGen;
+        const matchComm = activeCommunity === 'all' || comm === activeCommunity;
 
-        // Era Match
-        let matchesGen = true;
-        if (activeGen !== 'all') {
-          matchesGen = gen === activeGen;
-        }
-
-        // Platform Match
-        let matchesPlatform = true;
-        if (selectedPlatform !== 'all') {
-          matchesPlatform = plat === selectedPlatform;
-        }
-
-        return matchesSearch && matchesGen && matchesPlatform;
+        return matchSearch && matchGen && matchComm;
       });
 
-      // Sort
-      if (selectedSort === 'newest') {
+      if (activeSort === 'newest') {
         filtered.sort((a,b) => (b.created_at || 0) - (a.created_at || 0));
-      } else if (selectedSort === 'score') {
+      } else {
         filtered.sort((a,b) => (b.score || 0) - (a.score || 0));
       }
 
       if (filtered.length === 0) {
         grid.innerHTML = `
-          <div style="grid-column: 1/-1; text-align: center; padding: 3.5rem; background: #fff; border: 3px solid #000; box-shadow: 6px 6px 0px #000; border-radius: 8px;">
-            <div style="font-size: 3rem;">✨</div>
-            <h3 style="font-family: 'Bangers', cursive; font-size: 2rem; margin-top: 0.5rem;">NO MEMES FOUND IN THIS VIEW</h3>
-            <p style="font-size: 0.95rem; font-weight: 700; color: #555;">Try choosing another platform, era, or clearing your search term.</p>
+          <div style="grid-column: 1/-1; text-align: center; padding: 4rem 1rem; color: var(--text-muted); font-size: 0.95rem;">
+            No memes match your active filters. Try clearing your search or switching eras.
           </div>
         `;
         return;
       }
 
       grid.innerHTML = filtered.map(m => {
+        const genKey = (m.generation || 'gen_z').toLowerCase();
+        const isVoted = votedSet.has(m.id);
         const isVideo = m.media_type === 'video' || (m.url && (m.url.endsWith('.mp4') || m.url.endsWith('.webm')));
-        const isGif = m.media_type === 'gif' || (m.url && m.url.endsWith('.gif'));
-        const voted = isMemeVoted(m.id);
 
         const mediaTag = isVideo ? `
           <video src="${m.url}" preload="metadata" muted playsinline loop referrerpolicy="no-referrer"></video>
-          <div class="badge-gif-indicator">▶ VIDEO</div>
-        ` : (isGif ? `
-          <img src="${m.url}" alt="${m.title}" loading="lazy" referrerpolicy="no-referrer" />
-          <div class="badge-gif-indicator">▶ GIF</div>
         ` : `
           <img src="${m.url}" alt="${m.title}" loading="lazy" referrerpolicy="no-referrer" />
-        `);
-
-        const genKey = (m.generation || 'gen_z').toLowerCase();
-        const genLabel = {
-          gen_alpha: "👾 GEN ALPHA",
-          gen_z: "🛹 GEN Z",
-          millennial: "💾 MILLENNIAL",
-          gen_x: "📼 RETRO"
-        }[genKey] || "🛹 GEN Z";
-
-        const platLabel = {
-          reddit: "🔴 Reddit",
-          instagram: "📸 Reels",
-          tiktok: "🎵 TikTok",
-          youtube: "▶️ Shorts",
-          knowyourmeme: "📖 KYM"
-        }[m.source_platform] || m.source_platform;
+        `;
 
         return `
-          <div class="comic-card" data-id="${m.id}">
-            <div class="speech-bubble-wrapper">
-              <div class="speech-bubble">
-                <span class="speech-quote">"${m.title}"</span>
-                <span class="speech-author">posted by ${m.author || 'anonymous'}</span>
-              </div>
+          <div class="meme-card" data-id="${m.id}">
+            <div class="card-top">
+              <span class="community-badge">${m.source_community || m.source}</span>
+              <span class="era-tag era-${genKey}">${genKey.replace('_', ' ')}</span>
             </div>
 
-            <div class="comic-card-media">
+            <div class="card-media-frame">
               ${mediaTag}
-              <div class="badge-corner-stamp">${platLabel}</div>
-              <div class="badge-generation badge-${genKey}">${genLabel}</div>
             </div>
 
-            <div class="comic-card-footer">
-              <a href="${m.permalink}" target="_blank" rel="noopener noreferrer" class="btn-card-permalink" title="Open post on ${platLabel}" onclick="event.stopPropagation()">
-                <span>🔗 POST &rarr;</span>
-              </a>
-              <button class="btn-like-clean ${voted ? 'voted' : ''}" title="Like this meme">
-                <span class="heart-icon">${voted ? '❤️' : '🤍'}</span>
-                <span class="like-num">${Number(m.score).toLocaleString()}</span>
+            <div class="card-content">
+              <div class="card-title" title="${m.title}">${m.title}</div>
+              <div class="card-meta">by ${m.author || 'anonymous'}</div>
+            </div>
+
+            <div class="card-footer">
+              <button class="btn-upvote ${isVoted ? 'voted' : ''}" title="Toggle upvote (1 per user)">
+                <span>▲</span>
+                <span class="score-val">${Number(m.score).toLocaleString()}</span>
               </button>
+
+              <a href="${m.permalink}" target="_blank" rel="noopener noreferrer" class="btn-permalink" onclick="event.stopPropagation()">
+                <span>Open Thread</span>
+                <span>↗</span>
+              </a>
             </div>
           </div>
         `;
       }).join('');
 
-      // Listeners for Clean Likes, Hover-Play Video/GIF, and Modal
-      document.querySelectorAll('.comic-card').forEach(card => {
+      // Event listeners for upvotes and lightbox
+      document.querySelectorAll('.meme-card').forEach(card => {
         const id = card.dataset.id;
-        const meme = memeCollection.find(x => x.id === id);
+        const meme = memes.find(x => x.id === id);
         if (!meme) return;
 
-        // Hover to play video
+        // Hover play video
         const video = card.querySelector('video');
         if (video) {
           card.addEventListener('mouseenter', () => { video.play().catch(() => {}); });
           card.addEventListener('mouseleave', () => { video.pause(); video.currentTime = 0; });
         }
 
-        // Clean Like Interaction (NO POW, NO SLAM!)
-        const likeBtn = card.querySelector('.btn-like-clean');
-        likeBtn.addEventListener('click', (e) => {
+        // Upvote click
+        const btn = card.querySelector('.btn-upvote');
+        btn.addEventListener('click', (e) => {
           e.stopPropagation();
-          const justVoted = toggleMemeVote(meme);
-          const currentScore = Number(meme.score).toLocaleString();
-          
-          likeBtn.querySelector('.like-num').textContent = currentScore;
-          
+          const justVoted = toggleVote(meme);
+          btn.querySelector('.score-val').textContent = Number(meme.score).toLocaleString();
           if (justVoted) {
-            likeBtn.classList.add('voted');
-            likeBtn.querySelector('.heart-icon').textContent = '❤️';
+            btn.classList.add('voted');
           } else {
-            likeBtn.classList.remove('voted');
-            likeBtn.querySelector('.heart-icon').textContent = '🤍';
+            btn.classList.remove('voted');
           }
-
-          renderTop10Trending();
+          renderTrendingTable();
         });
 
-        // Lightbox Modal
+        // Lightbox
         card.addEventListener('click', () => {
-          openComicModal(meme);
+          openModal(meme);
         });
       });
     }
 
-    // Render Clean Top 10 Trending Section
-    function renderTop10Trending() {
-      const list = document.getElementById('trendingTop10List');
-      if (!list) return;
+    // Render Trending Top 10 Table
+    function renderTrendingTable() {
+      const table = document.getElementById('trendingTable');
+      if (!table) return;
 
-      const top10 = [...memeCollection].sort((a,b) => (b.score || 0) - (a.score || 0)).slice(0, 10);
+      const top10 = [...memes].sort((a,b) => (b.score || 0) - (a.score || 0)).slice(0, 10);
 
-      list.innerHTML = top10.map((m, idx) => {
+      table.innerHTML = top10.map((m, idx) => {
         const rank = idx + 1;
-        const rankClass = rank === 1 ? 'rank-top1' : (rank === 2 ? 'rank-top2' : (rank === 3 ? 'rank-top3' : ''));
-        const medal = rank === 1 ? '🥇' : (rank === 2 ? '🥈' : (rank === 3 ? '🥉' : `#${rank}`));
-
         const genKey = (m.generation || 'gen_z').toLowerCase();
-        const genLabel = {
-          gen_alpha: "👾 ALPHA",
-          gen_z: "🛹 GEN Z",
-          millennial: "💾 MILLENNIAL",
-          gen_x: "📼 RETRO"
-        }[genKey] || "🛹 GEN Z";
-
-        const platLabel = {
-          reddit: "🔴 Reddit",
-          instagram: "📸 Reels",
-          tiktok: "🎵 TikTok",
-          youtube: "▶️ Shorts",
-          knowyourmeme: "📖 KYM"
-        }[m.source_platform] || m.source_platform;
 
         return `
-          <div class="trending-item-row">
-            <div class="trending-rank ${rankClass}">${medal}</div>
+          <div class="trending-row">
+            <div class="trending-rank">#${rank}</div>
             <div class="trending-thumb">
               <img src="${m.url}" alt="${m.title}" loading="lazy" referrerpolicy="no-referrer" />
             </div>
             <div>
-              <div style="font-weight: 800; font-size: 0.92rem; line-height: 1.3;">"${m.title}"</div>
-              <div style="font-size: 0.72rem; color: #666; font-weight: 700; margin-top: 3px;">
-                ${platLabel} • by ${m.author || 'anonymous'}
-              </div>
+              <div style="font-weight: 600; font-size: 0.88rem; color: #fff; line-height: 1.3;">${m.title}</div>
+              <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 2px;">by ${m.author || 'anonymous'}</div>
             </div>
-            <div style="display: flex; align-items: center; gap: 0.5rem;">
-              <span class="badge-generation badge-${genKey}" style="position: static; font-size: 0.65rem;">${genLabel}</span>
-              <span style="font-family: 'Space Grotesk', sans-serif; font-size: 0.9rem; font-weight: 800; color: var(--comic-red);">
-                ❤️ ${Number(m.score).toLocaleString()}
-              </span>
+            <div>
+              <span class="community-badge">${m.source_community || m.source}</span>
+            </div>
+            <div>
+              <span class="era-tag era-${genKey}">${genKey.replace('_', ' ')}</span>
             </div>
             <div style="text-align: right;">
-              <a href="${m.permalink}" target="_blank" rel="noopener noreferrer" class="btn-card-permalink" style="padding: 3px 8px; font-size: 0.72rem;">
-                🔗 Post &rarr;
+              <a href="${m.permalink}" target="_blank" rel="noopener noreferrer" class="btn-permalink" style="font-size: 0.72rem;">
+                Thread ↗
               </a>
             </div>
           </div>
@@ -2878,38 +2110,38 @@
       }).join('');
     }
 
-    function onPlatformFilterChange(val) {
-      selectedPlatform = val;
-      renderComicGrid();
-    }
-
-    function onSortChange(val) {
-      selectedSort = val;
-      renderComicGrid();
-    }
-
-    // Filter Pills Click Handler
-    document.querySelectorAll('#comicGenerationFilters .comic-filter-pill').forEach(pill => {
+    // Filter controls
+    document.querySelectorAll('#generationFilters .era-pill').forEach(pill => {
       pill.addEventListener('click', () => {
-        document.querySelectorAll('#comicGenerationFilters .comic-filter-pill').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('#generationFilters .era-pill').forEach(p => p.classList.remove('active'));
         pill.classList.add('active');
-        renderComicGrid();
+        activeGen = pill.dataset.gen;
+        renderFeed();
       });
     });
 
-    // Search Input
-    document.getElementById('comicSearch').addEventListener('input', () => {
-      renderComicGrid();
+    document.getElementById('memeSearch').addEventListener('input', () => {
+      renderFeed();
     });
 
-    // Lightbox Modal
-    const modal = document.getElementById('comicModal');
-    const modalClose = document.getElementById('modalClose');
+    function onCommunityFilter(val) {
+      activeCommunity = val;
+      renderFeed();
+    }
 
-    function openComicModal(meme) {
-      document.getElementById('modalTitle').textContent = `"${meme.title}"`;
-      document.getElementById('modalSource').textContent = meme.source_platform || meme.source;
-      document.getElementById('modalScore').textContent = `❤️ ${Number(meme.score).toLocaleString()} LIKES`;
+    function onSortFilter(val) {
+      activeSort = val;
+      renderFeed();
+    }
+
+    // Lightbox modal
+    const overlay = document.getElementById('modalOverlay');
+    const closeBtn = document.getElementById('modalClose');
+
+    function openModal(meme) {
+      document.getElementById('modalTitle').textContent = meme.title;
+      document.getElementById('modalBadge').textContent = meme.source_community || meme.source;
+      document.getElementById('modalScore').textContent = `▲ ${Number(meme.score).toLocaleString()}`;
       document.getElementById('modalAuthor').textContent = `Posted by ${meme.author || 'anonymous'}`;
       document.getElementById('modalLink').href = meme.permalink || '#';
 
@@ -2920,135 +2152,114 @@
         <img src="${meme.url}" alt="${meme.title}" referrerpolicy="no-referrer" />
       `;
 
-      modal.classList.add('active');
+      overlay.classList.add('active');
     }
 
-    modalClose.addEventListener('click', () => {
-      modal.classList.remove('active');
+    closeBtn.addEventListener('click', () => {
+      overlay.classList.remove('active');
       document.getElementById('modalMedia').innerHTML = '';
     });
 
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) {
-        modal.classList.remove('active');
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) {
+        overlay.classList.remove('active');
         document.getElementById('modalMedia').innerHTML = '';
       }
     });
 
-    // Section Scroll & Nav Sync
+    // Nav smooth scroll
     function scrollToSection(id) {
       const el = document.getElementById(id);
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth' });
-      }
-      document.querySelectorAll('.section-nav-btn').forEach(b => b.classList.remove('active'));
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
       if (id === 'feedSection') document.getElementById('navBtnFeed').classList.add('active');
       if (id === 'trendingSection') document.getElementById('navBtnTrending').classList.add('active');
       if (id === 'labSection') document.getElementById('navBtnLab').classList.add('active');
     }
 
-    // =========================================================
-    // SECTION 3: SECRET LAB (API STUDIO) LOGIC
-    // =========================================================
-    let selectedLabEndpoint = 'trending';
-    let selectedLabLang = 'curl';
+    // API Studio logic
+    let selectedEndpoint = 'trending';
+    let selectedLang = 'curl';
 
-    function getBaseUrl() {
-      return window.location.origin;
-    }
+    function buildUrl() {
+      const origin = window.location.origin;
+      const gen = document.getElementById('apiParamGen').value;
+      const limit = document.getElementById('apiParamLimit').value;
 
-    function buildCurrentApiUrl() {
-      const base = getBaseUrl();
-      const gen = document.getElementById('paramGeneration').value;
-      const limit = document.getElementById('paramLimit').value;
-      const src = document.getElementById('paramSource').value;
-
-      let path = `/api/v1/memes/${selectedLabEndpoint}`;
-      if (selectedLabEndpoint === 'sources') path = '/api/v1/sources';
-      if (selectedLabEndpoint === 'health') path = '/health';
+      let path = `/api/v1/memes/${selectedEndpoint}`;
+      if (selectedEndpoint === 'sources') path = '/api/v1/sources';
+      if (selectedEndpoint === 'health') path = '/health';
 
       const params = new URLSearchParams();
-      if (['trending', 'latest', 'random'].includes(selectedLabEndpoint)) {
+      if (['trending', 'latest', 'random'].includes(selectedEndpoint)) {
         if (gen) params.set('generation', gen);
-        if (selectedLabEndpoint !== 'random' && limit) params.set('limit', limit);
-        if (src) params.set('platform', src);
+        if (selectedEndpoint !== 'random' && limit) params.set('limit', limit);
       }
 
       const qs = params.toString();
-      return `${base}${path}${qs ? '?' + qs : ''}`;
+      return `${origin}${path}${qs ? '?' + qs : ''}`;
     }
 
-    function copyLiveApiUrl() {
-      const url = buildCurrentApiUrl();
-      navigator.clipboard.writeText(url);
-      const btn = document.getElementById('btnCopyApiUrl');
-      btn.textContent = 'COPIED URL!';
-      setTimeout(() => { btn.textContent = '📋 COPY URL'; }, 1500);
+    function copyQuickCurl() {
+      const text = `curl -X GET "${window.location.origin}/api/v1/memes/trending?generation=gen_z"`;
+      navigator.clipboard.writeText(text);
     }
 
-    function downloadCurrentJson() {
-      const raw = document.getElementById('labResponseOutput').textContent;
-      const blob = new Blob([raw], { type: 'application/json' });
+    function copyApiUrl() {
+      navigator.clipboard.writeText(buildUrl());
+    }
+
+    function copyCodeSnippet() {
+      navigator.clipboard.writeText(document.getElementById('codeSnippet').textContent);
+    }
+
+    function downloadJson() {
+      const text = document.getElementById('responseViewer').textContent;
+      const blob = new Blob([text], { type: 'application/json' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = `memeology-${selectedLabEndpoint}.json`;
+      a.download = `memeology-${selectedEndpoint}.json`;
       a.click();
     }
 
-    function updateLabStudio() {
-      const fullUrl = buildCurrentApiUrl();
-      const codeBox = document.getElementById('labCodeSnippet');
+    function updateStudio() {
+      const url = buildUrl();
+      const code = document.getElementById('codeSnippet');
 
-      if (selectedLabLang === 'curl') {
-        codeBox.textContent = `curl -X GET "${fullUrl}" \
+      if (selectedLang === 'curl') {
+        code.textContent = `curl -X GET "${url}" \
   -H "Accept: application/json"`;
-      } else if (selectedLabLang === 'python') {
-        codeBox.textContent = `import httpx
+      } else if (selectedLang === 'python') {
+        code.textContent = `import httpx
 
-response = httpx.get(
-    "${fullUrl}"
-)
-print(response.json())`;
-      } else if (selectedLabLang === 'javascript') {
-        codeBox.textContent = `fetch("${fullUrl}")
+resp = httpx.get("${url}")
+print(resp.json())`;
+      } else if (selectedLang === 'javascript') {
+        code.textContent = `fetch("${url}")
   .then(res => res.json())
   .then(data => console.log(data));`;
-      } else if (selectedLabLang === 'go') {
-        codeBox.textContent = `package main
-
-import (
-    "fmt"
-    "io"
-    "net/http"
-)
-
-func main() {
-    resp, _ := http.Get("${fullUrl}")
-    defer resp.Body.Close()
-    body, _ := io.ReadAll(resp.Body)
-    fmt.Println(string(body))
-}`;
+      } else if (selectedLang === 'go') {
+        code.textContent = `resp, _ := http.Get("${url}")
+defer resp.Body.Close()
+body, _ := io.ReadAll(resp.Body)`;
       }
 
-      // Simulate payload
-      const gen = document.getElementById('paramGeneration').value;
-      const limit = parseInt(document.getElementById('paramLimit').value, 10);
-      let items = [...memeCollection];
+      const gen = document.getElementById('apiParamGen').value;
+      const limit = parseInt(document.getElementById('apiParamLimit').value, 10);
+      let items = [...memes];
       if (gen) items = items.filter(m => (m.generation || '').toLowerCase() === gen);
       items = items.slice(0, limit);
 
-      const previewPayload = selectedLabEndpoint === 'random' ? (items[0] || {}) : (
-        selectedLabEndpoint === 'sources' ? [
-          { platform: "reddit", community: "r/dankmemes", status: "ok", item_count: 24 },
-          { platform: "instagram", community: "reels", status: "ok", item_count: 12 },
-          { platform: "tiktok", community: "trending", status: "ok", item_count: 10 },
-          { platform: "youtube", community: "shorts", status: "ok", item_count: 8 },
+      const payload = selectedEndpoint === 'random' ? (items[0] || {}) : (
+        selectedEndpoint === 'sources' ? [
+          { platform: "reddit", community: "r/dankmemes", status: "ok", item_count: 14 },
+          { platform: "reddit", community: "r/GenAlpha", status: "ok", item_count: 13 },
           { platform: "knowyourmeme", community: "confirmed", status: "ok", item_count: 6 }
         ] : (
-          selectedLabEndpoint === 'health' ? {
+          selectedEndpoint === 'health' ? {
             status: "ok",
-            version: "1.0.0",
-            total_cached_memes: memeCollection.length,
+            version: "1.2.0",
+            total_cached_memes: memes.length,
             cache_mode: "memory+sqlite"
           } : {
             items: items,
@@ -3060,52 +2271,29 @@ func main() {
         )
       );
 
-      document.getElementById('labResponseOutput').textContent = JSON.stringify(previewPayload, null, 2);
+      document.getElementById('responseViewer').textContent = JSON.stringify(payload, null, 2);
     }
 
-    // Lab Endpoint Buttons
-    document.querySelectorAll('#labEndpointButtons .lab-endpoint-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('#labEndpointButtons .lab-endpoint-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        selectedLabEndpoint = btn.dataset.endpoint;
-        updateLabStudio();
+    document.querySelectorAll('#endpointSelector .endpoint-item').forEach(item => {
+      item.addEventListener('click', () => {
+        document.querySelectorAll('#endpointSelector .endpoint-item').forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+        selectedEndpoint = item.dataset.endpoint;
+        updateStudio();
       });
     });
 
-    // Language Selector
-    document.querySelectorAll('#labLangTabs .console-lang-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('#labLangTabs .console-lang-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        selectedLabLang = btn.dataset.lang;
-        updateLabStudio();
+    document.querySelectorAll('#langTabs .lang-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('#langTabs .lang-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        selectedLang = tab.dataset.lang;
+        updateStudio();
       });
     });
-
-    // Copy Snippet
-    document.getElementById('btnCopySnippet').addEventListener('click', () => {
-      const code = document.getElementById('labCodeSnippet').textContent;
-      navigator.clipboard.writeText(code);
-      const btn = document.getElementById('btnCopySnippet');
-      btn.textContent = 'COPIED!';
-      setTimeout(() => { btn.textContent = 'COPY CODE'; }, 1500);
-    });
-
-    function executeLiveLabRequest() {
-      const badge = document.getElementById('responseStatusBadge');
-      badge.textContent = 'FETCHING LIVE...';
-      badge.style.color = '#FFE81F';
-
-      setTimeout(() => {
-        badge.textContent = 'HTTP 200 OK • < 5ms';
-        badge.style.color = '#4ade80';
-        updateLabStudio();
-      }, 200);
-    }
 
     // Start
-    initFeed();
+    init();
   </script>
 </body>
 </html>
