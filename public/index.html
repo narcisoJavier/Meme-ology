@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MEME-OLOGY! — The Internet's Comic Meme Radar &amp; API</title>
-  <meta name="description" content="Comic-Book pop-art radar and API tracking trending memes across Reddit and Know Your Meme in real time.">
+  <title>MEME-OLOGY! — The Generational Internet Meme Radar &amp; API</title>
+  <meta name="description" content="Track, score, and categorize memes across Gen Alpha, Gen Z, Millennial, and Gen X culture in real time.">
   <meta name="referrer" content="no-referrer">
 
   <!-- Google Fonts: Comic Bangers, Space Grotesk, and JetBrains Mono -->
@@ -24,6 +24,7 @@
       --comic-pink: #FF3B94;
       --comic-lime: #22E576;
       --comic-purple: #8B5CF6;
+      --comic-orange: #F97316;
       --comic-ink: #0C0C0F;
       --comic-paper: #FFFDF7;
       --border-ink: 3px solid #0C0C0F;
@@ -219,15 +220,10 @@
       color: #fff;
     }
 
-    .btn-comic-red:hover {
-      background: #ff122d;
-    }
-
     .btn-comic-cyan {
       background: var(--comic-cyan);
       color: #000;
     }
-
 
     /* =========================================================
        SECTION 1: THE COMIC MEME RADAR (Visual Explorer)
@@ -290,7 +286,7 @@
       font-size: 1.1rem;
       font-weight: 600;
       color: #262626;
-      max-width: 620px;
+      max-width: 640px;
       margin-bottom: 1.5rem;
     }
 
@@ -322,10 +318,10 @@
       box-shadow: var(--shadow-hard);
     }
 
-    .sticker-pow { background: var(--comic-pink); color: #fff; transform: rotate(-3deg); }
-    .sticker-bam { background: var(--comic-yellow); color: #000; transform: rotate(2.5deg); }
-    .sticker-zap { background: var(--comic-cyan); color: #000; transform: rotate(-1.5deg); }
-    .sticker-lime { background: var(--comic-lime); color: #000; transform: rotate(3deg); }
+    .sticker-alpha { background: var(--comic-purple); color: #fff; transform: rotate(-3deg); }
+    .sticker-z { background: var(--comic-lime); color: #000; transform: rotate(2.5deg); }
+    .sticker-millennial { background: var(--comic-cyan); color: #000; transform: rotate(-1.5deg); }
+    .sticker-boomer { background: var(--comic-orange); color: #fff; transform: rotate(3deg); }
 
     /* Radar Telemetry Box */
     .radar-telemetry-box {
@@ -389,11 +385,11 @@
       background: #fff;
       border: var(--border-ink);
       box-shadow: var(--shadow-hard);
-      padding: 1.25rem 1.5rem;
+      padding: 1.5rem;
       border-radius: 8px;
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 1.25rem;
       margin-bottom: 2rem;
     }
 
@@ -431,18 +427,22 @@
       pointer-events: none;
     }
 
-    .filter-pills-row {
+    .filter-header-label {
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #333;
+      margin-bottom: 0.4rem;
       display: flex;
-      flex-wrap: wrap;
-      gap: 0.6rem;
       align-items: center;
-      justify-content: space-between;
+      gap: 0.4rem;
     }
 
     .pills-group {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.5rem;
+      gap: 0.6rem;
     }
 
     .comic-filter-pill {
@@ -450,12 +450,15 @@
       border: 2px solid #000;
       box-shadow: 2px 2px 0px #000;
       padding: 6px 14px;
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       font-weight: 800;
       text-transform: uppercase;
       cursor: pointer;
       border-radius: 4px;
       transition: all 0.12s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
     }
 
     .comic-filter-pill:hover {
@@ -470,6 +473,11 @@
       box-shadow: 3px 3px 0px #000;
       transform: translate(-1px, -1px);
     }
+
+    .pill-alpha.active { background: var(--comic-purple); }
+    .pill-z.active { background: var(--comic-lime); color: #000; }
+    .pill-millennial.active { background: var(--comic-cyan); color: #000; }
+    .pill-boomer.active { background: var(--comic-orange); }
 
     .jump-to-lab-btn {
       background: var(--comic-cyan);
@@ -494,10 +502,10 @@
       background: #33ebff;
     }
 
-    /* Comic Meme Grid (Full Width & Spacious) */
+    /* Full-Width Comic Grid */
     .comic-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
       gap: 2rem;
     }
 
@@ -627,6 +635,26 @@
       z-index: 2;
     }
 
+    /* Generational Badge on Card */
+    .badge-generation {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      border: 2px solid #000;
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      box-shadow: 2px 2px 0px #000;
+      border-radius: 3px;
+      z-index: 2;
+    }
+
+    .badge-gen_alpha { background: var(--comic-purple); color: #fff; }
+    .badge-gen_z { background: var(--comic-lime); color: #000; }
+    .badge-millennial { background: var(--comic-cyan); color: #000; }
+    .badge-gen_x { background: var(--comic-orange); color: #fff; }
+
     /* Upvote Slam Stamp Effect */
     .stamp-slam-effect {
       position: absolute;
@@ -716,6 +744,7 @@
       position: relative;
       top: -30px;
       transform: rotate(-1deg);
+      cursor: pointer;
       transition: transform 0.2s;
     }
 
@@ -1120,8 +1149,8 @@
 
   <!-- Comic Code Banner -->
   <div class="comic-top-banner">
-    <span>★ APPROVED BY THE MEME-OLOGY CODE AUTHORITY • ISSUE #1 • 2026 EDITION</span>
-    <span>100% FREE • SERVERLESS • 0.08ms LATENCY ★</span>
+    <span>★ APPROVED BY THE MEME-OLOGY CODE AUTHORITY • ISSUE #1 • GENERATIONS EDITION</span>
+    <span>GEN ALPHA • GEN Z • MILLENNIAL • GEN X ★</span>
   </div>
 
   <!-- Main Navigation with Section Switcher -->
@@ -1153,7 +1182,6 @@
     </div>
   </header>
 
-
   <!-- =========================================================
        SECTION 1: THE COMIC MEME RADAR (Visual Explorer)
        ========================================================= -->
@@ -1163,44 +1191,44 @@
     <div class="section-header-box">
       <div class="hero-left-col">
         <span class="section-badge-tag">SECTION 1 // THE DISCOVERY DECK</span>
-        <h1 class="hero-title">THE INTERNET'S MEME RADAR!</h1>
+        <h1 class="hero-title">GENERATIONAL MEME RADAR!</h1>
         <p class="hero-desc">
-          BAM! Track, deduplicate, and score the freshest viral memes across Reddit and Know Your Meme in real time with zero dead images.
+          BAM! Explore how internet culture evolved from Boomer LOLCats &amp; Millennial Advice Animals to Gen Z Post-Irony &amp; Gen Alpha Brainrot.
         </p>
 
         <div class="sticker-cloud">
-          <div class="comic-sticker sticker-pow">💥 DANK RATINGS</div>
-          <div class="comic-sticker sticker-bam">⚡ 0.08ms CACHE</div>
-          <div class="comic-sticker sticker-zap">🛡️ ZERO BAN GATEWAY</div>
-          <div class="comic-sticker sticker-lime">🚀 100% SERVERLESS</div>
+          <div class="comic-sticker sticker-alpha">🧠 GEN ALPHA</div>
+          <div class="comic-sticker sticker-z">⚡ GEN Z DANK</div>
+          <div class="comic-sticker sticker-millennial">🕶️ MILLENNIAL</div>
+          <div class="comic-sticker sticker-boomer">📻 GEN X / BOOMER</div>
         </div>
       </div>
 
       <div class="radar-telemetry-box">
         <h3>RADAR TELEMETRY</h3>
-        <p style="font-size: 0.8rem; font-weight: 700;">LIVE SIGNALS &amp; VIRAL METRICS</p>
+        <p style="font-size: 0.8rem; font-weight: 700;">CLASSIFIED INTERNET CULTURE ERAS</p>
         <div class="telemetry-grid">
           <div class="telemetry-cell">
             <div class="telemetry-num" id="statMemes">350+</div>
-            <div class="telemetry-lbl">MEMES TRACKED</div>
+            <div class="telemetry-lbl">MEMES CLASSIFIED</div>
           </div>
           <div class="telemetry-cell">
             <div class="telemetry-num" style="color: var(--comic-pink);" id="statUpvotes">4.8M</div>
             <div class="telemetry-lbl">TOTAL UPVOTES</div>
           </div>
           <div class="telemetry-cell">
-            <div class="telemetry-num" style="color: #059669;">0.08ms</div>
-            <div class="telemetry-lbl">ENGINE SPEED</div>
+            <div class="telemetry-num" style="color: #059669;">4 ERAS</div>
+            <div class="telemetry-lbl">GENERATIONS</div>
           </div>
           <div class="telemetry-cell">
-            <div class="telemetry-num" style="color: #2563eb;">7 FEEDS</div>
-            <div class="telemetry-lbl">MONITORED</div>
+            <div class="telemetry-num" style="color: #2563eb;">0.08ms</div>
+            <div class="telemetry-lbl">MATCH SPEED</div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Controls & Search -->
+    <!-- Controls, Generational Tabs & Search -->
     <div class="radar-controls-card">
       <div class="comic-search-wrap">
         <span class="search-icon-badge">🔍</span>
@@ -1208,19 +1236,39 @@
           type="text" 
           id="comicSearch" 
           class="comic-search-input" 
-          placeholder="Search memes by speech bubble punchline, author, or community..."
+          placeholder="Search memes by punchline (e.g., skibidi, wojak, doge, minion), author, or community..."
           autocomplete="off"
         />
       </div>
 
-      <div class="filter-pills-row">
-        <div class="pills-group" id="comicSourceFilters">
-          <div class="comic-filter-pill active" data-source="all">★ ALL COMICS</div>
-          <div class="comic-filter-pill" data-source="r/dankmemes">r/dankmemes</div>
-          <div class="comic-filter-pill" data-source="r/memes">r/memes</div>
-          <div class="comic-filter-pill" data-source="r/me_irl">r/me_irl</div>
-          <div class="comic-filter-pill" data-source="r/wholesomememes">r/wholesomememes</div>
-          <div class="comic-filter-pill" data-source="knowyourmeme">Know Your Meme</div>
+      <!-- GENERATIONAL FILTER ROW -->
+      <div>
+        <div class="filter-header-label">
+          <span>🎯 FILTER BY INTERNET GENERATION:</span>
+        </div>
+        <div class="pills-group" id="comicGenerationFilters">
+          <div class="comic-filter-pill active" data-gen="all">★ ALL GENERATIONS</div>
+          <div class="comic-filter-pill pill-alpha" data-gen="gen_alpha">🧠 GEN ALPHA (BRAINROT)</div>
+          <div class="comic-filter-pill pill-z" data-gen="gen_z">⚡ GEN Z (DANK / SURREAL)</div>
+          <div class="comic-filter-pill pill-millennial" data-gen="millennial">🕶️ MILLENNIAL (CLASSICS)</div>
+          <div class="comic-filter-pill pill-boomer" data-gen="gen_x">📻 GEN X / BOOMER</div>
+        </div>
+      </div>
+
+      <!-- COMMUNITY SOURCE PILLS -->
+      <div style="border-top: 2px solid #000; padding-top: 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+        <div>
+          <div class="filter-header-label">
+            <span>🌐 FILTER BY COMMUNITY:</span>
+          </div>
+          <div class="pills-group" id="comicSourceFilters">
+            <div class="comic-filter-pill active" data-source="all">★ ALL COMMUNITIES</div>
+            <div class="comic-filter-pill" data-source="r/GenAlpha">r/GenAlpha</div>
+            <div class="comic-filter-pill" data-source="r/dankmemes">r/dankmemes</div>
+            <div class="comic-filter-pill" data-source="r/AdviceAnimals">r/AdviceAnimals</div>
+            <div class="comic-filter-pill" data-source="r/wholesomememes">r/wholesomememes</div>
+            <div class="comic-filter-pill" data-source="knowyourmeme">Know Your Meme</div>
+          </div>
         </div>
 
         <button class="jump-to-lab-btn" onclick="scrollToSection('labSection')">
@@ -1228,6 +1276,7 @@
           <span>&darr;</span>
         </button>
       </div>
+
     </div>
 
     <!-- Full-Width Responsive Comic Grid -->
@@ -1255,7 +1304,7 @@
       <div class="lab-banner-head">
         <div class="lab-title-group">
           <h2>THE SECRET LAB: API STUDIO &amp; PLAYGROUND</h2>
-          <p>Interactive code generator, live response inspector, and telemetry console.</p>
+          <p>Interactive generational code generator, live response inspector, and telemetry console.</p>
         </div>
 
         <div class="lab-badge-row">
@@ -1284,7 +1333,7 @@
                 <span class="endpoint-method">GET</span>
                 <span class="endpoint-path">/api/v1/memes/trending</span>
               </div>
-              <div class="endpoint-summary">Ranked by velocity decay engagement.</div>
+              <div class="endpoint-summary">Ranked by velocity decay with generational filter.</div>
             </div>
 
             <div class="lab-endpoint-btn" data-endpoint="latest">
@@ -1292,7 +1341,7 @@
                 <span class="endpoint-method">GET</span>
                 <span class="endpoint-path">/api/v1/memes/latest</span>
               </div>
-              <div class="endpoint-summary">Newest memes with limit and pagination.</div>
+              <div class="endpoint-summary">Newest memes with generation &amp; pagination.</div>
             </div>
 
             <div class="lab-endpoint-btn" data-endpoint="random">
@@ -1300,7 +1349,7 @@
                 <span class="endpoint-method">GET</span>
                 <span class="endpoint-path">/api/v1/memes/random</span>
               </div>
-              <div class="endpoint-summary">Instant random meme with source filter.</div>
+              <div class="endpoint-summary">Random meme by generation &amp; source.</div>
             </div>
 
             <div class="lab-endpoint-btn" data-endpoint="sources">
@@ -1323,6 +1372,16 @@
           <!-- Live Param Filters -->
           <div class="lab-params-box">
             <div style="font-size: 0.8rem; font-weight: 800; text-transform: uppercase;">⚡ QUERY PARAMETERS</div>
+            <div class="param-row">
+              <label class="param-label" for="paramGeneration">generation:</label>
+              <select id="paramGeneration" class="param-input-select" onchange="updateLabStudio()">
+                <option value="" selected>all generations</option>
+                <option value="gen_alpha">gen_alpha (brainrot)</option>
+                <option value="gen_z">gen_z (post-irony)</option>
+                <option value="millennial">millennial (classics)</option>
+                <option value="gen_x">gen_x (boomer/retro)</option>
+              </select>
+            </div>
             <div class="param-row">
               <label class="param-label" for="paramLimit">limit:</label>
               <select id="paramLimit" class="param-input-select" onchange="updateLabStudio()">
@@ -1416,83 +1475,198 @@
   </footer>
 
   <script>
-    // Verified, high-resolution CDN memes
-    const VERIFIED_MEMES = [
+    // Authentic Generational Meme Catalog
+    const GENERATIONAL_MEMES = [
+      // GEN ALPHA
       {
-        id: "c_1",
-        title: "When you finally solve a bug by removing 1 line of code after 8 hours of suffering",
+        id: "ga_1",
+        title: "When the teacher leaves the room and the Skibidi Toilet Ohio energy takes over",
+        url: "https://api.memegen.link/images/fine.jpg",
+        source: "reddit",
+        source_community: "r/GenAlpha",
+        generation: "gen_alpha",
+        author: "u/RizzMaster9000",
+        score: 38400,
+        num_comments: 1420,
+        permalink: "https://reddit.com/r/GenAlpha"
+      },
+      {
+        id: "ga_2",
+        title: "Baby Gronk just Fanum taxed my lunch at the Ohio cafeteria, no cap",
+        url: "https://api.memegen.link/images/doge.jpg",
+        source: "reddit",
+        source_community: "r/GenAlpha",
+        generation: "gen_alpha",
+        author: "u/GyattInspector",
+        score: 29100,
+        num_comments: 890,
+        permalink: "https://reddit.com/r/GenAlpha"
+      },
+      {
+        id: "ga_3",
+        title: "Me maintaining my 240-day mewing streak during the entire math exam",
+        url: "https://api.memegen.link/images/cheems.jpg",
+        source: "reddit",
+        source_community: "r/GenAlpha",
+        generation: "gen_alpha",
+        author: "u/SigmaGrindset101",
+        score: 21500,
+        num_comments: 540,
+        permalink: "https://reddit.com/r/GenAlpha"
+      },
+      {
+        id: "ga_4",
+        title: "Kai Cenat seeing Grimace Shake memes still appearing on his FYP in 2026",
+        url: "https://api.memegen.link/images/rollsafe.jpg",
+        source: "reddit",
+        source_community: "r/GenAlpha",
+        generation: "gen_alpha",
+        author: "u/LivvyDunneRizz",
+        score: 19400,
+        num_comments: 412,
+        permalink: "https://reddit.com/r/GenAlpha"
+      },
+
+      // GEN Z
+      {
+        id: "gz_1",
+        title: "Wojak explaining to his parents why he invested his college tuition into AI meme coins",
+        url: "https://api.memegen.link/images/drake.jpg",
+        source: "reddit",
+        source_community: "r/dankmemes",
+        generation: "gen_z",
+        author: "u/DoomerWojak",
+        score: 42000,
+        num_comments: 1650,
+        permalink: "https://reddit.com/r/dankmemes"
+      },
+      {
+        id: "gz_2",
+        title: "Chad GigaChad developer writing the entire production backend in assembly over the weekend",
         url: "https://api.memegen.link/images/fine.jpg",
         source: "reddit",
         source_community: "r/dankmemes",
-        author: "u/CodeWizard99",
-        score: 24500,
-        num_comments: 612,
-        trending_score: 96.4,
+        generation: "gen_z",
+        author: "u/GigaDev",
+        score: 34800,
+        num_comments: 920,
         permalink: "https://reddit.com/r/dankmemes"
       },
       {
-        id: "c_2",
-        title: "Senior Dev looking at junior dev's 14-page pull request for a button padding change",
-        url: "https://api.memegen.link/images/drake.jpg",
-        source: "reddit",
-        source_community: "r/memes",
-        author: "u/SleepyCoder",
-        score: 18900,
-        num_comments: 420,
-        trending_score: 91.2,
-        permalink: "https://reddit.com/r/memes"
+        id: "gz_3",
+        title: "Barbenheimer anniversary — when you watch existential dread right after pink sunshine",
+        url: "https://api.memegen.link/images/distracted.jpg",
+        source: "knowyourmeme",
+        source_community: "trending",
+        generation: "gen_z",
+        author: "u/PopCultureWatcher",
+        score: 26700,
+        num_comments: 680,
+        permalink: "https://knowyourmeme.com/memes/barbenheimer"
       },
       {
-        id: "c_3",
-        title: "Distracted Developer — Shiny New Framework vs The Production Codebase",
+        id: "gz_4",
+        title: "NPC coworker repeating the exact same weather observation every morning at 8:59 AM",
+        url: "https://api.memegen.link/images/doge.jpg",
+        source: "reddit",
+        source_community: "r/dankmemes",
+        generation: "gen_z",
+        author: "u/BruhMomentum",
+        score: 22100,
+        num_comments: 510,
+        permalink: "https://reddit.com/r/dankmemes"
+      },
+
+      // MILLENNIAL
+      {
+        id: "m_1",
+        title: "Distracted Boyfriend — Shiny New Javascript Framework vs The Battle-Tested Monolith",
         url: "https://api.memegen.link/images/distracted.jpg",
         source: "knowyourmeme",
         source_community: "confirmed",
-        author: "u/MemeHistorian",
-        score: 14200,
-        num_comments: 298,
-        trending_score: 84.7,
+        generation: "millennial",
+        author: "u/SeniorStaffDev",
+        score: 51200,
+        num_comments: 2100,
         permalink: "https://knowyourmeme.com/memes/distracted-boyfriend"
       },
       {
-        id: "c_4",
-        title: "Me pretending to listen intently in a 1-hour standup meeting that could have been a slack message",
+        id: "m_2",
+        title: "Much Code. Very Refactor. Such Pull Request. Wow. Doge approved.",
         url: "https://api.memegen.link/images/doge.jpg",
         source: "reddit",
-        source_community: "r/me_irl",
-        author: "u/CorporateSurvivor",
-        score: 11400,
-        num_comments: 182,
-        trending_score: 78.3,
-        permalink: "https://reddit.com/r/me_irl"
+        source_community: "r/AdviceAnimals",
+        generation: "millennial",
+        author: "u/DogeOG",
+        score: 45600,
+        num_comments: 1340,
+        permalink: "https://reddit.com/r/AdviceAnimals"
       },
       {
-        id: "c_5",
-        title: "You can never have a Friday production outage if you never deploy on Fridays",
+        id: "m_3",
+        title: "Drake Hotline Bling: Testing in Staging (Dislike) vs Direct to Production on Friday (Like)",
+        url: "https://api.memegen.link/images/drake.jpg",
+        source: "reddit",
+        source_community: "r/memes",
+        generation: "millennial",
+        author: "u/YoloDeployer",
+        score: 38900,
+        num_comments: 870,
+        permalink: "https://reddit.com/r/memes"
+      },
+      {
+        id: "m_4",
+        title: "Bad Luck Brian — Writes unit test to ensure zero bugs, test suite catches 140 new ones",
         url: "https://api.memegen.link/images/rollsafe.jpg",
         source: "reddit",
-        source_community: "r/dankmemes",
-        author: "u/DevOpsGuru",
-        score: 16750,
-        num_comments: 310,
-        trending_score: 89.1,
-        permalink: "https://reddit.com/r/dankmemes"
+        source_community: "r/AdviceAnimals",
+        generation: "millennial",
+        author: "u/BrianTheUnlucky",
+        score: 28400,
+        num_comments: 610,
+        permalink: "https://reddit.com/r/AdviceAnimals"
       },
+
+      // GEN X / BOOMER
       {
-        id: "c_6",
-        title: "Found this dog looking like the absolute happiest creature in the entire multiverse",
+        id: "gx_1",
+        title: "Don't speak to me until my second pot of coffee has had its own cup of coffee",
         url: "https://api.memegen.link/images/cheems.jpg",
         source: "reddit",
         source_community: "r/wholesomememes",
-        author: "u/WholesomeBeast",
-        score: 29800,
-        num_comments: 890,
-        trending_score: 99.1,
+        generation: "gen_x",
+        author: "u/CoffeeGrandpa",
+        score: 31200,
+        num_comments: 740,
         permalink: "https://reddit.com/r/wholesomememes"
+      },
+      {
+        id: "gx_2",
+        title: "I Can Haz Cheezburger — Ancient text discovered from the dawn of internet lore",
+        url: "https://api.memegen.link/images/fine.jpg",
+        source: "knowyourmeme",
+        source_community: "confirmed",
+        generation: "gen_x",
+        author: "u/Web1Historian",
+        score: 27800,
+        num_comments: 630,
+        permalink: "https://knowyourmeme.com/memes/happy-cat"
+      },
+      {
+        id: "gx_3",
+        title: "All Your Base Are Belong To Us — For great justice, make your time",
+        url: "https://api.memegen.link/images/doge.jpg",
+        source: "knowyourmeme",
+        source_community: "confirmed",
+        generation: "gen_x",
+        author: "u/RetroCaptain",
+        score: 23400,
+        num_comments: 490,
+        permalink: "https://knowyourmeme.com/memes/all-your-base-are-belong-to-us"
       }
     ];
 
-    let memeCollection = [...VERIFIED_MEMES];
+    let memeCollection = [...GENERATIONAL_MEMES];
     let selectedLabEndpoint = 'trending';
     let selectedLabLang = 'curl';
 
@@ -1523,17 +1697,19 @@
       }
     });
 
-    // Ingest Live Memes with Failover
+    // Ingest Live Memes with Generational Failover
     async function initRadarFeed() {
       try {
-        const res = await fetch('/api/v1/memes/trending?limit=30');
+        const res = await fetch('/api/v1/memes/trending?limit=50');
         if (res.ok) {
           const data = await res.json();
           const items = Array.isArray(data) ? data : (data.items || []);
-          if (items.length > 0) memeCollection = items;
+          if (items.length > 0) {
+            memeCollection = items;
+          }
         }
       } catch (e) {
-        console.log("Using verified comic memes");
+        console.log("Using generational meme bank");
       }
       renderComicGrid();
       updateLabStudio();
@@ -1543,14 +1719,29 @@
     function renderComicGrid() {
       const grid = document.getElementById('comicGrid');
       const search = document.getElementById('comicSearch').value.toLowerCase().trim();
+      const activeGen = document.querySelector('#comicGenerationFilters .comic-filter-pill.active').dataset.gen;
       const activeSource = document.querySelector('#comicSourceFilters .comic-filter-pill.active').dataset.source;
 
       const filtered = memeCollection.filter(m => {
-        const matchesSearch = !search || 
-          (m.title && m.title.toLowerCase().includes(search)) || 
-          (m.author && m.author.toLowerCase().includes(search)) ||
-          (m.source_community && m.source_community.toLowerCase().includes(search));
+        const title = (m.title || '').toLowerCase();
+        const author = (m.author || '').toLowerCase();
+        const comm = (m.source_community || '').toLowerCase();
+        const gen = (m.generation || 'gen_z').toLowerCase();
 
+        // 1. Search Query Match
+        const matchesSearch = !search || 
+          title.includes(search) || 
+          author.includes(search) || 
+          comm.includes(search) ||
+          gen.includes(search);
+
+        // 2. Generational Filter Match
+        let matchesGen = true;
+        if (activeGen !== 'all') {
+          matchesGen = gen === activeGen;
+        }
+
+        // 3. Source Community Filter Match
         let matchesSource = true;
         if (activeSource !== 'all') {
           if (activeSource === 'knowyourmeme') {
@@ -1559,15 +1750,16 @@
             matchesSource = m.source_community === activeSource;
           }
         }
-        return matchesSearch && matchesSource;
+
+        return matchesSearch && matchesGen && matchesSource;
       });
 
       if (filtered.length === 0) {
         grid.innerHTML = `
           <div style="grid-column: 1/-1; text-align: center; padding: 4rem; background: #fff; border: 3px solid #000; box-shadow: 6px 6px 0px #000; border-radius: 8px;">
             <div style="font-size: 3rem;">💥</div>
-            <h3 style="font-family: 'Bangers', cursive; font-size: 2rem; margin-top: 0.5rem;">NO MEMES FOUND!</h3>
-            <p style="font-size: 1rem; font-weight: 700; color: #555;">Try a different search word or pick another community pill.</p>
+            <h3 style="font-family: 'Bangers', cursive; font-size: 2rem; margin-top: 0.5rem;">NO MEMES IN THIS GENERATION!</h3>
+            <p style="font-size: 1rem; font-weight: 700; color: #555;">Try clicking a different generational pill (e.g. Gen Alpha or Gen Z) or clearing your search.</p>
           </div>
         `;
         return;
@@ -1581,6 +1773,14 @@
           <img src="${m.url}" alt="${m.title}" loading="lazy" referrerpolicy="no-referrer" onerror="this.src='https://api.memegen.link/images/fine.jpg';" />
         `;
 
+        const genKey = (m.generation || 'gen_z').toLowerCase();
+        const genLabel = {
+          gen_alpha: "🧠 GEN ALPHA",
+          gen_z: "⚡ GEN Z",
+          millennial: "🕶️ MILLENNIAL",
+          gen_x: "📻 GEN X / BOOMER"
+        }[genKey] || "⚡ GEN Z";
+
         return `
           <div class="comic-card" data-id="${m.id}">
             <div class="speech-bubble-wrapper">
@@ -1591,6 +1791,7 @@
               ${mediaTag}
               <div class="badge-corner-stamp">💥 ${Number(m.score).toLocaleString()}</div>
               <div class="badge-corner-source">${m.source_community || m.source}</div>
+              <div class="badge-generation badge-${genKey}">${genLabel}</div>
               <div class="stamp-slam-effect">💥 POW! +1</div>
             </div>
 
@@ -1612,7 +1813,7 @@
           scale: [0.92, 1],
           opacity: [0, 1],
           translateY: [25, 0],
-          delay: anime.stagger(50),
+          delay: anime.stagger(45),
           easing: 'easeOutElastic(1, .8)',
           duration: 500
         });
@@ -1634,7 +1835,6 @@
           card.querySelector('.upvote-num').textContent = Number(meme.score).toLocaleString();
           card.querySelector('.badge-corner-stamp').textContent = `💥 ${Number(meme.score).toLocaleString()}`;
           
-          // Slam stamp animation with anime.js
           if (window.anime && slamStamp) {
             anime({
               targets: slamStamp,
@@ -1690,6 +1890,14 @@
     // Filter & Search Handlers
     document.getElementById('comicSearch').addEventListener('input', renderComicGrid);
 
+    document.querySelectorAll('#comicGenerationFilters .comic-filter-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        document.querySelectorAll('#comicGenerationFilters .comic-filter-pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        renderComicGrid();
+      });
+    });
+
     document.querySelectorAll('#comicSourceFilters .comic-filter-pill').forEach(pill => {
       pill.addEventListener('click', () => {
         document.querySelectorAll('#comicSourceFilters .comic-filter-pill').forEach(p => p.classList.remove('active'));
@@ -1702,9 +1910,11 @@
     // SECTION 2: THE SECRET LAB API CODE ENGINE
     // =========================================================
     function getLabQueryString() {
+      const gen = document.getElementById('paramGeneration').value;
       const limit = document.getElementById('paramLimit').value;
       const source = document.getElementById('paramSource').value;
       let params = [];
+      if (gen) params.push(`generation=${gen}`);
       if (limit) params.push(`limit=${limit}`);
       if (source) params.push(`source=${source}`);
       return params.length > 0 ? `?${params.join('&')}` : '';
@@ -1717,7 +1927,7 @@
       return {
         trending: {
           curl: `curl -X GET "${origin}/api/v1/memes/trending${qs}" \\\n     -H "Accept: application/json"`,
-          python: `import httpx\n\nresponse = httpx.get(\n    "${origin}/api/v1/memes/trending",\n    params={"limit": ${document.getElementById('paramLimit').value}}\n)\nmemes = response.json()\nprint(f"Discovered {len(memes)} viral memes!")`,
+          python: `import httpx\n\nresponse = httpx.get(\n    "${origin}/api/v1/memes/trending",\n    params={"generation": "${document.getElementById('paramGeneration').value || 'all'}", "limit": ${document.getElementById('paramLimit').value}}\n)\nmemes = response.json()\nprint(f"Loaded {len(memes.get('items', []))} generational memes!")`,
           javascript: `const res = await fetch("${origin}/api/v1/memes/trending${qs}");\nconst memes = await res.json();\nconsole.log(memes);`
         },
         latest: {
@@ -1726,9 +1936,9 @@
           javascript: `const res = await fetch("${origin}/api/v1/memes/latest${qs}");\nconst data = await res.json();\nconsole.log(data);`
         },
         random: {
-          curl: `curl -X GET "${origin}/api/v1/memes/random?source=reddit" \\\n     -H "Accept: application/json"`,
-          python: `import httpx\n\nmeme = httpx.get("${origin}/api/v1/memes/random", params={"source": "reddit"}).json()\nprint(meme["title"], meme["url"])`,
-          javascript: `const res = await fetch("${origin}/api/v1/memes/random?source=reddit");\nconst meme = await res.json();\nconsole.log(meme.title);`
+          curl: `curl -X GET "${origin}/api/v1/memes/random?generation=gen_alpha" \\\n     -H "Accept: application/json"`,
+          python: `import httpx\n\nmeme = httpx.get("${origin}/api/v1/memes/random", params={"generation": "gen_alpha"}).json()\nprint("Gen Alpha meme:", meme["title"], meme["url"])`,
+          javascript: `const res = await fetch("${origin}/api/v1/memes/random?generation=gen_alpha");\nconst meme = await res.json();\nconsole.log(meme.title);`
         },
         sources: {
           curl: `curl -X GET "${origin}/api/v1/sources" \\\n     -H "Accept: application/json"`,
@@ -1747,21 +1957,34 @@
       const snippets = generateCodeSnippets();
       document.getElementById('labCodeSnippet').textContent = snippets[selectedLabEndpoint][selectedLabLang];
 
+      const activeGen = document.getElementById('paramGeneration').value;
       const limit = parseInt(document.getElementById('paramLimit').value, 10) || 2;
-      let sampleData;
+      
+      let sampleData = memeCollection;
+      if (activeGen) {
+        sampleData = memeCollection.filter(m => (m.generation || 'gen_z') === activeGen);
+      }
+
+      let sampleOutput;
       if (selectedLabEndpoint === 'trending' || selectedLabEndpoint === 'latest') {
-        sampleData = memeCollection.slice(0, Math.min(limit, 3));
+        sampleOutput = {
+          items: sampleData.slice(0, Math.min(limit, 3)),
+          total: sampleData.length,
+          limit: limit,
+          offset: 0
+        };
       } else if (selectedLabEndpoint === 'random') {
-        sampleData = memeCollection[0] || VERIFIED_MEMES[0];
+        sampleOutput = sampleData[0] || GENERATIONAL_MEMES[0];
       } else if (selectedLabEndpoint === 'sources') {
-        sampleData = [
+        sampleOutput = [
+          { id: "reddit_genalpha", name: "reddit:r/GenAlpha", status: "ok", item_count: 45, latency_ms: 110.2 },
           { id: "reddit_dankmemes", name: "reddit:r/dankmemes", status: "ok", item_count: 50, latency_ms: 120.4 },
-          { id: "kym_trending", name: "knowyourmeme:trending", status: "ok", item_count: 16, latency_ms: 310.2 }
+          { id: "reddit_adviceanimals", name: "reddit:r/AdviceAnimals", status: "ok", item_count: 38, latency_ms: 95.8 }
         ];
       } else {
-        sampleData = { status: "ok", app_name: "Meme Tracker API", total_memes_cached: memeCollection.length, healthy_sources: 7 };
+        sampleOutput = { status: "ok", app_name: "Meme Tracker API", total_memes_cached: memeCollection.length, healthy_sources: 10 };
       }
-      document.getElementById('labResponseOutput').textContent = JSON.stringify(sampleData, null, 2);
+      document.getElementById('labResponseOutput').textContent = JSON.stringify(sampleOutput, null, 2);
     }
 
     // Endpoint Button Selector
@@ -1793,7 +2016,7 @@
       setTimeout(() => { btn.textContent = 'COPY CODE'; }, 1500);
     });
 
-    // Live Request Simulation
+    // Live Request Execution
     function executeLiveLabRequest() {
       const badge = document.getElementById('responseStatusBadge');
       badge.textContent = 'FETCHING LIVE...';

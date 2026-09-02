@@ -21,6 +21,10 @@ def get_memory_store(request: Request) -> MemoryStore:
     if store is None:
         store = MemoryStore()
         request.app.state.memory_store = store
+        if not getattr(request.app.state, "_is_seeded", False):
+            request.app.state._is_seeded = True
+            from app.core.seed_data import get_initial_generational_memes
+            store.upsert_memes(get_initial_generational_memes())
     return store
 
 
@@ -47,6 +51,10 @@ async def get_latest_memes(
         default=None,
         description="Optional time window filter (e.g., 1h, 6h, 24h, 7d, all)",
     ),
+    generation: Optional[str] = Query(
+        default=None,
+        description="Optional generational filter (gen_alpha, gen_z, millennial, gen_x)",
+    ),
     store: MemoryStore = Depends(get_memory_store),
 ) -> PaginatedMemeResponse:
     """Return paginated list of newest memes ordered by created_at DESC."""
@@ -56,6 +64,7 @@ async def get_latest_memes(
         source=source,
         nsfw=nsfw,
         time_window=time_window,
+        generation=generation,
     )
     has_more = (offset + len(items)) < total
     pydantic_memes = [Meme.from_normalized(m) for m in items]
@@ -92,6 +101,10 @@ async def get_trending_memes(
         default=None,
         description="Optional time window filter (e.g., 1h, 6h, 24h, 7d, all)",
     ),
+    generation: Optional[str] = Query(
+        default=None,
+        description="Optional generational filter (gen_alpha, gen_z, millennial, gen_x)",
+    ),
     store: MemoryStore = Depends(get_memory_store),
 ) -> PaginatedMemeResponse:
     """Return paginated list of trending memes ordered by trending_score DESC."""
@@ -101,6 +114,7 @@ async def get_trending_memes(
         source=source,
         nsfw=nsfw,
         time_window=time_window,
+        generation=generation,
     )
     has_more = (offset + len(items)) < total
     pydantic_memes = [Meme.from_normalized(m) for m in items]
@@ -132,10 +146,14 @@ async def get_random_meme(
         description="Optional source filter (reddit, knowyourmeme, dankmemes, etc.)",
     ),
     nsfw: bool = Query(default=False, description="Include NSFW content if true (default false)"),
+    generation: Optional[str] = Query(
+        default=None,
+        description="Optional generational filter (gen_alpha, gen_z, millennial, gen_x)",
+    ),
     store: MemoryStore = Depends(get_memory_store),
 ) -> Meme:
     """Return a single random meme matching specified criteria."""
-    meme = store.get_random(source=source, nsfw=nsfw)
+    meme = store.get_random(source=source, nsfw=nsfw, generation=generation)
     if meme is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

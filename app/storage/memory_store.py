@@ -409,6 +409,7 @@ class MemoryStore:
         source: Optional[str] = None,
         nsfw: bool = False,
         time_window: Optional[str] = None,
+        generation: Optional[str] = None,
     ) -> Tuple[List[NormalizedMeme], int]:
         """Retrieve newest memes sorted by created_at descending."""
         with self._lock:
@@ -428,12 +429,23 @@ class MemoryStore:
             if not candidates:
                 return [], 0
 
-            # 2. Time window cutoff
+            # 2. Generational filter
+            if generation and generation.lower() != "all":
+                gen_val = generation.lower().strip()
+                candidates = [
+                    m for m in candidates
+                    if str(getattr(m, "generation", "gen_z")).lower() == gen_val
+                    or (hasattr(getattr(m, "generation", None), "value") and getattr(m, "generation").value == gen_val)
+                ]
+
+            if not candidates:
+                return [], 0
+
+            # 3. Time window cutoff
             window_seconds = self._parse_time_window(time_window)
             if window_seconds is not None:
                 cutoff = time.time() - window_seconds
                 filtered = []
-                # candidates are sorted descending by created_at, break early once below cutoff
                 for m in candidates:
                     if m.created_at < cutoff:
                         break
@@ -453,6 +465,7 @@ class MemoryStore:
         source: Optional[str] = None,
         nsfw: bool = False,
         time_window: Optional[str] = None,
+        generation: Optional[str] = None,
     ) -> Tuple[List[NormalizedMeme], int]:
         """Retrieve trending memes sorted by trending_score descending."""
         with self._lock:
@@ -472,7 +485,19 @@ class MemoryStore:
             if not candidates:
                 return [], 0
 
-            # 2. Time window cutoff
+            # 2. Generational filter
+            if generation and generation.lower() != "all":
+                gen_val = generation.lower().strip()
+                candidates = [
+                    m for m in candidates
+                    if str(getattr(m, "generation", "gen_z")).lower() == gen_val
+                    or (hasattr(getattr(m, "generation", None), "value") and getattr(m, "generation").value == gen_val)
+                ]
+
+            if not candidates:
+                return [], 0
+
+            # 3. Time window cutoff
             window_seconds = self._parse_time_window(time_window)
             if window_seconds is not None:
                 cutoff = time.time() - window_seconds
@@ -489,6 +514,7 @@ class MemoryStore:
         self,
         source: Optional[str] = None,
         nsfw: bool = False,
+        generation: Optional[str] = None,
     ) -> Optional[NormalizedMeme]:
         """Retrieve single random meme matching filter criteria."""
         with self._lock:
@@ -503,6 +529,17 @@ class MemoryStore:
                 )
             else:
                 candidates = self._latest_index if nsfw else self._latest_index_sfw
+
+            if not candidates:
+                return None
+
+            if generation and generation.lower() != "all":
+                gen_val = generation.lower().strip()
+                candidates = [
+                    m for m in candidates
+                    if str(getattr(m, "generation", "gen_z")).lower() == gen_val
+                    or (hasattr(getattr(m, "generation", None), "value") and getattr(m, "generation").value == gen_val)
+                ]
 
             if not candidates:
                 return None

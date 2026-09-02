@@ -89,6 +89,24 @@
               "title": "Time Window"
             },
             "description": "Optional time window filter (e.g., 1h, 6h, 24h, 7d, all)"
+          },
+          {
+            "name": "generation",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Optional generational filter (gen_alpha, gen_z, millennial, gen_x)",
+              "title": "Generation"
+            },
+            "description": "Optional generational filter (gen_alpha, gen_z, millennial, gen_x)"
           }
         ],
         "responses": {
@@ -191,6 +209,24 @@
               "title": "Time Window"
             },
             "description": "Optional time window filter (e.g., 1h, 6h, 24h, 7d, all)"
+          },
+          {
+            "name": "generation",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Optional generational filter (gen_alpha, gen_z, millennial, gen_x)",
+              "title": "Generation"
+            },
+            "description": "Optional generational filter (gen_alpha, gen_z, millennial, gen_x)"
           }
         ],
         "responses": {
@@ -248,6 +284,24 @@
               "title": "Nsfw"
             },
             "description": "Include NSFW content if true (default false)"
+          },
+          {
+            "name": "generation",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Optional generational filter (gen_alpha, gen_z, millennial, gen_x)",
+              "title": "Generation"
+            },
+            "description": "Optional generational filter (gen_alpha, gen_z, millennial, gen_x)"
           }
         ],
         "responses": {
@@ -587,6 +641,19 @@
             "title": "Trending Score",
             "description": "Trending score",
             "default": 0.0
+          },
+          "generation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/MemeGeneration"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Generation",
+            "description": "Generational alignment (gen_alpha, gen_z, millennial, gen_x)",
+            "default": "gen_z"
           }
         },
         "type": "object",
@@ -603,6 +670,18 @@
         ],
         "title": "Meme",
         "description": "Public API response schema representing a meme."
+      },
+      "MemeGeneration": {
+        "type": "string",
+        "enum": [
+          "all",
+          "gen_alpha",
+          "gen_z",
+          "millennial",
+          "gen_x"
+        ],
+        "title": "MemeGeneration",
+        "description": "Generational internet culture eras."
       },
       "NormalizedMeme": {
         "properties": {
@@ -712,6 +791,19 @@
             "title": "Trending Score",
             "description": "Calculated engagement velocity score",
             "default": 0.0
+          },
+          "generation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/MemeGeneration"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Generation",
+            "description": "Generational alignment (gen_alpha, gen_z, millennial, gen_x)",
+            "default": "gen_z"
           }
         },
         "type": "object",

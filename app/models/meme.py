@@ -21,6 +21,15 @@ class SourcePlatform(str, Enum):
     KNOWYOURMEME = "knowyourmeme"
 
 
+class MemeGeneration(str, Enum):
+    """Generational internet culture eras."""
+    ALL = "all"
+    GEN_ALPHA = "gen_alpha"      # Skibidi, Ohio, Rizz, Fanum Tax, Sigma, Mewing, Gyatt
+    GEN_Z = "gen_z"              # Wojak, Dank, Barbenheimer, Goofy Ahh, Surreal, Deep-fried
+    MILLENNIAL = "millennial"    # Doge, Drake, Distracted Boyfriend, Advice Animals, Bad Luck Brian
+    GEN_X = "gen_x"              # Minions, LOLCats, Dancing Baby, Demotivational posters, Wholesome
+
+
 class NormalizedMeme(BaseModel):
     """Internal normalized meme data contract produced by ingestion engine."""
 
@@ -58,6 +67,10 @@ class NormalizedMeme(BaseModel):
         default=0.0,
         description="Calculated engagement velocity score",
     )
+    generation: Union[MemeGeneration, str] = Field(
+        default=MemeGeneration.GEN_Z,
+        description="Generational alignment (gen_alpha, gen_z, millennial, gen_x)",
+    )
 
     @model_validator(mode="before")
     @classmethod
@@ -65,6 +78,14 @@ class NormalizedMeme(BaseModel):
         if isinstance(data, dict):
             if not data.get("raw_id") and data.get("id"):
                 data["raw_id"] = str(data["id"]).split("_")[-1]
+
+            if not data.get("generation"):
+                from app.core.classifier import classify_meme_generation
+                data["generation"] = classify_meme_generation(
+                    data.get("title", ""),
+                    data.get("source_community"),
+                    data.get("source_platform"),
+                )
 
             if data.get("author") is None:
                 data["author"] = "unknown"
@@ -117,11 +138,23 @@ class Meme(BaseModel):
     domain: str = Field(default="", description="Media domain")
     content_hash: str = Field(default="", description="Content hash")
     trending_score: float = Field(default=0.0, description="Trending score")
+    generation: Union[MemeGeneration, str] = Field(
+        default=MemeGeneration.GEN_Z,
+        description="Generational alignment (gen_alpha, gen_z, millennial, gen_x)",
+    )
 
     @model_validator(mode="before")
     @classmethod
     def sync_aliases(cls, data: Any) -> Any:
         if isinstance(data, dict):
+            if not data.get("generation"):
+                from app.core.classifier import classify_meme_generation
+                data["generation"] = classify_meme_generation(
+                    data.get("title", ""),
+                    data.get("source_community"),
+                    data.get("source_platform") or data.get("source"),
+                )
+
             if data.get("author") is None:
                 data["author"] = "unknown"
             if data.get("domain") is None:
@@ -165,6 +198,7 @@ class Meme(BaseModel):
                 "domain": getattr(data, "domain", "") or "",
                 "content_hash": getattr(data, "content_hash", "") or "",
                 "trending_score": getattr(data, "trending_score", 0.0),
+                "generation": getattr(data, "generation", MemeGeneration.GEN_Z),
             }
         return data
 
@@ -190,6 +224,7 @@ class Meme(BaseModel):
             domain=norm.domain,
             content_hash=norm.content_hash or "",
             trending_score=norm.trending_score,
+            generation=norm.generation,
         )
 
 

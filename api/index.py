@@ -1,4 +1,4 @@
-"""Vercel Serverless Function Entrypoint for Meme-ology using Mangum adapter."""
+"""Vercel Serverless Function Entrypoint for Meme-ology."""
 
 from __future__ import annotations
 
@@ -10,11 +10,5 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from app.main import app
 
-try:
-    from mangum import Mangum
-    handler = Mangum(app, lifespan="off")
-except Exception:
-    handler = app
-
-# Also export app for native ASGI runtimes
+# Export native ASGI app for Vercel Python runtime
 app = app
