@@ -34,8 +34,12 @@ class SqliteStore:
         except Exception as err:
             logger.warning("Could not create db directory %s: %s", self._db_path.parent, err)
 
+        is_serverless = bool(os.environ.get("VERCEL") or os.environ.get("AWS_LAMBDA_FUNCTION_NAME"))
         async with aiosqlite.connect(self.database_path) as db:
-            await db.execute("PRAGMA journal_mode=WAL;")
+            if not is_serverless:
+                await db.execute("PRAGMA journal_mode=WAL;")
+            else:
+                await db.execute("PRAGMA journal_mode=MEMORY;")
             await db.execute("PRAGMA synchronous=NORMAL;")
             await db.execute("PRAGMA busy_timeout=5000;")
 
