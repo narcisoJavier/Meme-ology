@@ -4,11 +4,12 @@ from __future__ import annotations
 
 import logging
 from contextlib import asynccontextmanager
+from pathlib import Path
 from typing import AsyncGenerator
 
-from fastapi import Depends, FastAPI, Request, status
+from fastapi import Depends, FastAPI, Request, Response, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 
 from app.api.v1.memes import get_memory_store
 from app.api.v1.router import api_v1_router
@@ -137,18 +138,39 @@ def create_app() -> FastAPI:
         "/",
         status_code=status.HTTP_200_OK,
         summary="Root index",
-        description="Service overview and documentation links.",
+        description="Service overview and documentation links, or web UI for browsers.",
         tags=["health"],
     )
-    async def root_index() -> dict[str, str]:
-        """Return service identity and documentation link."""
-        return {
+    async def root_index(request: Request) -> Response:
+        """Return service identity and documentation link, or web UI for browsers."""
+        accept = request.headers.get("accept", "")
+        if "text/html" in accept and "application/json" not in accept:
+            index_path = Path(__file__).parent / "static" / "index.html"
+            if index_path.exists():
+                return HTMLResponse(content=index_path.read_text(encoding="utf-8"))
+        return JSONResponse({
             "name": settings.APP_NAME,
             "version": "1.0.0",
             "docs_url": "/docs",
             "openapi_url": "/openapi.json",
             "health_url": "/health",
-        }
+        })
+
+    # Web portal endpoint
+    @application.get(
+        "/web",
+        response_class=HTMLResponse,
+        status_code=status.HTTP_200_OK,
+        summary="Web Explorer & Documentation Portal",
+        description="Interactive Meme Explorer and API documentation portal.",
+        tags=["memes"],
+    )
+    async def web_portal() -> HTMLResponse:
+        """Serve the Meme-ology web dashboard and interactive documentation."""
+        index_path = Path(__file__).parent / "static" / "index.html"
+        if index_path.exists():
+            return HTMLResponse(content=index_path.read_text(encoding="utf-8"))
+        return HTMLResponse("<h1>Meme-ology</h1><p>Visit <a href='/docs'>/docs</a> for API documentation.</p>")
 
     return application
 

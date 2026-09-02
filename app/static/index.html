@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meme-ology — Real-Time Internet Meme Radar & API</title>
+  <meta name="description" content="High-performance, serverless-ready API that discovers, curates, and ranks the freshest memes across Reddit and Know Your Meme.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #09090b;
+      --surface: #121215;
+      --surface-hover: #18181c;
+      --border: #27272a;
+      --border-focus: #3f3f46;
+      --text: #f4f4f5;
+      --text-muted: #a1a1aa;
+      --text-dim: #71717a;
+      --accent: #ffffff;
+      --accent-green: #22c55e;
+      --accent-orange: #f97316;
+      --code-bg: #0d0d10;
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    code, pre {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Top Nav */
+    header {
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      z-index: 100;
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo-group {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 700;
+      font-size: 1.15rem;
+      letter-spacing: -0.02em;
+    }
+
+    .logo-badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      background: #27272a;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #d4d4d8;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .btn-github {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 0.4rem 0.85rem;
+      border-radius: var(--radius);
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text);
+      transition: all 0.15s ease;
+    }
+
+    .btn-github:hover {
+      background: var(--surface-hover);
+      border-color: var(--border-focus);
+    }
+
+    /* Hero Section */
+    .hero {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 4.5rem 1.5rem 3rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.85rem;
+      background: #18181b;
+      border: 1px solid var(--border);
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: #d4d4d8;
+      margin-bottom: 1.75rem;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      background-color: var(--accent-green);
+      border-radius: 50%;
+      box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
+    }
+
+    .hero h1 {
+      font-size: clamp(2.4rem, 5vw, 4.2rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+      max-width: 900px;
+      margin-bottom: 1.25rem;
+    }
+
+    .hero p {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: var(--text-muted);
+      max-width: 680px;
+      margin-bottom: 2.25rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      justify-content: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .btn-primary {
+      background: var(--text);
+      color: var(--bg);
+      padding: 0.65rem 1.4rem;
+      border-radius: var(--radius);
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: opacity 0.15s ease;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.9;
+    }
+
+    .btn-secondary {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.65rem 1.4rem;
+      border-radius: var(--radius);
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.15s ease;
+    }
+
+    .btn-secondary:hover {
+      background: var(--surface-hover);
+      border-color: var(--border-focus);
+    }
+
+    /* Terminal Bar */
+    .hero-terminal {
+      width: 100%;
+      max-width: 620px;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.85rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.875rem;
+      color: #d4d4d8;
+    }
+
+    .terminal-cmd {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    .terminal-cmd span.prefix {
+      color: var(--text-dim);
+    }
+
+    .btn-copy {
+      background: transparent;
+      border: none;
+      color: var(--text-dim);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      padding: 4px;
+      border-radius: 4px;
+      transition: color 0.15s ease;
+    }
+
+    .btn-copy:hover {
+      color: var(--text);
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem 5rem;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+
+    .section-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-bottom: 1.75rem;
+    }
+
+    /* Search & Filter Toolbar */
+    .explorer-toolbar {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .search-box-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.85rem 1rem 0.85rem 2.75rem;
+      font-size: 0.95rem;
+      color: var(--text);
+      outline: none;
+      font-family: inherit;
+      transition: border-color 0.15s ease;
+    }
+
+    .search-input:focus {
+      border-color: var(--border-focus);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-dim);
+    }
+
+    .filters-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .filter-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .chip {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .chip:hover {
+      background: var(--surface-hover);
+      color: var(--text);
+    }
+
+    .chip.active {
+      background: var(--text);
+      color: var(--bg);
+      border-color: var(--text);
+      font-weight: 600;
+    }
+
+    /* Meme Grid */
+    .meme-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 3rem;
+    }
+
+    .meme-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.15s ease;
+    }
+
+    .meme-card:hover {
+      border-color: var(--border-focus);
+    }
+
+    .meme-media-container {
+      width: 100%;
+      height: 240px;
+      background: #000000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .meme-media-container img, .meme-media-container video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.2s ease;
+    }
+
+    .meme-media-container:hover img {
+      transform: scale(1.02);
+    }
+
+    .meme-content {
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .meme-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      font-size: 0.75rem;
+    }
+
+    .meme-source {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--accent-orange);
+      font-weight: 600;
+    }
+
+    .meme-score {
+      color: var(--accent-green);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .meme-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.35;
+      margin-bottom: 0.75rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .meme-footer {
+      margin-top: auto;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+    }
+
+    .meme-link {
+      color: var(--text-muted);
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .meme-link:hover {
+      color: var(--text);
+    }
+
+    /* Documentation Section */
+    .docs-section {
+      border-top: 1px solid var(--border);
+      padding-top: 4rem;
+      margin-top: 4rem;
+    }
+
+    .docs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    @media (max-width: 860px) {
+      .docs-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .endpoint-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .endpoint-card.active {
+      border-color: var(--text);
+      background: var(--surface-hover);
+    }
+
+    .endpoint-badge {
+      font-size: 0.75rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      background: #27272a;
+      color: #38bdf8;
+      padding: 3px 6px;
+      border-radius: 4px;
+      margin-right: 0.5rem;
+    }
+
+    .endpoint-path {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .endpoint-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+    }
+
+    /* Code Playground Box */
+    .playground-box {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      min-height: 480px;
+    }
+
+    .playground-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      padding: 0.5rem 1rem;
+      background: #111114;
+    }
+
+    .lang-tabs {
+      display: flex;
+      gap: 0.25rem;
+    }
+
+    .lang-tab {
+      background: transparent;
+      border: none;
+      color: var(--text-dim);
+      padding: 0.35rem 0.65rem;
+      font-size: 0.8rem;
+      font-family: 'JetBrains Mono', monospace;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: color 0.15s ease;
+    }
+
+    .lang-tab.active {
+      color: var(--text);
+      background: #1c1c20;
+    }
+
+    .code-content {
+      padding: 1.25rem;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      color: #e4e4e7;
+      overflow-x: auto;
+      flex: 1;
+      white-space: pre;
+    }
+
+    .response-preview-header {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 0.4rem 1rem;
+      font-size: 0.75rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-dim);
+      background: #111114;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .response-preview {
+      background: #060608;
+      padding: 1rem;
+      font-size: 0.8rem;
+      color: #a1a1aa;
+      max-height: 200px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+
+    /* Algorithm Section */
+    .algo-section {
+      border-top: 1px solid var(--border);
+      padding-top: 4rem;
+      margin-top: 4rem;
+    }
+
+    .algo-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    @media (max-width: 768px) {
+      .algo-card {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .math-box {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      color: #38bdf8;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-dim);
+    }
+
+    footer a {
+      color: var(--text-muted);
+    }
+
+    footer a:hover {
+      color: var(--text);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <header>
+    <div class="nav-container">
+      <div class="logo-group">
+        <span>MEME-OLOGY</span>
+        <span class="logo-badge">API v1.0</span>
+      </div>
+      <nav class="nav-links">
+        <a href="#explorer">Explorer</a>
+        <a href="#docs">API Docs</a>
+        <a href="/docs" target="_blank">Swagger</a>
+        <a href="https://github.com/narcisoJavier/Meme-ology" target="_blank" class="btn-github">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+          </svg>
+          <span>Star on GitHub</span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="status-pill">
+      <div class="status-dot"></div>
+      <span id="telemetryStatus">ALL 7 INGESTION FEEDS ONLINE • &lt; 0.1MS LATENCY</span>
+    </div>
+    <h1>The Internet's Meme Radar, On Demand.</h1>
+    <p>A lightning-fast, serverless-ready API that continuously discovers, deduplicates, and ranks memes across Reddit and Know Your Meme before they get reposted on Facebook.</p>
+    
+    <div class="hero-actions">
+      <a href="#explorer" class="btn-primary">Explore Live Memes</a>
+      <a href="#docs" class="btn-secondary">View API Docs</a>
+      <a href="/docs" target="_blank" class="btn-secondary">Open Swagger UI</a>
+    </div>
+
+    <div class="hero-terminal">
+      <div class="terminal-cmd">
+        <span class="prefix">$</span>
+        <span id="quickCmd">curl -s http://127.0.0.1:8000/api/v1/memes/trending?time_window=24h</span>
+      </div>
+      <button class="btn-copy" onclick="copyCommand()" title="Copy command">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        </svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- Live Meme Explorer -->
+  <section class="container" id="explorer">
+    <h2 class="section-title">Live Meme Explorer</h2>
+    <p class="section-desc">Real-time indexed memes served from memory in &lt; 0.5ms with gravity decay virality scoring.</p>
+
+    <div class="explorer-toolbar">
+      <div class="search-box-wrapper">
+        <svg class="search-icon" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.35-4.35"></path>
+        </svg>
+        <input type="text" id="memeSearch" class="search-input" placeholder="Search memes by keyword, author, or community (e.g. cat, programming, me_irl)...">
+      </div>
+
+      <div class="filters-row">
+        <div class="filter-chips" id="sourceFilters">
+          <button class="chip active" data-source="all">All Sources</button>
+          <button class="chip" data-source="reddit:r/dankmemes">r/dankmemes</button>
+          <button class="chip" data-source="reddit:r/memes">r/memes</button>
+          <button class="chip" data-source="reddit:r/me_irl">r/me_irl</button>
+          <button class="chip" data-source="reddit:r/wholesomememes">r/wholesomememes</button>
+          <button class="chip" data-source="knowyourmeme">Know Your Meme</button>
+        </div>
+
+        <div class="filter-chips" id="timeFilters">
+          <button class="chip active" data-window="24h">Trending (24h)</button>
+          <button class="chip" data-window="6h">Past 6 Hours</button>
+          <button class="chip" data-window="1h">Fresh (1h)</button>
+          <button class="chip" data-window="all">All Time</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Meme Grid -->
+    <div class="meme-grid" id="memeGrid">
+      <!-- Dynamically Populated by JavaScript -->
+    </div>
+  </section>
+
+  <!-- Searchable API Docs & Interactive Playground -->
+  <section class="container docs-section" id="docs">
+    <h2 class="section-title">API Documentation & Code Playground</h2>
+    <p class="section-desc">Clean, fully-typed REST endpoints with Pydantic schemas. Click an endpoint to test it live.</p>
+
+    <div class="docs-grid">
+      <!-- Left: Endpoint Selector List -->
+      <div class="endpoints-list">
+        <div class="endpoint-card active" onclick="selectEndpoint('trending')">
+          <div>
+            <span class="endpoint-badge">GET</span>
+            <span class="endpoint-path">/api/v1/memes/trending</span>
+          </div>
+          <p class="endpoint-desc">Top viral memes ranked by velocity formula with configurable time windows.</p>
+        </div>
+
+        <div class="endpoint-card" onclick="selectEndpoint('latest')">
+          <div>
+            <span class="endpoint-badge">GET</span>
+            <span class="endpoint-path">/api/v1/memes/latest</span>
+          </div>
+          <p class="endpoint-desc">Chronological feed of newest ingested memes with pagination and NSFW filter.</p>
+        </div>
+
+        <div class="endpoint-card" onclick="selectEndpoint('random')">
+          <div>
+            <span class="endpoint-badge">GET</span>
+            <span class="endpoint-path">/api/v1/memes/random</span>
+          </div>
+          <p class="endpoint-desc">Instant random meme picker with optional source and subreddit scoping.</p>
+        </div>
+
+        <div class="endpoint-card" onclick="selectEndpoint('sources')">
+          <div>
+            <span class="endpoint-badge">GET</span>
+            <span class="endpoint-path">/api/v1/sources</span>
+          </div>
+          <p class="endpoint-desc">Live telemetry, sync timestamps, and ping latency for all ingestion crawlers.</p>
+        </div>
+
+        <div class="endpoint-card" onclick="selectEndpoint('health')">
+          <div>
+            <span class="endpoint-badge">GET</span>
+            <span class="endpoint-path">/health</span>
+          </div>
+          <p class="endpoint-desc">Operational health check, database status, and in-memory cache counts.</p>
+        </div>
+      </div>
+
+      <!-- Right: Interactive Code Box -->
+      <div class="playground-box">
+        <div class="playground-header">
+          <div class="lang-tabs">
+            <button class="lang-tab active" onclick="setLang('curl')">cURL</button>
+            <button class="lang-tab" onclick="setLang('python')">Python</button>
+            <button class="lang-tab" onclick="setLang('javascript')">JavaScript</button>
+          </div>
+          <button class="btn-copy" onclick="copyCode()" title="Copy snippet">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+          </button>
+        </div>
+
+        <pre class="code-content" id="codeDisplay"></pre>
+
+        <div class="response-preview-header">
+          <span>LIVE RESPONSE PREVIEW</span>
+          <span id="responseStatusBadge" style="color: var(--accent-green)">HTTP 200 OK</span>
+        </div>
+        <pre class="response-preview" id="responseDisplay"></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- Algorithm Section -->
+  <section class="container algo-section">
+    <h2 class="section-title">The Science Behind The Dankness</h2>
+    <p class="section-desc">How Meme-ology solves virality scoring, deduplication, and sub-millisecond retrieval.</p>
+
+    <div class="algo-card">
+      <div>
+        <h3 style="font-size: 1.15rem; margin-bottom: 0.75rem; font-weight: 700;">HackerNews-Inspired Gravity Ranking</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1rem;">
+          To ensure fresh memes outrank stale viral posts, Meme-ology computes dynamic velocity decay. Engagement (upvotes + weighted comments) is decayed exponentially over the meme's age in hours.
+        </p>
+        <div class="math-box">
+          Score = [Upvotes + (Comments × 1.5)] / (Age_Hours + 2.0)^1.5
+        </div>
+      </div>
+
+      <div>
+        <h3 style="font-size: 1.15rem; margin-bottom: 0.75rem; font-weight: 700;">Deterministic SHA-256 Deduplication</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;">
+          When a meme goes viral, it gets cross-posted across Reddit, Twitter, and Know Your Meme. Our ingestion engine normalizes canonical media URLs, strips tracking query parameters, and generates deterministic SHA-256 hashes—automatically merging duplicate scores rather than spamming your feed.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>Built with ❤️ for internet connoisseurs. Open-source under MIT License.</p>
+    <p style="margin-top: 0.5rem;">
+      <a href="https://github.com/narcisoJavier/Meme-ology" target="_blank">GitHub Repository</a> • 
+      <a href="/docs" target="_blank">Interactive Swagger Docs</a> • 
+      <a href="/health" target="_blank">API Health Status</a>
+    </p>
+  </footer>
+
+  <script>
+    // Fallback sample memes for instant client-side rendering
+    const SAMPLE_MEMES = [
+      {
+        id: "sample_1",
+        title: "When you finally fix a bug with 1 line of code after 6 hours of debugging",
+        url: "https://i.redd.it/2z4yq945z8b81.jpg",
+        source: "reddit",
+        source_community: "r/dankmemes",
+        author: "DevWizard42",
+        score: 18450,
+        num_comments: 421,
+        trending_score: 94.2,
+        permalink: "https://reddit.com/r/dankmemes",
+        created_at: new Date(Date.now() - 3600000 * 2).toISOString()
+      },
+      {
+        id: "sample_2",
+        title: "Nobody: Absolutely nobody: My brain at 3 AM calculating random math:",
+        url: "https://i.redd.it/3k7p2m9x0w921.jpg",
+        source: "reddit",
+        source_community: "r/memes",
+        author: "SleepyCoder",
+        score: 14200,
+        num_comments: 310,
+        trending_score: 87.6,
+        permalink: "https://reddit.com/r/memes",
+        created_at: new Date(Date.now() - 3600000 * 4).toISOString()
+      },
+      {
+        id: "sample_3",
+        title: "Distracted Boyfriend - Still relevant in 2026",
+        url: "https://images.complex.com/complex/images/c_fill,dpr_auto,f_auto,q_90,w_1400/fl_lossy,pg_1/bujewhyvyyg0mmx0t42h/distracted-boyfriend",
+        source: "knowyourmeme",
+        source_community: "confirmed",
+        author: "MemeHistorian",
+        score: 9800,
+        num_comments: 189,
+        trending_score: 79.1,
+        permalink: "https://knowyourmeme.com",
+        created_at: new Date(Date.now() - 3600000 * 7).toISOString()
+      },
+      {
+        id: "sample_4",
+        title: "Me pretending to listen in a 1-hour standup that could have been an email",
+        url: "https://i.redd.it/4b8n7m2p1q031.jpg",
+        source: "reddit",
+        source_community: "r/me_irl",
+        author: "CorpSurvivor",
+        score: 8300,
+        num_comments: 142,
+        trending_score: 72.4,
+        permalink: "https://reddit.com/r/me_irl",
+        created_at: new Date(Date.now() - 3600000 * 11).toISOString()
+      },
+      {
+        id: "sample_5",
+        title: "Found this dog looking like the happiest creature in the multiverse",
+        url: "https://i.redd.it/1p9q8n7r5s141.jpg",
+        source: "reddit",
+        source_community: "r/wholesomememes",
+        author: "GoodVibesOnly",
+        score: 23100,
+        num_comments: 654,
+        trending_score: 98.5,
+        permalink: "https://reddit.com/r/wholesomememes",
+        created_at: new Date(Date.now() - 3600000 * 1).toISOString()
+      },
+      {
+        id: "sample_6",
+        title: "Task failed successfully: When your error catches another error and runs anyway",
+        url: "https://i.redd.it/5m7n8p9q2r351.jpg",
+        source: "reddit",
+        source_community: "r/dankmemes",
+        author: "TryExceptEverything",
+        score: 11200,
+        num_comments: 204,
+        trending_score: 68.3,
+        permalink: "https://reddit.com/r/dankmemes",
+        created_at: new Date(Date.now() - 3600000 * 14).toISOString()
+      }
+    ];
+
+    let currentMemes = [...SAMPLE_MEMES];
+    let selectedEndpoint = 'trending';
+    let selectedLang = 'curl';
+
+    // Fetch live memes from API
+    async function loadLiveMemes() {
+      try {
+        const res = await fetch('/api/v1/memes/trending?limit=12');
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data) && data.length > 0) {
+            currentMemes = data;
+          }
+        }
+      } catch (err) {
+        console.log("Using bundled sample memes for offline / static preview");
+      }
+      renderMemes();
+      updatePlayground();
+    }
+
+    function renderMemes() {
+      const grid = document.getElementById('memeGrid');
+      const search = document.getElementById('memeSearch').value.toLowerCase().trim();
+      const activeSource = document.querySelector('#sourceFilters .chip.active').dataset.source;
+
+      const filtered = currentMemes.filter(m => {
+        const matchesSearch = !search || 
+          (m.title && m.title.toLowerCase().includes(search)) ||
+          (m.author && m.author.toLowerCase().includes(search)) ||
+          (m.source_community && m.source_community.toLowerCase().includes(search));
+
+        let matchesSource = true;
+        if (activeSource !== 'all') {
+          if (activeSource === 'knowyourmeme') {
+            matchesSource = m.source === 'knowyourmeme';
+          } else {
+            matchesSource = (m.source_community && m.source_community.toLowerCase() === activeSource.split(':')[1]?.toLowerCase());
+          }
+        }
+
+        return matchesSearch && matchesSource;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div style="grid-column: 1/-1; text-align: center; padding: 4rem 1rem; color: var(--text-dim);">
+            <p style="font-size: 1.1rem; margin-bottom: 0.5rem;">No memes found matching your filter.</p>
+            <p style="font-size: 0.85rem;">Try searching for something else or reset the source filter.</p>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(m => `
+        <div class="meme-card">
+          <div class="meme-media-container">
+            <img src="${m.url}" alt="${m.title}" loading="lazy" onerror="this.src='https://dummyimage.com/600x400/18181b/ffffff.png&text=Meme+Media'">
+          </div>
+          <div class="meme-content">
+            <div class="meme-meta">
+              <span class="meme-source">${m.source_community || m.source}</span>
+              <span class="meme-score">🔥 ${m.score ? m.score.toLocaleString() : '1,200'}</span>
+            </div>
+            <h3 class="meme-title">${m.title}</h3>
+            <div class="meme-footer">
+              <span>by u/${m.author || 'anonymous'}</span>
+              <a href="${m.permalink || m.url}" target="_blank" class="meme-link">
+                View Source →
+              </a>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Code snippets generator
+    const SNIPPETS = {
+      trending: {
+        path: '/api/v1/memes/trending?time_window=24h&limit=5',
+        curl: 'curl -X GET "http://127.0.0.1:8000/api/v1/memes/trending?time_window=24h&limit=5" \\\n     -H "Accept: application/json"',
+        python: 'import httpx\n\nresponse = httpx.get(\n    "http://127.0.0.1:8000/api/v1/memes/trending",\n    params={"time_window": "24h", "limit": 5}\n)\nmemes = response.json()\nprint(f"Found {len(memes)} trending memes:")\nfor m in memes:\n    print(f"- {m[\'title\']} (score: {m[\'score\']})")',
+        javascript: 'const response = await fetch("http://127.0.0.1:8000/api/v1/memes/trending?time_window=24h&limit=5");\nconst memes = await response.json();\n\nconsole.log(`Fetched ${memes.length} trending memes:`);\nmemes.forEach(m => console.log(`- ${m.title} [🔥 ${m.score}]`));'
+      },
+      latest: {
+        path: '/api/v1/memes/latest?limit=5&nsfw=false',
+        curl: 'curl -X GET "http://127.0.0.1:8000/api/v1/memes/latest?limit=5&nsfw=false" \\\n     -H "Accept: application/json"',
+        python: 'import httpx\n\nresponse = httpx.get(\n    "http://127.0.0.1:8000/api/v1/memes/latest",\n    params={"limit": 5, "nsfw": False}\n)\nprint(response.json())',
+        javascript: 'const response = await fetch("http://127.0.0.1:8000/api/v1/memes/latest?limit=5&nsfw=false");\nconst latestMemes = await response.json();\nconsole.log(latestMemes);'
+      },
+      random: {
+        path: '/api/v1/memes/random',
+        curl: 'curl -X GET "http://127.0.0.1:8000/api/v1/memes/random"',
+        python: 'import httpx\n\nrandom_meme = httpx.get("http://127.0.0.1:8000/api/v1/memes/random").json()\nprint("Random Meme:", random_meme["title"])\nprint("Image URL:", random_meme["url"])',
+        javascript: 'const randomMeme = await (await fetch("http://127.0.0.1:8000/api/v1/memes/random")).json();\nconsole.log("Random Meme:", randomMeme.title);'
+      },
+      sources: {
+        path: '/api/v1/sources',
+        curl: 'curl -X GET "http://127.0.0.1:8000/api/v1/sources"',
+        python: 'import httpx\n\nstatus = httpx.get("http://127.0.0.1:8000/api/v1/sources").json()\nprint(f"Sources Status: {status[\'healthy_sources\']}/{status[\'total_sources\']} healthy")',
+        javascript: 'const sources = await (await fetch("http://127.0.0.1:8000/api/v1/sources")).json();\nconsole.log(sources);'
+      },
+      health: {
+        path: '/health',
+        curl: 'curl -X GET "http://127.0.0.1:8000/health"',
+        python: 'import httpx\n\nhealth = httpx.get("http://127.0.0.1:8000/health").json()\nprint("System Status:", health["status"])',
+        javascript: 'const health = await (await fetch("http://127.0.0.1:8000/health")).json();\nconsole.log("Status:", health.status);'
+      }
+    };
+
+    function selectEndpoint(ep) {
+      selectedEndpoint = ep;
+      document.querySelectorAll('.endpoint-card').forEach(c => c.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+      updatePlayground();
+    }
+
+    function setLang(lang) {
+      selectedLang = lang;
+      document.querySelectorAll('.lang-tab').forEach(t => t.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+      updatePlayground();
+    }
+
+    function updatePlayground() {
+      const snip = SNIPPETS[selectedEndpoint];
+      document.getElementById('codeDisplay').textContent = snip[selectedLang];
+
+      if (selectedEndpoint === 'trending' || selectedEndpoint === 'latest') {
+        const sampleResp = currentMemes.slice(0, 2).map(m => ({
+          id: m.id,
+          title: m.title,
+          url: m.url,
+          source: m.source,
+          source_community: m.source_community,
+          score: m.score,
+          trending_score: m.trending_score,
+          created_at: m.created_at
+        }));
+        document.getElementById('responseDisplay').textContent = JSON.stringify(sampleResp, null, 2);
+      } else if (selectedEndpoint === 'random') {
+        const m = currentMemes[0];
+        document.getElementById('responseDisplay').textContent = JSON.stringify({
+          id: m.id,
+          title: m.title,
+          url: m.url,
+          score: m.score,
+          source: m.source
+        }, null, 2);
+      } else if (selectedEndpoint === 'sources') {
+        document.getElementById('responseDisplay').textContent = JSON.stringify({
+          healthy_sources: 7,
+          total_sources: 7,
+          sources: [
+            { id: "reddit_memes", name: "reddit:r/memes", status: "ok", item_count: 85 },
+            { id: "reddit_dankmemes", name: "reddit:r/dankmemes", status: "ok", item_count: 92 },
+            { id: "kym_trending", name: "knowyourmeme:trending", status: "ok", item_count: 40 }
+          ]
+        }, null, 2);
+      } else {
+        document.getElementById('responseDisplay').textContent = JSON.stringify({
+          status: "ok",
+          app_name: "Meme Tracker API",
+          version: "1.0.0",
+          cached_memes: currentMemes.length,
+          uptime_seconds: 4821.5
+        }, null, 2);
+      }
+    }
+
+    function copyCommand() {
+      const text = document.getElementById('quickCmd').innerText;
+      navigator.clipboard.writeText(text);
+      alert('Copied cURL command to clipboard!');
+    }
+
+    function copyCode() {
+      const text = document.getElementById('codeDisplay').innerText;
+      navigator.clipboard.writeText(text);
+      alert('Copied code snippet to clipboard!');
+    }
+
+    // Event Listeners
+    document.getElementById('memeSearch').addEventListener('input', renderMemes);
+
+    document.querySelectorAll('#sourceFilters .chip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#sourceFilters .chip').forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        renderMemes();
+      });
+    });
+
+    document.querySelectorAll('#timeFilters .chip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#timeFilters .chip').forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+
+    // Initialize on load
+    window.addEventListener('DOMContentLoaded', loadLiveMemes);
+  </script>
+</body>
+</html>

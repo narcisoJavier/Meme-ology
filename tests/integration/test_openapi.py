@@ -101,3 +101,18 @@ class TestOpenApiDocumentation:
         assert "text/html" in response.headers.get("content-type", "")
         assert "redoc" in response.text.lower()
 
+    async def test_root_index_serves_html_for_browser_navigation(self, async_client: httpx.AsyncClient) -> None:
+        """Verify GET / returns HTML for browser navigation."""
+        response = await async_client.get("/", headers={"accept": "text/html,application/xhtml+xml"})
+        assert response.status_code == 200
+        assert "text/html" in response.headers.get("content-type", "")
+        assert "MEME-OLOGY" in response.text
+
+    async def test_web_portal_endpoint(self, async_client: httpx.AsyncClient) -> None:
+        """Verify GET /web returns HTTP 200 with the Meme-ology web dashboard."""
+        response = await async_client.get("/web")
+        assert response.status_code == 200
+        assert "text/html" in response.headers.get("content-type", "")
+        assert "MEME-OLOGY" in response.text
+
+
