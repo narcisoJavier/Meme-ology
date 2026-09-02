@@ -1,0 +1,105 @@
+{
+  "kind": "Listing",
+  "data": {
+    "after": "t3_dank_004",
+    "dist": 4,
+    "children": [
+      {
+        "kind": "t3",
+        "data": {
+          "id": "dank_001",
+          "name": "t3_dank_001",
+          "title": "When you accidentally fix the bug by adding more bugs",
+          "subreddit": "dankmemes",
+          "author": "dank_coder",
+          "score": 21500,
+          "ups": 21500,
+          "num_comments": 490,
+          "created_utc": 1725350000.0,
+          "over_18": false,
+          "is_video": false,
+          "post_hint": "image",
+          "domain": "i.redd.it",
+          "url": "https://i.redd.it/dank_bug_fix.png",
+          "permalink": "/r/dankmemes/comments/dank_001/when_you_accidentally_fix_the_bug/",
+          "stickied": false,
+          "is_self": false
+        }
+      },
+      {
+        "kind": "t3",
+        "data": {
+          "id": "dank_002",
+          "name": "t3_dank_002",
+          "title": "High IQ meme only intellectuals understand",
+          "subreddit": "dankmemes",
+          "author": "quantum_brain",
+          "score": 18300,
+          "ups": 18300,
+          "num_comments": 310,
+          "created_utc": 1725355000.0,
+          "over_18": false,
+          "is_video": false,
+          "post_hint": "image",
+          "domain": "i.imgur.com",
+          "url": "https://i.imgur.com/high_iq_meme.gif",
+          "permalink": "/r/dankmemes/comments/dank_002/high_iq_meme/",
+          "stickied": false,
+          "is_self": false
+        }
+      },
+      {
+        "kind": "t3",
+        "data": {
+          "id": "dank_003",
+          "name": "t3_dank_003",
+          "title": "It do be like that sometimes",
+          "subreddit": "dankmemes",
+          "author": "philosophical_frog",
+          "score": 12400,
+          "ups": 12400,
+          "num_comments": 150,
+          "created_utc": 1725360000.0,
+          "over_18": false,
+          "is_video": true,
+          "domain": "v.redd.it",
+          "url": "https://v.redd.it/frog_wisdom_vid",
+          "permalink": "/r/dankmemes/comments/dank_003/it_do_be_like_that_sometimes/",
+          "media": {
+            "reddit_video": {
+              "fallback_url": "https://v.redd.it/frog_wisdom_vid/DASH_1080.mp4",
+              "height": 1080,
+              "width": 1080,
+              "duration": 8,
+              "is_gif": false
+            }
+          },
+          "stickied": false,
+          "is_self": false
+        }
+      },
+      {
+        "kind": "t3",
+        "data": {
+          "id": "dank_004",
+          "name": "t3_dank_004",
+          "title": "Spicy dank template",
+          "subreddit": "dankmemes",
+          "author": "spice_master",
+          "score": 8700,
+          "ups": 8700,
+          "num_comments": 95,
+          "created_utc": 1725365000.0,
+          "over_18": false,
+          "is_video": false,
+          "post_hint": "image",
+          "domain": "i.redd.it",
+          "url": "https://i.redd.it/spicy_dank_template.webp",
+          "permalink": "/r/dankmemes/comments/dank_004/spicy_dank_template/",
+          "stickied": false,
+          "is_self": false
+        }
+      }
+    ]
+  }
+}

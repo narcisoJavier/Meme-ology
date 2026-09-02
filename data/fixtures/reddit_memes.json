@@ -1,0 +1,217 @@
+{
+  "kind": "Listing",
+  "data": {
+    "after": "t3_1d8nsfw",
+    "dist": 7,
+    "children": [
+      {
+        "kind": "t3",
+        "data": {
+          "id": "1d8sticky",
+          "name": "t3_1d8sticky",
+          "title": "Monthly Rules and Subreddit Announcement",
+          "subreddit": "memes",
+          "author": "AutoModerator",
+          "score": 500,
+          "ups": 500,
+          "num_comments": 45,
+          "created_utc": 1725200000.0,
+          "over_18": false,
+          "is_video": false,
+          "post_hint": "link",
+          "domain": "reddit.com",
+          "url": "https://www.reddit.com/r/memes/announcements",
+          "permalink": "/r/memes/comments/1d8sticky/monthly_rules/",
+          "stickied": true,
+          "is_self": true
+        }
+      },
+      {
+        "kind": "t3",
+        "data": {
+          "id": "1d8deleted",
+          "name": "t3_1d8deleted",
+          "title": "Deleted user meme",
+          "subreddit": "memes",
+          "author": "[deleted]",
+          "score": 100,
+          "ups": 100,
+          "num_comments": 5,
+          "created_utc": 1725210000.0,
+          "over_18": false,
+          "is_video": false,
+          "post_hint": "image",
+          "domain": "i.redd.it",
+          "url": "https://i.redd.it/deleted.jpg",
+          "permalink": "/r/memes/comments/1d8deleted/deleted_user_meme/",
+          "stickied": false,
+          "is_self": false
+        }
+      },
+      {
+        "kind": "t3",
+        "data": {
+          "id": "1d8xyz",
+          "name": "t3_1d8xyz",
+          "title": "When the compiler works on the first try",
+          "subreddit": "memes",
+          "author": "coding_enthusiast",
+          "score": 14250,
+          "ups": 14250,
+          "num_comments": 342,
+          "created_utc": 1725300000.0,
+          "over_18": false,
+          "is_video": false,
+          "post_hint": "image",
+          "domain": "i.redd.it",
+          "url": "https://i.redd.it/abcdef123456.jpg",
+          "permalink": "/r/memes/comments/1d8xyz/when_the_compiler_works_on_the_first_try/",
+          "thumbnail": "https://b.thumbs.redditmedia.com/compiler_thumb.jpg",
+          "preview": {
+            "images": [
+              {
+                "source": {
+                  "url": "https://preview.redd.it/abcdef123456.jpg?auto=webp&amp;s=abc123def456",
+                  "width": 1080,
+                  "height": 1350
+                }
+              }
+            ]
+          },
+          "stickied": false,
+          "is_self": false
+        }
+      },
+      {
+        "kind": "t3",
+        "data": {
+          "id": "1d8gif",
+          "name": "t3_1d8gif",
+          "title": "CI build passing on all platforms",
+          "subreddit": "memes",
+          "author": "devops_wizard",
+          "score": 8900,
+          "ups": 8900,
+          "num_comments": 120,
+          "created_utc": 1725305000.0,
+          "over_18": false,
+          "is_video": false,
+          "post_hint": "image",
+          "domain": "i.redd.it",
+          "url": "https://i.redd.it/ci_passing.gif",
+          "permalink": "/r/memes/comments/1d8gif/ci_build_passing/",
+          "stickied": false,
+          "is_self": false
+        }
+      },
+      {
+        "kind": "t3",
+        "data": {
+          "id": "1d8vid",
+          "name": "t3_1d8vid",
+          "title": "Debugging in production be like",
+          "subreddit": "memes",
+          "author": "server_guy",
+          "score": 5400,
+          "ups": 5400,
+          "num_comments": 95,
+          "created_utc": 1725310000.0,
+          "over_18": false,
+          "is_video": true,
+          "domain": "v.redd.it",
+          "url": "https://v.redd.it/prod_debug_video",
+          "permalink": "/r/memes/comments/1d8vid/debugging_in_production_be_like/",
+          "media": {
+            "reddit_video": {
+              "fallback_url": "https://v.redd.it/prod_debug_video/DASH_720.mp4?source=fallback",
+              "height": 720,
+              "width": 1280,
+              "duration": 15,
+              "is_gif": false
+            }
+          },
+          "stickied": false,
+          "is_self": false
+        }
+      },
+      {
+        "kind": "t3",
+        "data": {
+          "id": "1d8gal",
+          "name": "t3_1d8gal",
+          "title": "A story in two pictures",
+          "subreddit": "memes",
+          "author": "story_teller",
+          "score": 6200,
+          "ups": 6200,
+          "num_comments": 88,
+          "created_utc": 1725320000.0,
+          "over_18": false,
+          "is_gallery": true,
+          "is_video": false,
+          "domain": "reddit.com",
+          "url": "https://www.reddit.com/gallery/1d8gal",
+          "permalink": "/r/memes/comments/1d8gal/a_story_in_two_pictures/",
+          "gallery_data": {
+            "items": [
+              {
+                "media_id": "gal_item_1",
+                "id": 101
+              },
+              {
+                "media_id": "gal_item_2",
+                "id": 102
+              }
+            ]
+          },
+          "media_metadata": {
+            "gal_item_1": {
+              "status": "valid",
+              "e": "Image",
+              "m": "image/jpg",
+              "s": {
+                "y": 1080,
+                "x": 1920,
+                "u": "https://preview.redd.it/gal_item_1.jpg?width=1920&amp;format=pjpg&amp;auto=webp&amp;s=xyz987"
+              }
+            },
+            "gal_item_2": {
+              "status": "valid",
+              "e": "Image",
+              "m": "image/jpg",
+              "s": {
+                "y": 1080,
+                "x": 1920,
+                "u": "https://preview.redd.it/gal_item_2.jpg?width=1920&amp;format=pjpg&amp;auto=webp&amp;s=xyz654"
+              }
+            }
+          },
+          "stickied": false,
+          "is_self": false
+        }
+      },
+      {
+        "kind": "t3",
+        "data": {
+          "id": "1d8nsfw",
+          "name": "t3_1d8nsfw",
+          "title": "Late night dark humor (NSFW)",
+          "subreddit": "memes",
+          "author": "night_owl",
+          "score": 3200,
+          "ups": 3200,
+          "num_comments": 42,
+          "created_utc": 1725340000.0,
+          "over_18": true,
+          "is_video": false,
+          "post_hint": "image",
+          "domain": "i.redd.it",
+          "url": "https://i.redd.it/nsfw_late_night.png",
+          "permalink": "/r/memes/comments/1d8nsfw/late_night_dark_humor/",
+          "stickied": false,
+          "is_self": false
+        }
+      }
+    ]
+  }
+}
