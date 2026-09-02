@@ -1,26 +1,20 @@
-"""Vercel Serverless Function Entrypoint for Meme-ology."""
+"""Vercel Serverless Function Entrypoint for Meme-ology using Mangum adapter."""
 
 from __future__ import annotations
 
 import os
 import sys
-import traceback
 
 # Ensure project root is on PYTHONPATH
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from app.main import app
+
 try:
-    from app.main import app
+    from mangum import Mangum
+    handler = Mangum(app, lifespan="off")
+except Exception:
     handler = app
-except Exception as e:
-    from fastapi import FastAPI
-    from fastapi.responses import PlainTextResponse
-    err_app = FastAPI()
-    err_msg = traceback.format_exc()
 
-    @err_app.api_route("/{path:path}", methods=["GET", "POST", "PUT", "DELETE"])
-    async def catch_all(path: str):
-        return PlainTextResponse(f"Vercel Startup Exception:\n{err_msg}", status_code=500)
-
-    app = err_app
-    handler = err_app
+# Also export app for native ASGI runtimes
+app = app
