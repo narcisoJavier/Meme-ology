@@ -1,0 +1,47 @@
+[
+  {
+    "id": "reddit_genalpha",
+    "name": "reddit:r/GenAlpha",
+    "platform": "reddit",
+    "community": "r/GenAlpha",
+    "status": "ok",
+    "item_count": 35,
+    "latency_ms": 110.2
+  },
+  {
+    "id": "reddit_dankmemes",
+    "name": "reddit:r/dankmemes",
+    "platform": "reddit",
+    "community": "r/dankmemes",
+    "status": "ok",
+    "item_count": 45,
+    "latency_ms": 120.4
+  },
+  {
+    "id": "reddit_adviceanimals",
+    "name": "reddit:r/AdviceAnimals",
+    "platform": "reddit",
+    "community": "r/AdviceAnimals",
+    "status": "ok",
+    "item_count": 38,
+    "latency_ms": 95.8
+  },
+  {
+    "id": "reddit_wholesomememes",
+    "name": "reddit:r/wholesomememes",
+    "platform": "reddit",
+    "community": "r/wholesomememes",
+    "status": "ok",
+    "item_count": 42,
+    "latency_ms": 105.1
+  },
+  {
+    "id": "kym_confirmed",
+    "name": "knowyourmeme:confirmed",
+    "platform": "knowyourmeme",
+    "community": "confirmed",
+    "status": "ok",
+    "item_count": 50,
+    "latency_ms": 140.0
+  }
+]
