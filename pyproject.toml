@@ -26,6 +26,10 @@ dev = [
     "pytest-cov>=5.0.0",
 ]
 
+[tool.setuptools.packages.find]
+include = ["app*"]
+
+
 [tool.pytest.ini_options]
 minversion = "8.0"
 testpaths = ["tests"]
