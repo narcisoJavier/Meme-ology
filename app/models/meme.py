@@ -18,7 +18,10 @@ class MediaType(str, Enum):
 class SourcePlatform(str, Enum):
     """Supported source platforms."""
     REDDIT = "reddit"
+    BLUESKY = "bluesky"
     KNOWYOURMEME = "knowyourmeme"
+    MASTODON = "mastodon"
+
 
 
 class MemeGeneration(str, Enum):

@@ -22,7 +22,7 @@ def _extract_source_tokens(platform_val: str, comm_val: str) -> Set[str]:
     tokens: Set[str] = set()
     plat = platform_val.lower().strip()
     comm = comm_val.lower().strip()
-    clean_comm = comm[2:].strip() if comm.startswith("r/") else comm
+    clean_comm = comm[2:].strip() if comm.startswith("r/") else (comm[1:].strip() if comm.startswith("#") else comm)
 
     # Direct platform tokens
     tokens.add(plat)
@@ -32,13 +32,23 @@ def _extract_source_tokens(platform_val: str, comm_val: str) -> Set[str]:
         tokens.add("knowyourmeme")
         tokens.add("kym")
         tokens.add("know your meme")
+    elif plat in ("bluesky", "bsky"):
+        tokens.add("bluesky")
+        tokens.add("bsky")
+    elif plat in ("mastodon", "masto", "fediverse"):
+        tokens.add("mastodon")
+        tokens.add("masto")
+        tokens.add("fediverse")
 
     # Community tokens
     if comm:
         tokens.add(comm)
     if clean_comm:
         tokens.add(clean_comm)
-        tokens.add(f"r/{clean_comm}")
+        if plat == "reddit":
+            tokens.add(f"r/{clean_comm}")
+        elif plat == "mastodon":
+            tokens.add(f"#{clean_comm}")
 
     # Composite tokens
     plats = [plat]
@@ -46,8 +56,12 @@ def _extract_source_tokens(platform_val: str, comm_val: str) -> Set[str]:
         plats.extend(["knowyourmeme", "kym"])
     elif plat == "reddit":
         plats.append("reddit")
+    elif plat in ("bluesky", "bsky"):
+        plats.extend(["bluesky", "bsky"])
+    elif plat in ("mastodon", "masto", "fediverse"):
+        plats.extend(["mastodon", "masto", "fediverse"])
 
-    comms = [c for c in (comm, clean_comm, f"r/{clean_comm}" if clean_comm else None) if c]
+    comms = [c for c in (comm, clean_comm, f"r/{clean_comm}" if clean_comm and plat == "reddit" else None, f"#{clean_comm}" if clean_comm and plat == "mastodon" else None) if c]
     for p in set(plats):
         for c in set(comms):
             tokens.add(f"{p}:{c}")
@@ -103,6 +117,30 @@ class MemoryStore:
                 name=name,
                 platform=SourcePlatform.KNOWYOURMEME,
                 community=cat,
+                status="ok",
+                item_count=0,
+            )
+
+        for feed in getattr(settings, "BLUESKY_FEEDS", ["meme"]):
+            clean_feed = feed.strip()
+            name = f"bluesky:{clean_feed}"
+            self._source_status[name] = SourceStatus(
+                id=f"bluesky_{clean_feed}",
+                name=name,
+                platform=SourcePlatform.BLUESKY,
+                community=clean_feed,
+                status="ok",
+                item_count=0,
+            )
+
+        for server in getattr(settings, "MASTODON_SERVERS", ["mastodon.social"]):
+            clean_server = server.replace("https://", "").replace("http://", "").strip().rstrip("/")
+            name = f"mastodon:{clean_server}:#meme"
+            self._source_status[name] = SourceStatus(
+                id=f"mastodon_{clean_server}_meme",
+                name=name,
+                platform=SourcePlatform.MASTODON,
+                community="#meme",
                 status="ok",
                 item_count=0,
             )
@@ -381,10 +419,14 @@ class MemoryStore:
         clean_q = q[2:].strip() if q.startswith("r/") else q
         clean_comm = comm_str[2:].strip() if comm_str.startswith("r/") else comm_str
 
-        if q in ("reddit", "knowyourmeme"):
+        if q in ("reddit", "knowyourmeme", "bluesky", "mastodon"):
             return plat_str == q
         if q in ("kym", "know your meme"):
             return plat_str in ("knowyourmeme", "kym")
+        if q in ("bsky",):
+            return plat_str in ("bluesky", "bsky")
+        if q in ("masto", "fediverse"):
+            return plat_str in ("mastodon", "masto", "fediverse")
         if clean_q == clean_comm or q == comm_str:
             return True
 

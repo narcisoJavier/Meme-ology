@@ -304,3 +304,80 @@ class TestSecurityAndUserAgentPool:
         custom_ua = "CustomMemeTracker/2.0"
         headers = get_request_headers(user_agent=custom_ua)
         assert headers.get("User-Agent") == custom_ua or headers.get("User-Agent") in USER_AGENTS
+
+
+class TestBlueskyParser:
+    """Tier 1 & Tier 2 tests for Bluesky AT Protocol XRPC feed parser."""
+
+    def test_parse_bluesky_post_normalization(self) -> None:
+        """Verify Bluesky post dictionary normalizes correctly."""
+        from app.ingestion.bluesky import BlueskyFetcher
+
+        fetcher = BlueskyFetcher()
+        payload = {
+            "uri": "at://did:plc:ragtjsm2j2vknwk6zax4oxfa/app.bsky.feed.post/3muktgcsm4k2m",
+            "cid": "bafyreih3vptd7pczv6r2eomf5z36e7r73z5l77g7l5o2q3r5g2k4m3y",
+            "author": {
+                "did": "did:plc:ragtjsm2j2vknwk6zax4oxfa",
+                "handle": "strykie187.bsky.social",
+            },
+            "record": {
+                "createdAt": "2026-09-02T19:30:00.000Z",
+                "text": "When you refactor 1 line of CSS #dev #meme",
+            },
+            "embed": {
+                "$type": "app.bsky.embed.images#view",
+                "images": [
+                    {
+                        "fullsize": "https://cdn.bsky.app/img/feed_fullsize/plain/did:plc:ragtjsm2j2vknwk6zax4oxfa/bafkreibx7y7x3m6m6g2w4r3q7m7w6l5y3r5g2k4m3y@jpeg",
+                        "alt": "Relieved developer",
+                    }
+                ],
+            },
+            "likeCount": 150,
+            "repostCount": 30,
+            "replyCount": 12,
+        }
+        meme = fetcher.parse_post_record(payload)
+        assert meme is not None
+        assert meme.id == "bluesky_3muktgcsm4k2m"
+        assert meme.source_platform == SourcePlatform.BLUESKY
+        assert meme.author == "@strykie187.bsky.social"
+        assert meme.permalink == "https://bsky.app/profile/strykie187.bsky.social/post/3muktgcsm4k2m"
+        assert "cdn.bsky.app" in meme.media_url
+
+
+class TestMastodonParser:
+    """Tier 1 & Tier 2 tests for Mastodon Fediverse hashtag timeline parser."""
+
+    def test_parse_mastodon_status_normalization(self) -> None:
+        """Verify Mastodon status dictionary normalizes correctly."""
+        from app.ingestion.mastodon import MastodonFetcher
+
+        fetcher = MastodonFetcher()
+        payload = {
+            "id": "113072034589840155",
+            "created_at": "2026-09-02T19:15:00.000Z",
+            "url": "https://mastodon.social/@fedimemes/113072034589840155",
+            "content": "<p>When open source federated memes hit the timeline just right &lt;3 #meme</p>",
+            "account": {
+                "acct": "fedimemes@mastodon.social",
+            },
+            "media_attachments": [
+                {
+                    "type": "image",
+                    "url": "https://files.mastodon.social/media_attachments/files/113/072/034/original/opensource_meme.png",
+                    "description": "Open source diagram",
+                }
+            ],
+            "favourites_count": 80,
+            "reblogs_count": 20,
+            "replies_count": 5,
+        }
+        meme = fetcher.parse_status_dict(payload)
+        assert meme is not None
+        assert meme.id == "mastodon_113072034589840155"
+        assert meme.source_platform == SourcePlatform.MASTODON
+        assert meme.author == "@fedimemes@mastodon.social"
+        assert "files.mastodon.social" in meme.media_url
+        assert "<p>" not in meme.title

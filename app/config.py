@@ -38,7 +38,7 @@ class Settings(BaseSettings):
 
     # Source Feeds Configuration
     REDDIT_SUBREDDITS: List[str] = Field(
-        default=["memes", "dankmemes", "me_irl", "wholesomememes"],
+        default=["memes", "dankmemes", "me_irl", "GenAlpha", "wholesomememes", "AdviceAnimals"],
         description="List of subreddit names to monitor",
     )
     KYM_FEED_URLS: List[str] = Field(
@@ -48,6 +48,14 @@ class Settings(BaseSettings):
         ],
         description="List of Know Your Meme RSS feed URLs",
     )
+    BLUESKY_FEEDS: List[str] = Field(
+        default=["meme", "trending-humor"],
+        description="List of Bluesky search query feeds to monitor",
+    )
+    MASTODON_SERVERS: List[str] = Field(
+        default=["mastodon.social"],
+        description="List of Mastodon instance servers to monitor",
+    )
 
     # Persistence & Storage
     DB_PATH: str = Field(
@@ -55,7 +63,7 @@ class Settings(BaseSettings):
         description="Path to SQLite database file",
     )
 
-    @field_validator("REDDIT_SUBREDDITS", "KYM_FEED_URLS", mode="before")
+    @field_validator("REDDIT_SUBREDDITS", "KYM_FEED_URLS", "BLUESKY_FEEDS", "MASTODON_SERVERS", mode="before")
     @classmethod
     def parse_list_fields(cls, v: Union[str, List[str]]) -> List[str]:
         if isinstance(v, str):

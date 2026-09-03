@@ -1,0 +1,97 @@
+{
+  "kind": "Listing",
+  "data": {
+    "after": "t3_1w2ed3i",
+    "dist": 5,
+    "children": [
+      {
+        "kind": "t3",
+        "data": {
+          "id": "1w2ed3i",
+          "name": "t3_1w2ed3i",
+          "title": "I hate comments on edits - Ohio rizz level maximum",
+          "subreddit": "GenAlpha",
+          "author": "Resident-Seat2280",
+          "score": 1250,
+          "ups": 1250,
+          "num_comments": 88,
+          "created_utc": 1725300000.0,
+          "over_18": false,
+          "is_video": false,
+          "post_hint": "image",
+          "domain": "i.redd.it",
+          "url": "https://i.redd.it/hovp125bshmh1.png",
+          "permalink": "/r/GenAlpha/comments/1w2ed3i/i_hate_comments_on_edits/",
+          "stickied": false,
+          "is_self": false
+        }
+      },
+      {
+        "kind": "t3",
+        "data": {
+          "id": "1w2tdp9",
+          "name": "t3_1w2tdp9",
+          "title": "When you try to explain Skibidi Toilet lore to an adult",
+          "subreddit": "GenAlpha",
+          "author": "Mourninger",
+          "score": 2400,
+          "ups": 2400,
+          "num_comments": 142,
+          "created_utc": 1725302000.0,
+          "over_18": false,
+          "is_video": false,
+          "post_hint": "image",
+          "domain": "i.redd.it",
+          "url": "https://i.redd.it/vg0a3o25ukmh1.png",
+          "permalink": "/r/GenAlpha/comments/1w2tdp9/skibidi_lore_explanation/",
+          "stickied": false,
+          "is_self": false
+        }
+      },
+      {
+        "kind": "t3",
+        "data": {
+          "id": "1vz4z3b",
+          "name": "t3_1vz4z3b",
+          "title": "Fanum tax collected on entire lunch tray",
+          "subreddit": "GenAlpha",
+          "author": "AnOldGrouchyPlumma",
+          "score": 4150,
+          "ups": 4150,
+          "num_comments": 215,
+          "created_utc": 1725304000.0,
+          "over_18": false,
+          "is_video": false,
+          "post_hint": "image",
+          "domain": "i.redd.it",
+          "url": "https://i.redd.it/rlh5vrpwfrlh1.png",
+          "permalink": "/r/GenAlpha/comments/1vz4z3b/fanum_tax_lunch/",
+          "stickied": false,
+          "is_self": false
+        }
+      },
+      {
+        "kind": "t3",
+        "data": {
+          "id": "1w131zd",
+          "name": "t3_1w131zd",
+          "title": "Mewing streak reaching day 365 in Ohio",
+          "subreddit": "GenAlpha",
+          "author": "SigmaGrindset99",
+          "score": 1850,
+          "ups": 1850,
+          "num_comments": 94,
+          "created_utc": 1725306000.0,
+          "over_18": false,
+          "is_video": false,
+          "post_hint": "image",
+          "domain": "i.redd.it",
+          "url": "https://i.redd.it/mewing_streak_365.png",
+          "permalink": "/r/GenAlpha/comments/1w131zd/mewing_streak/",
+          "stickied": false,
+          "is_self": false
+        }
+      }
+    ]
+  }
+}

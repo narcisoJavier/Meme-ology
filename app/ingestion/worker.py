@@ -8,7 +8,9 @@ from typing import Any, Dict, List, Optional
 
 from app.config import get_settings
 from app.ingestion.base import BaseSourceFetcher
+from app.ingestion.bluesky import BlueskyFetcher
 from app.ingestion.knowyourmeme import KnowYourMemeFetcher
+from app.ingestion.mastodon import MastodonFetcher
 from app.ingestion.reddit import RedditFetcher
 from app.models.meme import NormalizedMeme
 from app.storage.memory_store import MemoryStore
@@ -53,7 +55,7 @@ class MemePollingWorker:
         return self._fetchers
 
     def _build_default_fetchers(self) -> List[BaseSourceFetcher]:
-        """Construct standard fetchers for configured Reddit subreddits and KYM RSS feeds."""
+        """Construct standard fetchers for configured Reddit, KYM, Bluesky, and Mastodon feeds."""
         settings = get_settings()
         fetcher_list: List[BaseSourceFetcher] = []
         for sub in settings.REDDIT_SUBREDDITS:
@@ -62,6 +64,10 @@ class MemePollingWorker:
         for kym_url in settings.KYM_FEED_URLS:
             cat = "confirmed" if "memes" in kym_url else "news"
             fetcher_list.append(KnowYourMemeFetcher(feed_url=kym_url, category=cat))
+        for feed in getattr(settings, "BLUESKY_FEEDS", ["meme"]):
+            fetcher_list.append(BlueskyFetcher(feed_name=feed))
+        for server in getattr(settings, "MASTODON_SERVERS", ["mastodon.social"]):
+            fetcher_list.append(MastodonFetcher(instance_url=server, tag="meme"))
         return fetcher_list
 
     async def fetch_all_sources(self) -> List[NormalizedMeme]:

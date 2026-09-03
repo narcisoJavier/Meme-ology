@@ -3,8 +3,10 @@
 import pytest
 import httpx
 from unittest.mock import AsyncMock, patch
-from app.ingestion.reddit import RedditMemeFetcher
+from app.ingestion.bluesky import BlueskyFetcher
 from app.ingestion.knowyourmeme import KnowYourMemeFetcher
+from app.ingestion.mastodon import MastodonFetcher
+from app.ingestion.reddit import RedditMemeFetcher
 from app.models.meme import SourcePlatform
 
 
@@ -65,3 +67,34 @@ async def test_kym_fetcher_error_fallback():
     memes = await fetcher.fetch_memes()
     assert len(memes) > 0
     assert all(m.source_platform == SourcePlatform.KNOWYOURMEME for m in memes)
+
+
+@pytest.mark.asyncio
+async def test_bluesky_fetcher_error_fallback():
+    """Verify Bluesky fetcher falls back to fixtures on network error."""
+    fetcher = BlueskyFetcher()
+    mock_client = AsyncMock(spec=httpx.AsyncClient)
+    mock_client.get.side_effect = httpx.ConnectError("Connection refused")
+    fetcher._custom_client = mock_client
+
+    memes = await fetcher.fetch_memes()
+    assert len(memes) > 0
+    assert all(m.source_platform == SourcePlatform.BLUESKY for m in memes)
+
+
+@pytest.mark.asyncio
+async def test_mastodon_fetcher_error_fallback():
+    """Verify Mastodon fetcher falls back to fixtures on HTTP 503 error."""
+    fetcher = MastodonFetcher()
+    mock_client = AsyncMock(spec=httpx.AsyncClient)
+    mock_resp = httpx.Response(
+        status_code=503,
+        text="Service Unavailable",
+        request=httpx.Request("GET", "https://mastodon.social/api/v1/timelines/tag/meme"),
+    )
+    mock_client.get.return_value = mock_resp
+    fetcher._custom_client = mock_client
+
+    memes = await fetcher.fetch_memes()
+    assert len(memes) > 0
+    assert all(m.source_platform == SourcePlatform.MASTODON for m in memes)

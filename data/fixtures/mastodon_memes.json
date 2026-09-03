@@ -1,0 +1,174 @@
+[
+  {
+    "id": "113072034589840155",
+    "created_at": "2026-09-02T19:15:00.000Z",
+    "in_reply_to_id": null,
+    "sensitive": false,
+    "spoiler_text": "",
+    "visibility": "public",
+    "language": "en",
+    "uri": "https://mastodon.social/users/fedimemes/statuses/113072034589840155",
+    "url": "https://mastodon.social/@fedimemes/113072034589840155",
+    "replies_count": 8,
+    "reblogs_count": 42,
+    "favourites_count": 137,
+    "content": "<p>When open source federated memes hit the timeline just right &lt;3 #meme #fediverse</p>",
+    "account": {
+      "id": "109348123",
+      "username": "fedimemes",
+      "acct": "fedimemes@mastodon.social",
+      "display_name": "Fediverse Meme Vault",
+      "url": "https://mastodon.social/@fedimemes",
+      "avatar": "https://files.mastodon.social/accounts/avatars/109/348/123/original/avatar.png"
+    },
+    "media_attachments": [
+      {
+        "id": "2291039",
+        "type": "image",
+        "url": "https://files.mastodon.social/media_attachments/files/113/072/034/original/opensource_meme.png",
+        "preview_url": "https://files.mastodon.social/media_attachments/files/113/072/034/small/opensource_meme.png",
+        "remote_url": null,
+        "description": "Open source diagram comparing closed vs open protocols"
+      }
+    ],
+    "tags": [
+      {"name": "meme", "url": "https://mastodon.social/tags/meme"},
+      {"name": "fediverse", "url": "https://mastodon.social/tags/fediverse"}
+    ]
+  },
+  {
+    "id": "112345678901234567",
+    "created_at": "2026-09-02T18:00:00.000Z",
+    "in_reply_to_id": null,
+    "sensitive": false,
+    "spoiler_text": "",
+    "visibility": "public",
+    "language": "en",
+    "uri": "https://mastodon.social/users/developer/statuses/112345678901234567",
+    "url": "https://mastodon.social/@developer/112345678901234567",
+    "replies_count": 65,
+    "reblogs_count": 180,
+    "favourites_count": 1140,
+    "content": "<p>Open source fediverse tech humor: Self-hosting your entire stack on a single Raspberry Pi</p>",
+    "account": {
+      "id": "98765432",
+      "username": "developer",
+      "acct": "developer@mastodon.social",
+      "display_name": "Linux Hacker",
+      "url": "https://mastodon.social/@developer",
+      "avatar": "https://files.mastodon.social/accounts/avatars/987/654/32/original/tux.png"
+    },
+    "media_attachments": [
+      {
+        "id": "3391820",
+        "type": "image",
+        "url": "https://files.mastodon.social/media_attachments/files/112/345/678/original/meme.png",
+        "preview_url": "https://files.mastodon.social/media_attachments/files/112/345/678/small/meme.png",
+        "remote_url": null,
+        "description": "Raspberry Pi holding up massive server room infrastructure"
+      }
+    ],
+    "tags": [
+      {"name": "meme", "url": "https://mastodon.social/tags/meme"},
+      {"name": "linux", "url": "https://mastodon.social/tags/linux"}
+    ]
+  },
+  {
+    "id": "114088234512984711",
+    "created_at": "2026-09-02T16:45:00.000Z",
+    "in_reply_to_id": null,
+    "sensitive": false,
+    "spoiler_text": "",
+    "visibility": "public",
+    "language": "en",
+    "uri": "https://mastodon.online/users/giflord/statuses/114088234512984711",
+    "url": "https://mastodon.online/@giflord/114088234512984711",
+    "replies_count": 12,
+    "reblogs_count": 55,
+    "favourites_count": 310,
+    "content": "<p>Me waiting for CI/CD build tests to finish running on a Friday afternoon #meme</p>",
+    "account": {
+      "id": "55192837",
+      "username": "giflord",
+      "acct": "giflord@mastodon.online",
+      "display_name": "GIF Master",
+      "url": "https://mastodon.online/@giflord",
+      "avatar": "https://files.mastodon.social/accounts/avatars/551/928/37/original/avatar.png"
+    },
+    "media_attachments": [
+      {
+        "id": "4481920",
+        "type": "gifv",
+        "url": "https://files.mastodon.social/media_attachments/files/114/088/234/original/waiting_skeleton.mp4",
+        "preview_url": "https://files.mastodon.social/media_attachments/files/114/088/234/small/waiting_skeleton.png",
+        "remote_url": null,
+        "description": "Skeleton sitting at office computer desk"
+      }
+    ],
+    "tags": [
+      {"name": "meme", "url": "https://mastodon.social/tags/meme"}
+    ]
+  },
+  {
+    "id": "115099345612384722",
+    "created_at": "2026-09-02T15:30:00.000Z",
+    "in_reply_to_id": null,
+    "sensitive": false,
+    "spoiler_text": "",
+    "visibility": "public",
+    "language": "en",
+    "uri": "https://mastodon.social/users/textuser/statuses/115099345612384722",
+    "url": "https://mastodon.social/@textuser/115099345612384722",
+    "replies_count": 2,
+    "reblogs_count": 0,
+    "favourites_count": 3,
+    "content": "<p>Just a random text toot with no media attachment whatsoever #meme</p>",
+    "account": {
+      "id": "77281934",
+      "username": "textuser",
+      "acct": "textuser@mastodon.social",
+      "display_name": "Text Only User",
+      "url": "https://mastodon.social/@textuser"
+    },
+    "media_attachments": [],
+    "tags": [
+      {"name": "meme", "url": "https://mastodon.social/tags/meme"}
+    ]
+  },
+  {
+    "id": "116011456712384733",
+    "created_at": "2026-09-02T14:20:00.000Z",
+    "in_reply_to_id": null,
+    "sensitive": true,
+    "spoiler_text": "Spicy controversial take on programming languages",
+    "visibility": "public",
+    "language": "en",
+    "uri": "https://mastodon.social/users/spicydev/statuses/116011456712384733",
+    "url": "https://mastodon.social/@spicydev/116011456712384733",
+    "replies_count": 95,
+    "reblogs_count": 35,
+    "favourites_count": 190,
+    "content": "<p>The unvarnished truth about your favorite language #meme #nsfw</p>",
+    "account": {
+      "id": "88192837",
+      "username": "spicydev",
+      "acct": "spicydev@mastodon.social",
+      "display_name": "Spicy Developer",
+      "url": "https://mastodon.social/@spicydev"
+    },
+    "media_attachments": [
+      {
+        "id": "5591920",
+        "type": "image",
+        "url": "https://files.mastodon.social/media_attachments/files/116/011/456/original/spicy_meme.png",
+        "preview_url": "https://files.mastodon.social/media_attachments/files/116/011/456/small/spicy_meme.png",
+        "remote_url": null,
+        "description": "Chart ranking languages by chaos factor"
+      }
+    ],
+    "tags": [
+      {"name": "meme", "url": "https://mastodon.social/tags/meme"},
+      {"name": "nsfw", "url": "https://mastodon.social/tags/nsfw"}
+    ]
+  }
+]

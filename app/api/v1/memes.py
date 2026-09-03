@@ -33,7 +33,7 @@ def get_memory_store(request: Request) -> MemoryStore:
     response_model=PaginatedMemeResponse,
     status_code=status.HTTP_200_OK,
     summary="Get newest memes",
-    description="Retrieve newest memes sorted by publication date descending with pagination and filtering.",
+    description="Retrieve newest memes across Reddit, Bluesky, Know Your Meme, and Mastodon sorted by publication date descending with pagination and filtering.",
     responses={
         200: {"description": "Paginated list of newest memes"},
         422: {"description": "Validation error on query parameters"},
@@ -44,7 +44,7 @@ async def get_latest_memes(
     offset: int = Query(default=0, ge=0, description="Pagination offset index"),
     source: Optional[str] = Query(
         default=None,
-        description="Filter by source platform (reddit, knowyourmeme) or community (r/memes, dankmemes)",
+        description="Filter by platform ('reddit', 'bluesky', 'knowyourmeme', 'mastodon') or specific community (e.g. 'r/dankmemes', '#meme')",
     ),
     nsfw: bool = Query(default=False, description="Include NSFW content if true (default false)"),
     time_window: Optional[str] = Query(
@@ -53,7 +53,7 @@ async def get_latest_memes(
     ),
     generation: Optional[str] = Query(
         default=None,
-        description="Optional generational filter (gen_alpha, gen_z, millennial, gen_x)",
+        description="Generational era filter ('gen_alpha', 'gen_z', 'millennial', 'gen_x')",
     ),
     store: MemoryStore = Depends(get_memory_store),
 ) -> PaginatedMemeResponse:
@@ -83,7 +83,7 @@ async def get_latest_memes(
     response_model=PaginatedMemeResponse,
     status_code=status.HTTP_200_OK,
     summary="Get trending memes",
-    description="Retrieve trending memes ranked by virality/velocity score with gravity decay, pagination, and filtering.",
+    description="Retrieve trending memes ranked by virality/velocity score using time-decay: trending_score = (upvotes + 1.5 * comments) * exp(-lambda * delta_t), with pagination and filtering across Reddit, Bluesky, Know Your Meme, and Mastodon.",
     responses={
         200: {"description": "Paginated list of trending memes sorted by trending_score"},
         422: {"description": "Validation error on query parameters"},
@@ -94,7 +94,7 @@ async def get_trending_memes(
     offset: int = Query(default=0, ge=0, description="Pagination offset index"),
     source: Optional[str] = Query(
         default=None,
-        description="Filter by source platform (reddit, knowyourmeme) or community (r/memes, dankmemes)",
+        description="Filter by platform ('reddit', 'bluesky', 'knowyourmeme', 'mastodon') or specific community (e.g. 'r/dankmemes', '#meme')",
     ),
     nsfw: bool = Query(default=False, description="Include NSFW content if true (default false)"),
     time_window: Optional[str] = Query(
@@ -103,7 +103,7 @@ async def get_trending_memes(
     ),
     generation: Optional[str] = Query(
         default=None,
-        description="Optional generational filter (gen_alpha, gen_z, millennial, gen_x)",
+        description="Generational era filter ('gen_alpha', 'gen_z', 'millennial', 'gen_x')",
     ),
     store: MemoryStore = Depends(get_memory_store),
 ) -> PaginatedMemeResponse:
@@ -133,7 +133,7 @@ async def get_trending_memes(
     response_model=Meme,
     status_code=status.HTTP_200_OK,
     summary="Get a random meme",
-    description="Fetch a single pseudo-random meme matching optional source and NSFW filters.",
+    description="Fetch a single pseudo-random meme matching optional source platform, community, generation, and NSFW filters.",
     responses={
         200: {"description": "Random meme payload"},
         404: {"description": "No memes found matching the specified criteria"},
@@ -143,12 +143,12 @@ async def get_trending_memes(
 async def get_random_meme(
     source: Optional[str] = Query(
         default=None,
-        description="Optional source filter (reddit, knowyourmeme, dankmemes, etc.)",
+        description="Optional source filter ('reddit', 'bluesky', 'knowyourmeme', 'mastodon', 'r/dankmemes', etc.)",
     ),
     nsfw: bool = Query(default=False, description="Include NSFW content if true (default false)"),
     generation: Optional[str] = Query(
         default=None,
-        description="Optional generational filter (gen_alpha, gen_z, millennial, gen_x)",
+        description="Optional generational filter ('gen_alpha', 'gen_z', 'millennial', 'gen_x')",
     ),
     store: MemoryStore = Depends(get_memory_store),
 ) -> Meme:

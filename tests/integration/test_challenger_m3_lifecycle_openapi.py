@@ -488,17 +488,18 @@ class TestSourceMonitoringAndHealthUnderPollingErrors:
         # Cycle 1: Failing fetcher raises RuntimeError; flapping fetcher raises ConnectionResetError
         await worker.poll_once()
 
-        # In cycle 1, 2 sources failed out of 7 total configured -> status is 'degraded'
+        # In cycle 1, 2 sources failed out of total configured -> status is 'degraded'
+        total_src = len(memory_store.get_sources_status())
         health1 = memory_store.get_health_status()
         assert health1.status == "degraded"
-        assert health1.healthy_sources == 5  # 5 default sources still ok
+        assert health1.healthy_sources == total_src - 2  # all other default sources still ok
 
         # Cycle 2: Flapping fetcher succeeds; failing fetcher still fails
         await worker.poll_once()
 
         health2 = memory_store.get_health_status()
         assert health2.status == "degraded"
-        assert health2.healthy_sources == 6  # 5 default + 1 flapping succeeded
+        assert health2.healthy_sources == total_src - 1  # 1 failing, 1 flapping succeeded
         assert health2.total_memes >= 1
 
         # Check /api/v1/sources status breakdown
@@ -644,7 +645,16 @@ class TestSourceMonitoringAndHealthUnderPollingErrors:
         for src in sources_data:
             parsed_src = SourceStatus(**src)
             assert parsed_src.name
-            assert parsed_src.platform in (SourcePlatform.REDDIT, SourcePlatform.KNOWYOURMEME, "reddit", "knowyourmeme")
+            assert parsed_src.platform in (
+                SourcePlatform.REDDIT,
+                SourcePlatform.BLUESKY,
+                SourcePlatform.KNOWYOURMEME,
+                SourcePlatform.MASTODON,
+                "reddit",
+                "bluesky",
+                "knowyourmeme",
+                "mastodon",
+            )
             assert parsed_src.item_count >= 0
 
 

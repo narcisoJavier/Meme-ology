@@ -50,9 +50,18 @@ class TestDomainModels:
         assert MediaType.VIDEO.value == "video"
 
     def test_source_platform_enum_values(self) -> None:
-        """Verify SourcePlatform supports reddit and knowyourmeme."""
+        """Verify SourcePlatform supports reddit, bluesky, knowyourmeme, and mastodon."""
         assert SourcePlatform.REDDIT.value == "reddit"
+        assert SourcePlatform.BLUESKY.value == "bluesky"
         assert SourcePlatform.KNOWYOURMEME.value == "knowyourmeme"
+        assert SourcePlatform.MASTODON.value == "mastodon"
+
+    def test_normalized_meme_all_4_platforms(self, meme_factory: callable) -> None:
+        """Verify NormalizedMeme validates items across all four supported platforms."""
+        for plat in [SourcePlatform.REDDIT, SourcePlatform.BLUESKY, SourcePlatform.KNOWYOURMEME, SourcePlatform.MASTODON]:
+            data = meme_factory(source_platform=plat)
+            meme = NormalizedMeme(**data)
+            assert meme.source_platform == plat or meme.source_platform == plat.value
 
     def test_paginated_response_construction(self, meme_factory: callable) -> None:
         """Verify PaginatedResponse parses list of items with pagination metadata."""

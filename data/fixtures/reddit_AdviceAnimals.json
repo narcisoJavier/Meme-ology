@@ -1,0 +1,97 @@
+{
+  "kind": "Listing",
+  "data": {
+    "after": "t3_adv001",
+    "dist": 5,
+    "children": [
+      {
+        "kind": "t3",
+        "data": {
+          "id": "adv001",
+          "name": "t3_adv001",
+          "title": "Bad Luck Brian: Deploys bugfix on Friday at 4:59 PM, breaks production DNS worldwide",
+          "subreddit": "AdviceAnimals",
+          "author": "MillennialDev",
+          "score": 8450,
+          "ups": 8450,
+          "num_comments": 312,
+          "created_utc": 1725300000.0,
+          "over_18": false,
+          "is_video": false,
+          "post_hint": "image",
+          "domain": "i.redd.it",
+          "url": "https://i.redd.it/bad_luck_brian_prod.jpg",
+          "permalink": "/r/AdviceAnimals/comments/adv001/bad_luck_brian_friday_deploy/",
+          "stickied": false,
+          "is_self": false
+        }
+      },
+      {
+        "kind": "t3",
+        "data": {
+          "id": "adv002",
+          "name": "t3_adv002",
+          "title": "Success Kid: Fixed race condition with single lock acquisition",
+          "subreddit": "AdviceAnimals",
+          "author": "ThreadingMaster",
+          "score": 12300,
+          "ups": 12300,
+          "num_comments": 185,
+          "created_utc": 1725302000.0,
+          "over_18": false,
+          "is_video": false,
+          "post_hint": "image",
+          "domain": "i.redd.it",
+          "url": "https://i.redd.it/success_kid_threading.jpg",
+          "permalink": "/r/AdviceAnimals/comments/adv002/success_kid_race_condition/",
+          "stickied": false,
+          "is_self": false
+        }
+      },
+      {
+        "kind": "t3",
+        "data": {
+          "id": "adv003",
+          "name": "t3_adv003",
+          "title": "Roll Safe: Can't have memory leaks if the process crashes immediately",
+          "subreddit": "AdviceAnimals",
+          "author": "CleverCoder",
+          "score": 19400,
+          "ups": 19400,
+          "num_comments": 420,
+          "created_utc": 1725304000.0,
+          "over_18": false,
+          "is_video": false,
+          "post_hint": "image",
+          "domain": "i.redd.it",
+          "url": "https://i.redd.it/roll_safe_memory_leak.jpg",
+          "permalink": "/r/AdviceAnimals/comments/adv003/roll_safe_memory_leak/",
+          "stickied": false,
+          "is_self": false
+        }
+      },
+      {
+        "kind": "t3",
+        "data": {
+          "id": "adv004",
+          "name": "t3_adv004",
+          "title": "Grumpy Cat: I looked at your PR. No.",
+          "subreddit": "AdviceAnimals",
+          "author": "CodeReviewerGrumpy",
+          "score": 15800,
+          "ups": 15800,
+          "num_comments": 280,
+          "created_utc": 1725306000.0,
+          "over_18": false,
+          "is_video": false,
+          "post_hint": "image",
+          "domain": "i.redd.it",
+          "url": "https://i.redd.it/grumpy_cat_code_review.jpg",
+          "permalink": "/r/AdviceAnimals/comments/adv004/grumpy_cat_code_review/",
+          "stickied": false,
+          "is_self": false
+        }
+      }
+    ]
+  }
+}
