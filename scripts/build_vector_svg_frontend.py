@@ -1285,12 +1285,11 @@ html_content = f"""<!DOCTYPE html>
         const genKey = (m.generation || 'gen_z').toLowerCase();
         const isVoted = votedSet.has(m.id);
         const isVideo = m.media_type === 'video' || (m.url && (m.url.endsWith('.mp4') || m.url.endsWith('.webm')));
-        const plat = (m.source_platform || m.source || 'reddit').toLowerCase();
-
+        const plat = (m.source_platform || m.source || 'reddit');
         const mediaTag = isVideo ? `
-          <video src="${{m.url}}" preload="metadata" muted playsinline loop referrerpolicy="no-referrer"></video>
+          <video src="${{m.url}}" preload="metadata" muted playsinline loop referrerpolicy="no-referrer" onerror="this.style.display='none';"></video>
         ` : `
-          <img src="${{m.url}}" alt="${{m.title}}" loading="lazy" referrerpolicy="no-referrer" />
+          <img src="${{m.url}}" alt="${{m.title}}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null; this.parentElement.innerHTML='<div style=\\'display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--text-muted);font-size:0.8rem;gap:0.5rem;\\'><svg class=\\'icon icon-stroke\\' width=\\'24\\' height=\\'24\\' viewBox=\\'0 0 24 24\\'><rect x=\\'3\\' y=\\'3\\' width=\\'18\\' height=\\'18\\' rx=\\'2\\' ry=\\'2\\'/><circle cx=\\'8.5\\' cy=\\'8.5\\' r=\\'1.5\\'/><polyline points=\\'21 15 16 10 5 21\\'/></svg><span>Media preview offline</span></div>';" />
         `;
 
         return `
