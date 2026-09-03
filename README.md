@@ -4,8 +4,6 @@
   <img src="docs/banner.svg" alt="MEME-OLOGY — The Open Internet Meme API" width="100%">
 </p>
 
-# MEME-OLOGY
-
 ### The Open Internet Meme API & Real-Time Curation Engine
 
 **A lightning-fast, high-concurrency API that discovers, ranks, and categorizes memes across Reddit, Bluesky, Know Your Meme, and Mastodon with sub-5ms edge latency.**
