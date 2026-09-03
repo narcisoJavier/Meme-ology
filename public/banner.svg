@@ -1,0 +1,106 @@
+<svg width="1200" height="380" viewBox="0 0 1200 380" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Radial and Linear Gradients -->
+    <radialGradient id="bgGlow" cx="50%" cy="0%" r="80%" fx="50%" fy="0%">
+      <stop offset="0%" stop-color="#6366f1" stop-opacity="0.22" />
+      <stop offset="50%" stop-color="#4f46e5" stop-opacity="0.08" />
+      <stop offset="100%" stop-color="#09090b" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#181822" />
+      <stop offset="100%" stop-color="#101016" />
+    </linearGradient>
+    <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="50%" stop-color="#f4f4f6" />
+      <stop offset="100%" stop-color="#cbd5e1" />
+    </linearGradient>
+    <linearGradient id="iconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#818cf8" />
+      <stop offset="100%" stop-color="#4f46e5" />
+    </linearGradient>
+    <pattern id="gridPattern" width="30" height="30" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#272732" fill-opacity="0.6" />
+    </pattern>
+  </defs>
+
+  <!-- Background Base -->
+  <rect width="1200" height="380" rx="16" fill="#09090b" />
+  
+  <!-- Subtle Grid Dots -->
+  <rect width="1200" height="380" rx="16" fill="url(#gridPattern)" />
+
+  <!-- Ambient Glow -->
+  <rect width="1200" height="380" rx="16" fill="url(#bgGlow)" />
+  <rect width="1200" height="380" rx="16" stroke="#272732" stroke-width="1.5" />
+
+  <!-- Top Pill: Status -->
+  <g transform="translate(600, 48)">
+    <rect x="-140" y="-14" width="280" height="28" rx="14" fill="#14141d" stroke="#333342" stroke-width="1" />
+    <circle cx="-116" cy="0" r="4.5" fill="#10b981" />
+    <circle cx="-116" cy="0" r="8" fill="#10b981" fill-opacity="0.25" />
+    <text x="-98" y="4" fill="#10b981" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" letter-spacing="1.2">OPEN INTERNET MEME API</text>
+    <text x="75" y="4" fill="#717182" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="600">v1.2</text>
+  </g>
+
+  <!-- Logo and Title Group -->
+  <g transform="translate(600, 126)">
+    <!-- Icon Box -->
+    <rect x="-170" y="-38" width="46" height="46" rx="12" fill="url(#iconGrad)" />
+    <!-- Lightning Bolt Path -->
+    <path d="M-147 -26 L-154 -14 L-148 -14 L-149 -4 L-140 -17 L-146 -17 Z" fill="#ffffff" />
+    
+    <!-- Big Title -->
+    <text x="-105" y="-3" fill="url(#textGrad)" font-family="-apple-system, BlinkMacSystemFont, 'Plus Jakarta Sans', 'Inter', Roboto, sans-serif" font-size="44" font-weight="800" letter-spacing="-1">MEME-OLOGY</text>
+  </g>
+
+  <!-- Subtitle Tagline -->
+  <text x="600" y="174" text-anchor="middle" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, 'Plus Jakarta Sans', 'Segoe UI', Roboto, sans-serif" font-size="16" font-weight="500">
+    High-performance real-time curation, ranking &amp; generational classification across open networks
+  </text>
+  <text x="600" y="200" text-anchor="middle" fill="#64748b" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13.5" font-weight="400">
+    FastAPI • Sub-5ms Edge Cache • Half-Life Virality Decay • 100% Authentic Posts (Zero Mock Links)
+  </text>
+
+  <!-- Bottom Platform Cards -->
+  <g transform="translate(180, 246)">
+    <!-- Reddit Card -->
+    <g transform="translate(0, 0)">
+      <rect width="195" height="74" rx="10" fill="url(#cardGrad)" stroke="#272732" stroke-width="1" />
+      <circle cx="28" cy="27" r="12" fill="#ff4500" fill-opacity="0.15" />
+      <circle cx="28" cy="27" r="6" fill="#ff4500" />
+      <text x="50" y="31" fill="#ffffff" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="700">Reddit</text>
+      <text x="18" y="56" fill="#717182" font-family="-apple-system, BlinkMacSystemFont, 'JetBrains Mono', monospace" font-size="11">r/dankmemes, r/memes</text>
+    </g>
+
+    <!-- Bluesky Card -->
+    <g transform="translate(215, 0)">
+      <rect width="195" height="74" rx="10" fill="url(#cardGrad)" stroke="#272732" stroke-width="1" />
+      <circle cx="28" cy="27" r="12" fill="#0285ff" fill-opacity="0.15" />
+      <circle cx="28" cy="27" r="6" fill="#0285ff" />
+      <text x="50" y="31" fill="#ffffff" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="700">Bluesky</text>
+      <text x="18" y="56" fill="#717182" font-family="-apple-system, BlinkMacSystemFont, 'JetBrains Mono', monospace" font-size="11">AT Protocol XRPC</text>
+    </g>
+
+    <!-- Know Your Meme Card -->
+    <g transform="translate(430, 0)">
+      <rect width="195" height="74" rx="10" fill="url(#cardGrad)" stroke="#272732" stroke-width="1" />
+      <circle cx="28" cy="27" r="12" fill="#10b981" fill-opacity="0.15" />
+      <circle cx="28" cy="27" r="6" fill="#10b981" />
+      <text x="50" y="31" fill="#ffffff" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="700">Know Your Meme</text>
+      <text x="18" y="56" fill="#717182" font-family="-apple-system, BlinkMacSystemFont, 'JetBrains Mono', monospace" font-size="11">Confirmed Lore &amp; News</text>
+    </g>
+
+    <!-- Mastodon Card -->
+    <g transform="translate(645, 0)">
+      <rect width="195" height="74" rx="10" fill="url(#cardGrad)" stroke="#272732" stroke-width="1" />
+      <circle cx="28" cy="27" r="12" fill="#6366f1" fill-opacity="0.15" />
+      <circle cx="28" cy="27" r="6" fill="#6366f1" />
+      <text x="50" y="31" fill="#ffffff" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="700">Mastodon</text>
+      <text x="18" y="56" fill="#717182" font-family="-apple-system, BlinkMacSystemFont, 'JetBrains Mono', monospace" font-size="11">ActivityPub Federated</text>
+    </g>
+  </g>
+
+  <!-- Bottom Accent Bar -->
+  <rect x="0" y="377" width="1200" height="3" fill="url(#iconGrad)" />
+</svg>

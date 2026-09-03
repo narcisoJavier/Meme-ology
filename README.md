@@ -1,30 +1,27 @@
 <div align="center">
 
-```
-  __  __                         ___  _                      
- |  \/  | ___ _ __ ___   ___    / _ \| | ___   __ _ _   _    
- | |\/| |/ _ \ '_ ` _ \ / _ \  | | | | |/ _ \ / _` | | | |   
- | |  | |  __/ | | | | |  __/  | |_| | | (_) | (_| | |_| |_  
- |_|  |_|\___|_| |_| |_|\___|   \___/|_|\___/ \__, |\__, (_) 
-                                               |___/ |___/   
-```
+<p align="center">
+  <img src="docs/banner.svg" alt="MEME-OLOGY — The Open Internet Meme API" width="100%">
+</p>
 
-### The Internet's Real-Time Meme Radar 
+# MEME-OLOGY
 
-**A lightning-fast, serverless-ready API that continuously discovers, deduplicates, and ranks memes across Reddit and Know Your Meme before they get reposted on Facebook.**
+### The Open Internet Meme API & Real-Time Curation Engine
+
+**A lightning-fast, high-concurrency API that discovers, ranks, and categorizes memes across Reddit, Bluesky, Know Your Meme, and Mastodon with sub-5ms edge latency.**
 
 <br/>
 
-[![Dankness Level](https://img.shields.io/badge/Dankness-Over%209000-orange?style=for-the-badge&logo=reddit)](https://github.com/narcisoJavier/Meme-ology)
-[![Freshness](https://img.shields.io/badge/Freshness-100%25%20Organic-brightgreen?style=for-the-badge)](https://github.com/narcisoJavier/Meme-ology)
-[![Serverless](https://img.shields.io/badge/Serverless-Vercel%20%240%2Fmo-black?style=for-the-badge&logo=vercel)](https://vercel.com)
-[![Tests](https://img.shields.io/badge/Tests-472%2F472%20Passed-blue?style=for-the-badge)](https://github.com/narcisoJavier/Meme-ology)
+[![FastAPI](https://img.shields.io/badge/Framework-FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![Python 3.12+](https://img.shields.io/badge/Python-3.12%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+[![Networks](https://img.shields.io/badge/Networks-Reddit%20%7C%20Bluesky%20%7C%20KYM%20%7C%20Mastodon-6366f1?style=for-the-badge)](https://github.com/narcisoJavier/Meme-ology)
+[![Tests](https://img.shields.io/badge/Tests-629%20Passed-10b981?style=for-the-badge)](https://github.com/narcisoJavier/Meme-ology)
 [![Coverage](https://img.shields.io/badge/Coverage-94%25-green?style=for-the-badge)](https://github.com/narcisoJavier/Meme-ology)
-[![License](https://img.shields.io/badge/License-MIT-purple?style=for-the-badge)](LICENSE)
+[![License](https://img.shields.io/badge/License-MIT-8b5cf6?style=for-the-badge)](LICENSE)
 
 <br/>
 
-[Web Explorer](#-live-web-explorer--documentation-portal) • [Quickstart](#-quickstart-in-30-seconds) • [Endpoints](#-api-reference) • [Deploy Free on Vercel](#-deploy-serverless-for-free-zero-servers-needed) • [The Science](#-the-science-behind-the-dankness)
+[Web Explorer](#-live-web-explorer--documentation-portal) • [Quickstart](#-quickstart-in-30-seconds) • [Endpoints](#-api-reference) • [Deploy Free on Vercel](#-deploy-serverless-for-free-zero-servers-needed) • [Trending Science](#-how-trending-ranking-works)
 
 </div>
 
@@ -32,16 +29,15 @@
 
 ## 💡 Why Meme-ology?
 
-Stop refreshing Reddit feeds like it's 2012. 
+Most meme scrapers break within 48 hours because of rate limits, malformed payloads, crossposts, and duplicate reposts across multiple platforms.
 
-Most meme scrapers break within 48 hours because of rate limits, malformed JSON, crossposts, and duplicate reposts across multiple subreddits.
-
-**Meme-ology** is built like an enterprise-grade radar:
-- 🏎️ **Sub-millisecond query latency (<0.1ms)** via dual-layer in-memory hot store and async SQLite Write-Ahead Logging (WAL).
-- 🧼 **Zero Repost Spam**: Cryptographic SHA-256 canonical media hashing detects cross-posts across `r/memes` and `r/dankmemes`, merging upvotes instead of cluttering your feed.
-- 📉 **Gravity Virality Decay**: Uses HackerNews-style time-decay algorithms so fresh breaking memes always outrank stale week-old viral posts.
-- 🛡️ **Polite & Resilient**: Rotating User-Agent pool, per-domain rate limiting, exponential backoff with `Retry-After` support, and local offline fixture fallbacks.
-- ☁️ **100% Serverless-Ready**: Zero servers to manage or pay for. Runs locally on your machine or deployed for **$0/month** on Vercel.
+**Meme-ology** is built as a high-performance open internet culture engine:
+- 🏎️ **Sub-5ms query latency** via dual-layer in-memory cache and persistent async SQLite Write-Ahead Logging (WAL).
+- 🌐 **Multi-Network Coverage**: Ingests authentic posts from Reddit (`r/dankmemes`, `r/memes`, `r/GenAlpha`), Bluesky (AT Protocol XRPC), Know Your Meme, and Mastodon (ActivityPub).
+- 🧼 **Zero Repost Spam**: Cryptographic SHA-256 canonical media hashing detects cross-posts across communities, merging engagement instead of cluttering your feed.
+- 📉 **Gravity Virality Decay**: HackerNews-style half-life exponential time-decay so fresh viral memes always outrank stale week-old posts.
+- 🛡️ **Polite & Resilient**: Rotating User-Agent pool, per-domain rate limiting, exponential backoff with `Retry-After` handling, and offline fixture fallbacks.
+- ☁️ **100% Serverless-Ready**: Runs locally on your machine or deploys for **$0/month** on Vercel.
 
 ---
 
@@ -137,17 +133,17 @@ Interactive OpenAPI documentation is live at **`/docs`** (Swagger UI) and **`/re
 
 ---
 
-## 🧠 The Science Behind The Dankness
+## 🧠 How Trending Ranking Works
 
 ### 1. Gravity Virality Formula
-Memes age faster than milk. To prevent yesterday's viral post from clogging the top of the feed forever, Meme-ology applies an exponential velocity decay:
+Memes move fast. To ensure today's viral cultural moments rank above older historical posts, Meme-ology applies an exponential velocity decay:
 
-$$\text{Trending Score} = \frac{\max(0, \text{score}) + \max(0, \text{comments}) \times 1.5}{(\text{age\_in\_hours} + 2.0)^{1.5}}$$
+$$\text{Trending Score} = (\text{score} + 1.5 \times \text{num\_comments}) \times e^{-\lambda \Delta t}$$
 
-- Upvotes and comments establish initial virality mass.
-- Age (in hours) creates a gravity well that smoothly demotes older memes as newer memes surge.
+- **Base Score & Comments:** Upvotes and discussion volume establish raw community engagement.
+- **Half-Life Decay ($\lambda = \ln(2)/12$):** With a 12-hour exponential half-life, breaking memes naturally outrank yesterday's viral posts.
 
-### 2. Deduplication Hashing
+### 2. Content Deduplication & Canonical Hashing
 When a meme is cross-posted across multiple communities:
 1. URLs are canonicalized (query tracking parameters like `?utm_source` and `?ref` are stripped, image host aliases are normalized).
 2. A deterministic SHA-256 content digest is produced.
@@ -172,7 +168,7 @@ pip install -r requirements-dev.txt
 # Run the API server
 uvicorn app.main:app --reload
 
-# Run the automated test suite (472 tests)
+# Run the automated test suite (629 tests)
 pytest --cov=app --cov-report=term-missing -v
 ```
 
