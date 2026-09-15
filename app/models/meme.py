@@ -21,7 +21,15 @@ class SourcePlatform(str, Enum):
     BLUESKY = "bluesky"
     KNOWYOURMEME = "knowyourmeme"
     MASTODON = "mastodon"
+    YOUTUBE = "youtube"
 
+
+class LifecycleStage(str, Enum):
+    """Virality lifecycle stages."""
+    EMERGING = "emerging"
+    VIRAL = "viral"
+    PEAK = "peak"
+    COOLING = "cooling"
 
 
 class MemeGeneration(str, Enum):
@@ -74,11 +82,76 @@ class NormalizedMeme(BaseModel):
         default=MemeGeneration.GEN_Z,
         description="Generational alignment (gen_alpha, gen_z, millennial, gen_x)",
     )
+    is_short: bool = Field(
+        default=False,
+        description="Flag indicating if the media is a vertical short-form video (YouTube Shorts, etc.)",
+    )
+    source_category: str = Field(
+        default="community_forum",
+        description="Category classification: 'video_creator', 'community_forum', 'encyclopedia', 'federated_social'",
+    )
+    lifecycle_stage: str = Field(
+        default="emerging",
+        description="Virality lifecycle stage: 'emerging', 'viral', 'peak', 'cooling'",
+    )
+    velocity: float = Field(
+        default=0.0,
+        description="Engagement growth velocity (score or views per hour)",
+    )
+    acceleration: float = Field(
+        default=0.0,
+        description="Velocity rate of change (acceleration/deceleration)",
+    )
+    first_seen_at: Optional[float] = Field(
+        default=None,
+        description="Timestamp when meme was first observed by tracker",
+    )
+    last_seen_at: Optional[float] = Field(
+        default=None,
+        description="Timestamp when meme was last updated",
+    )
+    language: str = Field(
+        default="en",
+        description="ISO language code of meme text (e.g. en, de, fr, pt, es)",
+    )
+    country_code: str = Field(
+        default="GLOBAL",
+        description="Originating or primary country/region (e.g. US, DE, FR, BR, GLOBAL)",
+    )
 
     @model_validator(mode="before")
     @classmethod
     def populate_defaults(cls, data: Any) -> Any:
         if isinstance(data, dict):
+            if not data.get("language") or not data.get("country_code"):
+                from app.core.location import detect_meme_location
+                detected_country, detected_lang = detect_meme_location(
+                    title=data.get("title", ""),
+                    source_community=data.get("source_community"),
+                    source_platform=data.get("source_platform"),
+                    author=data.get("author"),
+                )
+                if not data.get("country_code"):
+                    data["country_code"] = detected_country
+                if not data.get("language"):
+                    data["language"] = detected_lang
+            if not data.get("source_category"):
+                plat_raw = data.get("source_platform")
+                plat = (plat_raw.value if isinstance(plat_raw, SourcePlatform) else str(plat_raw or "")).lower()
+                if "youtube" in plat:
+                    data["source_category"] = "video_creator"
+                elif "knowyourmeme" in plat or "kym" in plat:
+                    data["source_category"] = "encyclopedia"
+                elif "bluesky" in plat or "mastodon" in plat:
+                    data["source_category"] = "federated_social"
+                else:
+                    data["source_category"] = "community_forum"
+
+            if "is_short" not in data or data.get("is_short") is None:
+                permalink = str(data.get("permalink") or "")
+                title = str(data.get("title") or "")
+                data["is_short"] = "/shorts/" in permalink or "#shorts" in title.lower()
+
             if not data.get("raw_id") and data.get("id"):
                 data["raw_id"] = str(data["id"]).split("_")[-1]
 
@@ -145,11 +218,76 @@ class Meme(BaseModel):
         default=MemeGeneration.GEN_Z,
         description="Generational alignment (gen_alpha, gen_z, millennial, gen_x)",
     )
+    is_short: bool = Field(
+        default=False,
+        description="Vertical short-form video flag",
+    )
+    source_category: str = Field(
+        default="community_forum",
+        description="Category classification: 'video_creator', 'community_forum', 'encyclopedia', 'federated_social'",
+    )
+    lifecycle_stage: str = Field(
+        default="emerging",
+        description="Virality lifecycle stage: 'emerging', 'viral', 'peak', 'cooling'",
+    )
+    velocity: float = Field(
+        default=0.0,
+        description="Engagement growth velocity (score or views per hour)",
+    )
+    acceleration: float = Field(
+        default=0.0,
+        description="Velocity rate of change (acceleration/deceleration)",
+    )
+    first_seen_at: Optional[float] = Field(
+        default=None,
+        description="Timestamp when meme was first observed by tracker",
+    )
+    last_seen_at: Optional[float] = Field(
+        default=None,
+        description="Timestamp when meme was last updated",
+    )
+    language: str = Field(
+        default="en",
+        description="ISO language code of meme text (e.g. en, de, fr, pt, es)",
+    )
+    country_code: str = Field(
+        default="GLOBAL",
+        description="Originating or primary country/region (e.g. US, DE, FR, BR, GLOBAL)",
+    )
 
     @model_validator(mode="before")
     @classmethod
     def sync_aliases(cls, data: Any) -> Any:
         if isinstance(data, dict):
+            if not data.get("language") or not data.get("country_code"):
+                from app.core.location import detect_meme_location
+                detected_country, detected_lang = detect_meme_location(
+                    title=data.get("title", ""),
+                    source_community=data.get("source_community"),
+                    source_platform=data.get("source_platform") or data.get("source"),
+                    author=data.get("author"),
+                )
+                if not data.get("country_code"):
+                    data["country_code"] = detected_country
+                if not data.get("language"):
+                    data["language"] = detected_lang
+            if not data.get("source_category"):
+                plat_raw = data.get("source_platform") or data.get("source")
+                plat = (plat_raw.value if isinstance(plat_raw, SourcePlatform) else str(plat_raw or "")).lower()
+                if "youtube" in plat:
+                    data["source_category"] = "video_creator"
+                elif "knowyourmeme" in plat or "kym" in plat:
+                    data["source_category"] = "encyclopedia"
+                elif "bluesky" in plat or "mastodon" in plat:
+                    data["source_category"] = "federated_social"
+                else:
+                    data["source_category"] = "community_forum"
+
+            if "is_short" not in data or data.get("is_short") is None:
+                permalink = str(data.get("permalink") or "")
+                title = str(data.get("title") or "")
+                data["is_short"] = "/shorts/" in permalink or "#shorts" in title.lower()
+
             if not data.get("generation"):
                 from app.core.classifier import classify_meme_generation
                 data["generation"] = classify_meme_generation(
@@ -202,6 +340,15 @@ class Meme(BaseModel):
                 "content_hash": getattr(data, "content_hash", "") or "",
                 "trending_score": getattr(data, "trending_score", 0.0),
                 "generation": getattr(data, "generation", MemeGeneration.GEN_Z),
+                "is_short": getattr(data, "is_short", False),
+                "source_category": getattr(data, "source_category", "community_forum"),
+                "lifecycle_stage": getattr(data, "lifecycle_stage", "emerging"),
+                "velocity": getattr(data, "velocity", 0.0),
+                "acceleration": getattr(data, "acceleration", 0.0),
+                "first_seen_at": getattr(data, "first_seen_at", None),
+                "last_seen_at": getattr(data, "last_seen_at", None),
+                "language": getattr(data, "language", "en") or "en",
+                "country_code": getattr(data, "country_code", "GLOBAL") or "GLOBAL",
             }
         return data
 
@@ -228,6 +375,15 @@ class Meme(BaseModel):
             content_hash=norm.content_hash or "",
             trending_score=norm.trending_score,
             generation=norm.generation,
+            is_short=getattr(norm, "is_short", False),
+            source_category=getattr(norm, "source_category", "community_forum"),
+            lifecycle_stage=getattr(norm, "lifecycle_stage", "emerging"),
+            velocity=getattr(norm, "velocity", 0.0),
+            acceleration=getattr(norm, "acceleration", 0.0),
+            first_seen_at=getattr(norm, "first_seen_at", None),
+            last_seen_at=getattr(norm, "last_seen_at", None),
+            language=getattr(norm, "language", "en") or "en",
+            country_code=getattr(norm, "country_code", "GLOBAL") or "GLOBAL",
         )
 
 
@@ -245,3 +401,18 @@ class PaginatedResponse(BaseModel):
 
 # Alias for backward compatibility
 PaginatedMemeResponse = PaginatedResponse
+
+
+class TrendingTopic(BaseModel):
+    """Viral topic or hashtag trending globally."""
+    topic: str = Field(..., description="Topic label or hashtag")
+    count: int = Field(default=1, description="Number of active viral memes in cluster")
+    trending_score: float = Field(default=0.0, description="Aggregated virality score")
+
+
+class GlobalTrendsResponse(BaseModel):
+    """Global trending topics and cross-platform viral memes."""
+    timestamp: float = Field(..., description="UTC epoch timestamp of trend snapshot")
+    top_topics: List[TrendingTopic] = Field(default_factory=list, description="Top viral topics globally")
+    top_memes: List[Meme] = Field(default_factory=list, description="Top global trending memes")
+    active_regions: List[str] = Field(default_factory=list, description="Active participating countries/regions")

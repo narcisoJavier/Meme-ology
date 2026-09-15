@@ -33,9 +33,7 @@ from app.storage.memory_store import MemoryStore
 from app.storage.sqlite_store import SqliteStore
 
 
-# ==============================================================================
-# 1. BLUESKY ADVERSARIAL TESTS
-# ==============================================================================
+# BLUESKY ADVERSARIAL TESTS
 
 class TestBlueskyAdversarial:
     """Stress tests for Bluesky AT Protocol parser and fetcher."""
@@ -254,9 +252,7 @@ class TestBlueskyAdversarial:
             assert all(m.source_platform == SourcePlatform.BLUESKY for m in memes)
 
 
-# ==============================================================================
-# 2. MASTODON ADVERSARIAL TESTS
-# ==============================================================================
+# MASTODON ADVERSARIAL TESTS
 
 class TestMastodonAdversarial:
     """Stress tests for Mastodon Fediverse parser and fetcher."""
@@ -449,9 +445,7 @@ class TestMastodonAdversarial:
             assert all(m.source_platform == SourcePlatform.MASTODON for m in memes)
 
 
-# ==============================================================================
-# 3. ZERO-MOCK AND AUTHENTIC DATASET VERIFICATION
-# ==============================================================================
+# ZERO-MOCK AND AUTHENTIC DATASET VERIFICATION
 
 class TestZeroMockAndAuthenticDatasets:
     """Verifies that fixtures and live datasets contain 100% authentic items with no fakes."""
@@ -508,9 +502,7 @@ class TestZeroMockAndAuthenticDatasets:
         }.issubset(platforms)
 
 
-# ==============================================================================
-# 4. WORKER CONCURRENCY AND FAULT ISOLATION STRESS TESTS
-# ==============================================================================
+# WORKER CONCURRENCY AND FAULT ISOLATION STRESS TESTS
 
 @pytest.mark.asyncio
 class TestWorkerConcurrencyAndFaultIsolation:

@@ -35,9 +35,7 @@ from app.storage.memory_store import MemoryStore
 from app.storage.sqlite_store import SqliteStore
 
 
-# ==============================================================================
 # Helper Mock Fetchers
-# ==============================================================================
 
 
 class MockFailingFetcher(BaseSourceFetcher):
@@ -73,9 +71,7 @@ class MockFlappingFetcher(BaseSourceFetcher):
         return self.success_memes
 
 
-# ==============================================================================
-# 1. FastAPI Lifespan Startup/Shutdown Under Repeated Restart Cycles
-# ==============================================================================
+# FastAPI Lifespan Startup/Shutdown Under Repeated Restart Cycles
 
 
 class TestLifespanAdversarialCycles:
@@ -221,9 +217,7 @@ class TestLifespanAdversarialCycles:
         assert not test_app.state.poller.is_running
 
 
-# ==============================================================================
-# 2. OpenAPI 3.x Schema Integrity at /openapi.json
-# ==============================================================================
+# OpenAPI 3.x Schema Integrity at /openapi.json
 
 
 class TestOpenApi3SchemaIntegrity:
@@ -279,7 +273,7 @@ class TestOpenApi3SchemaIntegrity:
         spec = response.json()
         paths = spec.get("paths", {})
 
-        # 1. /api/v1/memes/latest parameter validation
+        # /api/v1/memes/latest parameter validation
         latest_params = {p["name"]: p for p in paths["/api/v1/memes/latest"]["get"].get("parameters", [])}
         assert "limit" in latest_params
         assert "offset" in latest_params
@@ -305,13 +299,13 @@ class TestOpenApi3SchemaIntegrity:
         assert nsfw_schema.get("type") == "boolean"
         assert nsfw_schema.get("default") is False
 
-        # 2. /api/v1/memes/trending parameter validation
+        # /api/v1/memes/trending parameter validation
         trending_params = {p["name"]: p for p in paths["/api/v1/memes/trending"]["get"].get("parameters", [])}
         assert "limit" in trending_params
         assert "offset" in trending_params
         assert trending_params["limit"]["schema"]["maximum"] == 100
 
-        # 3. /api/v1/memes/random parameter validation
+        # /api/v1/memes/random parameter validation
         random_params = {p["name"]: p for p in paths["/api/v1/memes/random"]["get"].get("parameters", [])}
         assert "source" in random_params
         assert "nsfw" in random_params
@@ -377,9 +371,7 @@ class TestOpenApi3SchemaIntegrity:
             assert schema_name in schemas, f"Dangling reference: '{ref}' not found in components.schemas!"
 
 
-# ==============================================================================
-# 3. Interactive Documentation Endpoints (/docs and /redoc)
-# ==============================================================================
+# Interactive Documentation Endpoints (/docs and /redoc)
 
 
 class TestInteractiveDocsEndpoints:
@@ -445,9 +437,7 @@ class TestInteractiveDocsEndpoints:
         assert data.get("health_url") == "/health"
 
 
-# ==============================================================================
-# 4. Source Status and Health Under Simulated Background Polling Errors
-# ==============================================================================
+# Source Status and Health Under Simulated Background Polling Errors
 
 
 class TestSourceMonitoringAndHealthUnderPollingErrors:
@@ -625,7 +615,7 @@ class TestSourceMonitoringAndHealthUnderPollingErrors:
     @pytest.mark.asyncio
     async def test_http_api_sources_and_health_integration(self, async_client: httpx.AsyncClient) -> None:
         """Verify GET /api/v1/sources and GET /health via HTTP client match schema and data."""
-        # 1. Test GET /health
+        # Test GET /health
         health_resp = await async_client.get("/health")
         assert health_resp.status_code == 200
         health_data = health_resp.json()
@@ -634,7 +624,7 @@ class TestSourceMonitoringAndHealthUnderPollingErrors:
         assert parsed_health.uptime_seconds >= 0.0
         assert parsed_health.total_memes is not None
 
-        # 2. Test GET /api/v1/sources
+        # Test GET /api/v1/sources
         sources_resp = await async_client.get("/api/v1/sources")
         assert sources_resp.status_code == 200
         sources_data = sources_resp.json()
@@ -650,17 +640,17 @@ class TestSourceMonitoringAndHealthUnderPollingErrors:
                 SourcePlatform.BLUESKY,
                 SourcePlatform.KNOWYOURMEME,
                 SourcePlatform.MASTODON,
+                SourcePlatform.YOUTUBE,
                 "reddit",
                 "bluesky",
                 "knowyourmeme",
                 "mastodon",
+                "youtube",
             )
             assert parsed_src.item_count >= 0
 
 
-# ==============================================================================
-# 5. Live API Endpoint Boundary Validation & Error Responses
-# ==============================================================================
+# Live API Endpoint Boundary Validation & Error Responses
 
 
 class TestLiveApiQueryValidationAdversarial:
@@ -741,9 +731,7 @@ class TestLiveApiQueryValidationAdversarial:
         assert res.status_code == 405
 
 
-# ==============================================================================
-# 6. Concurrency Under Poller Ingestion & Concurrent API Reads
-# ==============================================================================
+# Concurrency Under Poller Ingestion & Concurrent API Reads
 
 
 class TestConcurrentPollerAndApiReads:

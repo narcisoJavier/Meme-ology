@@ -1,9 +1,10 @@
-"""Async SQLite persistence store using aiosqlite with WAL mode."""
+﻿"""Async SQLite persistence store using aiosqlite with WAL mode."""
 
 from __future__ import annotations
 
 import logging
 import os
+import sqlite3
 import time
 from pathlib import Path
 from typing import Optional, Sequence
@@ -20,7 +21,6 @@ class SqliteStore:
     """Async SQLite repository for persistent meme storage."""
 
     def __init__(self, database_path: Optional[str] = None) -> None:
-        import os
         if os.environ.get("VERCEL"):
             self.database_path = "/tmp/memes.db"
         else:
@@ -63,10 +63,22 @@ class SqliteStore:
                     domain TEXT,
                     content_hash TEXT NOT NULL,
                     trending_score REAL NOT NULL DEFAULT 0.0,
-                    discovered_at REAL NOT NULL DEFAULT 0.0
+                    discovered_at REAL NOT NULL DEFAULT 0.0,
+                    language TEXT DEFAULT 'en',
+                    country_code TEXT DEFAULT 'GLOBAL'
                 );
                 """
             )
+
+            # Migration for existing tables without language/country_code
+            try:
+                await db.execute("ALTER TABLE memes ADD COLUMN language TEXT DEFAULT 'en';")
+            except Exception:
+                pass
+            try:
+                await db.execute("ALTER TABLE memes ADD COLUMN country_code TEXT DEFAULT 'GLOBAL';")
+            except Exception:
+                pass
 
             await db.execute(
                 "CREATE INDEX IF NOT EXISTS idx_memes_created_at ON memes(created_at DESC);"
@@ -85,6 +97,12 @@ class SqliteStore:
             )
             await db.execute(
                 "CREATE INDEX IF NOT EXISTS idx_memes_is_nsfw ON memes(is_nsfw);"
+            )
+            await db.execute(
+                "CREATE INDEX IF NOT EXISTS idx_memes_language ON memes(language);"
+            )
+            await db.execute(
+                "CREATE INDEX IF NOT EXISTS idx_memes_country_code ON memes(country_code);"
             )
 
             await db.commit()
@@ -109,6 +127,9 @@ class SqliteStore:
                 if isinstance(m.source_platform, SourcePlatform)
                 else str(m.source_platform)
             )
+            lang = getattr(m, "language", "en") or "en"
+            country = getattr(m, "country_code", "GLOBAL") or "GLOBAL"
+
             rows.append(
                 (
                     m.id,
@@ -128,6 +149,8 @@ class SqliteStore:
                     m.content_hash or "",
                     m.trending_score,
                     now,
+                    lang,
+                    country,
                 )
             )
 
@@ -138,9 +161,9 @@ class SqliteStore:
                     id, raw_id, title, media_url, media_type, source_platform,
                     source_community, permalink, author, score, num_comments,
                     created_at, is_nsfw, domain, content_hash, trending_score,
-                    discovered_at
+                    discovered_at, language, country_code
                 ) VALUES (
-                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
                 )
                 ON CONFLICT(id) DO UPDATE SET
                     title = excluded.title,
@@ -156,7 +179,9 @@ class SqliteStore:
                     is_nsfw = excluded.is_nsfw,
                     domain = excluded.domain,
                     content_hash = excluded.content_hash,
-                    trending_score = excluded.trending_score;
+                    trending_score = excluded.trending_score,
+                    language = excluded.language,
+                    country_code = excluded.country_code;
                 """,
                 rows,
             )
@@ -185,6 +210,9 @@ class SqliteStore:
             trending_score,
         ) = row[:16]
 
+        lang = row[17] if len(row) > 17 and row[17] else "en"
+        country = row[18] if len(row) > 18 and row[18] else "GLOBAL"
+
         try:
             m_type = MediaType(media_type)
         except ValueError:
@@ -212,6 +240,8 @@ class SqliteStore:
             domain=domain or "",
             content_hash=content_hash or "",
             trending_score=float(trending_score or 0.0),
+            language=lang,
+            country_code=country,
         )
 
     async def load_all_memes(self) -> list[NormalizedMeme]:
@@ -222,7 +252,8 @@ class SqliteStore:
                 SELECT
                     id, raw_id, title, media_url, media_type, source_platform,
                     source_community, permalink, author, score, num_comments,
-                    created_at, is_nsfw, domain, content_hash, trending_score
+                    created_at, is_nsfw, domain, content_hash, trending_score,
+                    discovered_at, language, country_code
                 FROM memes
                 ORDER BY created_at DESC;
                 """
@@ -238,7 +269,8 @@ class SqliteStore:
                 SELECT
                     id, raw_id, title, media_url, media_type, source_platform,
                     source_community, permalink, author, score, num_comments,
-                    created_at, is_nsfw, domain, content_hash, trending_score
+                    created_at, is_nsfw, domain, content_hash, trending_score,
+                    discovered_at, language, country_code
                 FROM memes
                 WHERE id = ?;
                 """,
@@ -257,7 +289,8 @@ class SqliteStore:
                 SELECT
                     id, raw_id, title, media_url, media_type, source_platform,
                     source_community, permalink, author, score, num_comments,
-                    created_at, is_nsfw, domain, content_hash, trending_score
+                    created_at, is_nsfw, domain, content_hash, trending_score,
+                    discovered_at, language, country_code
                 FROM memes
                 WHERE content_hash = ?
                 ORDER BY created_at DESC

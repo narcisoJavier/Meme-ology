@@ -1,9 +1,11 @@
-"""Content deduplication and URL canonicalization utilities."""
+"""Content deduplication, URL canonicalization, and identity resolution utilities."""
+
+from __future__ import annotations
 
 import hashlib
+import re
+from typing import Optional, Set
 from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
-from typing import Optional
-
 
 # Tracking & image manipulation query parameter patterns to strip
 STRIP_QUERY_PARAMS = {
@@ -71,3 +73,80 @@ def compute_content_hash(media_url: str, title: str) -> str:
     clean_title = (title or "").lower().strip()
     payload = f"{clean_url}|{clean_title}".encode("utf-8")
     return hashlib.sha256(payload).hexdigest()
+
+
+def normalize_title(title: Optional[str]) -> str:
+    """Normalize meme title by stripping hashtag spam, links, and redundant whitespace."""
+    if not title:
+        return ""
+    # Strip URLs
+    text = re.sub(r"https?://\S+", "", title)
+    # Strip hashtags (#meme, #shitpost, #humour, etc.) - must start with a letter/underscore
+    text = re.sub(r"#[a-zA-Z_]\w*", "", text)
+    # Extract alphanumeric tokens
+    tokens = re.findall(r"\w+", text.lower())
+    return " ".join(tokens).strip()
+
+
+def normalize_author_handle(author: Optional[str]) -> str:
+    """Canonicalize author handles across platforms, resolving Bridgy Fed mirrors."""
+    if not author:
+        return ""
+    clean = author.strip().lower()
+    if clean.startswith("@"):
+        clean = clean[1:]
+
+    # Bridgy Fed ActivityPub -> Bluesky: {user}.{instance}.ap.brid.gy
+    if clean.endswith(".ap.brid.gy"):
+        prefix = clean.removesuffix(".ap.brid.gy")
+        parts = prefix.split(".", 1)
+        if len(parts) == 2:
+            return f"{parts[0]}@{parts[1]}"
+        return prefix
+
+    # Bridgy Fed Bluesky -> Mastodon: {user}@bsky.brid.gy or {user}.bsky.brid.gy
+    if clean.endswith("@bsky.brid.gy"):
+        return clean.removesuffix("@bsky.brid.gy")
+    if clean.endswith(".bsky.brid.gy"):
+        return clean.removesuffix(".bsky.brid.gy")
+
+    return clean
+
+
+def compute_semantic_title_hash(title: str) -> str:
+    """Compute deterministic hash of the normalized title."""
+    normalized = normalize_title(title)
+    return hashlib.sha256(normalized.encode("utf-8")).hexdigest()
+
+
+def are_memes_duplicate(
+    media_url_1: str,
+    title_1: str,
+    author_1: str,
+    media_url_2: str,
+    title_2: str,
+    author_2: str,
+) -> bool:
+    """Determine if two memes represent the same content based on multiple heuristics."""
+    # Exact media URL canonical match
+    clean_u1 = normalize_url(media_url_1).lower()
+    clean_u2 = normalize_url(media_url_2).lower()
+    if clean_u1 and clean_u2 and clean_u1 == clean_u2:
+        return True
+
+    # Normalized title match
+    norm_t1 = normalize_title(title_1)
+    norm_t2 = normalize_title(title_2)
+
+    if norm_t1 and norm_t2 and norm_t1 == norm_t2:
+        # If title is distinctive (len >= 12 chars), it is almost certainly the same meme
+        if len(norm_t1) >= 12:
+            return True
+
+        # For shorter titles, check if author matches (including bridged mirrors)
+        norm_a1 = normalize_author_handle(author_1)
+        norm_a2 = normalize_author_handle(author_2)
+        if norm_a1 and norm_a2 and norm_a1 == norm_a2:
+            return True
+
+    return False

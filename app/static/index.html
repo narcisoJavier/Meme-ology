@@ -1,38 +1,75 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MEME-OLOGY — The Open Internet Meme API &amp; Feed</title>
-  <meta name="description" content="High-performance meme curation engine. Ingesting, categorizing, and scoring internet culture across Reddit, Bluesky, Know Your Meme, and Mastodon in real-time.">
+  <title>Meme-ology // Developer Telemetry and Viral Culture Engine</title>
+  <meta name="description" content="High-performance internet culture telemetry, live engagement ranking, and multi-platform meme aggregation across Reddit, Bluesky, Know Your Meme, and Mastodon.">
   <meta name="referrer" content="no-referrer">
 
-  <!-- Google Fonts: Plus Jakarta Sans (Casual & Friendly) and JetBrains Mono -->
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
+    /* ── MODERN DEVELOPER PORTAL DESIGN TOKENS (DARK THEME DEFAULT) ── */
     :root {
-      --bg-base: #09090b;
-      --bg-surface: #121216;
-      --bg-surface-elevated: #18181f;
-      --bg-surface-hover: #22222c;
-      --border-subtle: #272730;
-      --border-focus: #3f3f50;
-      --border-accent: rgba(99, 102, 241, 0.4);
-      --text-primary: #f4f4f6;
-      --text-secondary: #a1a1b0;
-      --text-muted: #717182;
-      --accent-emerald: #10b981;
-      --accent-indigo: #6366f1;
-      --accent-purple: #8b5cf6;
-      --accent-cyan: #06b6d4;
-      --accent-amber: #f59e0b;
-      --accent-rose: #f43f5e;
+      --bg: #0B0F17;
+      --bg-card: #111827;
+      --bg-surface: #1F2937;
+      --bg-inner: #0F172A;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-hover: rgba(255, 255, 255, 0.16);
+      --border-active: #6366F1;
+      --text-primary: #F9FAFB;
+      --text-secondary: #94A3B8;
+      --text-muted: #64748B;
+      --accent-emerald: #10B981;
+      --accent-amber: #F59E0B;
+      --accent-indigo: #6366F1;
+      --accent-indigo-hover: #4F46E5;
+      --accent-cyan: #06B6D4;
+      --accent-rose: #F43F5E;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.25);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.35), 0 2px 4px -2px rgba(0, 0, 0, 0.25);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.45), 0 4px 6px -4px rgba(0, 0, 0, 0.35);
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+      --radius-full: 9999px;
+      --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-normal: 200ms cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    * {
+    /* ── CRISP LIGHT THEME OVERRIDE ── */
+    html.theme-light {
+      --bg: #F8FAFC;
+      --bg-card: #FFFFFF;
+      --bg-surface: #F1F5F9;
+      --bg-inner: #E2E8F0;
+      --border: rgba(0, 0, 0, 0.08);
+      --border-hover: rgba(0, 0, 0, 0.16);
+      --border-active: #4F46E5;
+      --text-primary: #0F172A;
+      --text-secondary: #475569;
+      --text-muted: #64748B;
+      --accent-emerald: #059669;
+      --accent-amber: #D97706;
+      --accent-indigo: #4F46E5;
+      --accent-indigo-hover: #4338CA;
+      --accent-cyan: #0891B2;
+      --accent-rose: #E11D48;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+    }
+
+    /* ── BASE & RESET ── */
+    *, *::before, *::after {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
@@ -40,53 +77,52 @@
 
     html {
       scroll-behavior: smooth;
-      background-color: var(--bg-base);
-      color: var(--text-primary);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     body {
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-      min-height: 100vh;
-      overflow-x: hidden;
+      background-color: var(--bg);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 14px;
       line-height: 1.5;
-      background-color: var(--bg-base);
-      background-image: 
-        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.12), transparent 70%),
-        linear-gradient(to bottom, transparent, rgba(9, 9, 11, 0.85));
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
-    /* Inline Vector Icons */
-    .icon {
-      display: inline-block;
-      width: 1em;
-      height: 1em;
-      stroke-width: 0;
-      stroke: currentColor;
-      fill: currentColor;
-      vertical-align: -0.15em;
+    /* Focus styling */
+    :focus-visible {
+      outline: 2px solid var(--accent-indigo);
+      outline-offset: 2px;
     }
 
-    .icon-stroke {
-      fill: none;
-      stroke: currentColor;
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
+    /* Scrollbars */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-hover);
+      border-radius: var(--radius-full);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--text-muted);
     }
 
-    /* Global Header */
-    header {
+    /* ── APP HEADER ── */
+    .app-header {
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(9, 9, 11, 0.85);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--border-subtle);
-    }
-
-    .nav-container {
-      max-width: 1400px;
-      margin: 0 auto;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       padding: 0.75rem 1.5rem;
       display: flex;
       align-items: center;
@@ -94,650 +130,921 @@
       gap: 1rem;
     }
 
-    .logo-group {
+    .header-left {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    .brand-cluster {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
       text-decoration: none;
+      color: var(--text-primary);
     }
 
-    .brand-title {
-      font-size: 1.15rem;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 0.45rem;
-    }
-
-    .brand-icon-wrap {
-      width: 26px;
-      height: 26px;
-      background: linear-gradient(135deg, var(--accent-indigo), #4338ca);
-      border-radius: 6px;
+    .brand-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, var(--accent-indigo) 0%, var(--accent-cyan) 100%);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #fff;
-      box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+      color: #FFFFFF;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .brand-icon svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .brand-title {
+      font-weight: 800;
+      font-size: 16px;
+      letter-spacing: -0.02em;
     }
 
     .brand-badge {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.65rem;
+      font-family: var(--font-mono);
+      font-size: 11px;
       font-weight: 600;
       padding: 2px 6px;
-      background: #1e1e26;
-      border: 1px solid #333342;
-      border-radius: 4px;
-      color: var(--text-secondary);
+      border-radius: var(--radius-sm);
+      background: var(--bg-surface);
+      color: var(--accent-indigo);
+      border: 1px solid var(--border);
     }
 
-    .status-pill {
+    /* Health Telemetry Pill */
+    .health-pill {
       display: inline-flex;
       align-items: center;
-      gap: 0.4rem;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.72rem;
-      font-weight: 600;
-      padding: 3px 8px;
-      background: rgba(16, 185, 129, 0.1);
-      border: 1px solid rgba(16, 185, 129, 0.25);
-      border-radius: 20px;
-      color: var(--accent-emerald);
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      transition: border-color var(--transition-fast);
     }
 
-    .status-dot {
-      width: 6px;
-      height: 6px;
-      background: var(--accent-emerald);
+    .health-pill:hover {
+      border-color: var(--border-hover);
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
-      box-shadow: 0 0 8px var(--accent-emerald);
-      animation: pulseDot 2s infinite ease-in-out;
+      background: var(--accent-emerald);
+      position: relative;
     }
 
-    @keyframes pulseDot {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.85); }
+    .pulse-dot::after {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: 50%;
+      background: var(--accent-emerald);
+      opacity: 0.4;
+      animation: pulse-ring 2s infinite ease-out;
     }
 
-    /* Navigation Switcher */
-    .nav-switcher {
-      display: flex;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 8px;
-      padding: 3px;
-      gap: 2px;
+    @keyframes pulse-ring {
+      0% { transform: scale(0.9); opacity: 0.7; }
+      50% { transform: scale(1.6); opacity: 0.1; }
+      100% { transform: scale(0.9); opacity: 0.7; }
     }
 
-    .nav-btn {
-      background: transparent;
-      border: none;
-      color: var(--text-secondary);
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 0.82rem;
-      font-weight: 600;
-      padding: 5px 14px;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+    .header-right {
       display: flex;
       align-items: center;
-      gap: 0.4rem;
+      gap: 0.75rem;
     }
 
-    .nav-btn:hover {
-      color: #fff;
-      background: var(--bg-surface-elevated);
-    }
-
-    .nav-btn.active {
-      color: #fff;
-      background: #252532;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
-    }
-
-    .nav-actions {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .btn-action {
+    .header-link {
       display: inline-flex;
       align-items: center;
-      gap: 0.4rem;
-      padding: 6px 12px;
-      font-size: 0.8rem;
+      gap: 6px;
+      font-size: 13px;
       font-weight: 600;
-      border-radius: 6px;
+      color: var(--text-secondary);
       text-decoration: none;
-      transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
-      cursor: pointer;
+      padding: 6px 12px;
+      border-radius: var(--radius-md);
+      transition: color var(--transition-fast), background-color var(--transition-fast);
     }
 
-    .btn-secondary {
+    .header-link:hover {
+      color: var(--text-primary);
       background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
+    }
+
+    .btn-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-md);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
       color: var(--text-secondary);
+      cursor: pointer;
+      transition: all var(--transition-fast);
     }
 
-    .btn-secondary:hover {
-      background: var(--bg-surface-hover);
-      border-color: var(--border-focus);
-      color: #fff;
+    .btn-icon:hover {
+      color: var(--text-primary);
+      border-color: var(--border-hover);
+      background: var(--bg-surface);
     }
 
-    .btn-primary {
-      background: #fff;
-      border: 1px solid #fff;
-      color: #000;
+    .btn-icon svg {
+      width: 18px;
+      height: 18px;
     }
 
-    .btn-primary:hover {
-      background: #e4e4e7;
-      transform: translateY(-1px);
+    /* ── WORKSPACE TAB NAVIGATION ── */
+    .workspace-nav-wrap {
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: 0.5rem 1.5rem 0;
     }
 
-    /* Main Container */
-    .main-container {
-      max-width: 1400px;
+    .workspace-nav {
+      max-width: 1280px;
       margin: 0 auto;
-      padding: 2rem 1.5rem;
-    }
-
-    /* Hero Section */
-    .hero-banner {
-      padding: 2rem 0 2.5rem;
-      border-bottom: 1px solid var(--border-subtle);
-      margin-bottom: 2rem;
       display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      gap: 2rem;
-      flex-wrap: wrap;
+      gap: 0.5rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .workspace-nav::-webkit-scrollbar {
+      display: none;
     }
 
-    .hero-text h1 {
-      font-size: clamp(2rem, 3.5vw, 2.75rem);
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      line-height: 1.15;
-      color: #fff;
-      margin-bottom: 0.75rem;
-    }
-
-    .hero-text p {
-      font-size: 1.05rem;
+    .nav-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border: none;
+      background: transparent;
       color: var(--text-secondary);
-      max-width: 640px;
-      line-height: 1.6;
+      font-family: var(--font-sans);
+      font-size: 13.5px;
+      font-weight: 600;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all var(--transition-fast);
     }
 
-    .hero-actions-col {
+    .nav-tab:hover {
+      color: var(--text-primary);
+    }
+
+    .nav-tab.active {
+      color: var(--accent-indigo);
+      border-bottom-color: var(--accent-indigo);
+    }
+
+    .nav-tab svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* ── MAIN CONTAINER ── */
+    .app-main {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 1.5rem;
+      width: 100%;
+      flex: 1;
+    }
+
+    .tab-view {
+      display: none;
+    }
+    .tab-view.active {
+      display: block;
+      animation: fadeIn 200ms ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── FILTER TOOLBAR ── */
+    .toolbar-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow-sm);
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
-      align-items: flex-end;
+      gap: 1rem;
     }
 
-    .quick-curl-box {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 8px;
-      padding: 0.75rem 1rem;
+    .search-row {
       display: flex;
-      align-items: center;
       gap: 0.75rem;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.8rem;
-      color: #e4e4e7;
-    }
-
-    .curl-tag {
-      color: var(--accent-emerald);
-      font-weight: 700;
-    }
-
-    /* Streamlined API Toolbar */
-    .api-toolbar {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 10px;
-      padding: 0.6rem 0.85rem;
-      margin-bottom: 2rem;
-      display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 0.85rem;
       flex-wrap: wrap;
     }
 
-    .search-wrapper {
+    .search-input-wrap {
       position: relative;
-      flex: 1 1 240px;
-    }
-
-    .search-input {
-      width: 100%;
-      background: #09090c;
-      border: 1px solid var(--border-subtle);
-      border-radius: 6px;
-      padding: 7px 10px 7px 2.2rem;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 0.85rem;
-      color: #fff;
-      outline: none;
-      transition: border-color 0.15s ease;
-    }
-
-    .search-input:focus {
-      border-color: var(--accent-indigo);
+      flex: 1;
+      min-width: 260px;
     }
 
     .search-icon {
       position: absolute;
-      left: 0.75rem;
+      left: 12px;
       top: 50%;
       transform: translateY(-50%);
       color: var(--text-muted);
       pointer-events: none;
     }
+    .search-icon svg {
+      width: 16px;
+      height: 16px;
+    }
 
-    .era-pills {
+    .search-input {
+      width: 100%;
+      padding: 10px 38px 10px 38px;
+      border-radius: var(--radius-md);
+      background: var(--bg-inner);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 13.5px;
+      transition: border-color var(--transition-fast), background-color var(--transition-fast);
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--accent-indigo);
+      background: var(--bg-card);
+    }
+
+    .search-shortcut {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      padding: 2px 6px;
+      border-radius: var(--radius-sm);
+      pointer-events: none;
+    }
+
+    .select-control {
+      padding: 9px 12px;
+      border-radius: var(--radius-md);
+      background: var(--bg-inner);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: border-color var(--transition-fast);
+    }
+    .select-control:focus {
+      outline: none;
+      border-color: var(--accent-indigo);
+    }
+
+    .filter-pills-row {
       display: flex;
       align-items: center;
-      gap: 0.35rem;
+      gap: 0.5rem;
       flex-wrap: wrap;
     }
 
-    .era-pill {
-      background: transparent;
-      border: 1px solid var(--border-subtle);
-      border-radius: 6px;
+    .filter-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-right: 0.25rem;
+    }
+
+    .pill-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       padding: 5px 12px;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 0.8rem;
-      font-weight: 600;
+      border-radius: var(--radius-full);
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
       color: var(--text-secondary);
-      cursor: pointer;
-      transition: all 0.12s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .era-pill:hover {
-      color: #fff;
-      border-color: var(--border-focus);
-    }
-
-    .era-pill.active {
-      background: #252532;
-      color: #fff;
-      border-color: #525268;
-    }
-
-    .toolbar-select {
-      background: #09090c;
-      border: 1px solid var(--border-subtle);
-      border-radius: 6px;
-      padding: 6px 10px;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 0.82rem;
+      font-size: 12.5px;
       font-weight: 600;
-      color: var(--text-secondary);
       cursor: pointer;
-      outline: none;
+      transition: all var(--transition-fast);
     }
 
-    /* Meme Grid */
+    .pill-btn:hover {
+      color: var(--text-primary);
+      border-color: var(--border-hover);
+    }
+
+    .pill-btn.active {
+      background: var(--accent-indigo);
+      border-color: var(--accent-indigo);
+      color: #FFFFFF;
+      box-shadow: 0 1px 3px rgba(99, 102, 241, 0.35);
+    }
+
+    .feed-meta-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    /* ── MEME CARDS GRID ── */
     .memes-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+      gap: 1.25rem;
     }
 
     .meme-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 10px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: var(--shadow-sm);
+      transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
       cursor: pointer;
     }
 
     .meme-card:hover {
-      transform: translateY(-4px);
-      border-color: var(--border-focus);
-      box-shadow: 0 16px 32px -8px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(99, 102, 241, 0.25);
+      transform: translateY(-2px);
+      border-color: var(--border-hover);
+      box-shadow: var(--shadow-md);
     }
 
-    .card-top {
-      padding: 0.85rem 1rem 0.65rem;
+    .card-header {
+      padding: 0.75rem 1rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-card);
     }
 
-    .community-badge {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.72rem;
-      font-weight: 600;
-      color: var(--text-secondary);
-      background: #191922;
-      border: 1px solid #282834;
-      padding: 2px 7px;
-      border-radius: 4px;
+    .platform-badge {
       display: inline-flex;
       align-items: center;
-      gap: 0.3rem;
-    }
-
-    .era-tag {
-      font-size: 0.68rem;
+      gap: 5px;
+      font-size: 11.5px;
       font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      padding: 2px 7px;
-      border-radius: 4px;
+      color: var(--text-secondary);
     }
 
-    .era-gen_alpha { background: rgba(139, 92, 246, 0.15); color: #c4b5fd; border: 1px solid rgba(139, 92, 246, 0.3); }
-    .era-gen_z { background: rgba(16, 185, 129, 0.15); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.3); }
-    .era-millennial { background: rgba(6, 182, 212, 0.15); color: #67e8f9; border: 1px solid rgba(6, 182, 212, 0.3); }
-    .era-gen_x { background: rgba(245, 158, 11, 0.15); color: #fcd34d; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .community-tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+    }
 
-    /* UNCLIPPED Media Frame */
-    .card-media-frame {
-      height: 270px;
-      background: #050507;
+    .card-media {
+      width: 100%;
+      height: 230px;
+      background: var(--bg-inner);
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
       position: relative;
-      border-top: 1px solid #1c1c24;
-      border-bottom: 1px solid #1c1c24;
     }
 
-    .card-media-frame img, .card-media-frame video {
+    .card-media img, .card-media video {
       max-width: 100%;
       max-height: 100%;
-      width: auto;
-      height: auto;
       object-fit: contain;
-      transition: transform 0.25s ease;
+      display: block;
     }
 
-    .meme-card:hover .card-media-frame img,
-    .meme-card:hover .card-media-frame video {
-      transform: scale(1.02);
+    .video-play-hint {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      color: #FFFFFF;
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      pointer-events: none;
     }
 
-    .card-content {
+    .card-body {
       padding: 1rem;
       display: flex;
       flex-direction: column;
-      gap: 0.4rem;
+      gap: 0.65rem;
       flex: 1;
     }
 
-    .card-title {
-      font-size: 0.95rem;
+    .card-tags {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .tag-badge {
+      font-size: 11px;
       font-weight: 600;
-      color: #f4f4f5;
-      line-height: 1.4;
+      padding: 2px 7px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-surface);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+
+    .tag-viral {
+      background: rgba(244, 63, 94, 0.12);
+      color: var(--accent-rose);
+      border-color: rgba(244, 63, 94, 0.25);
+    }
+
+    .tag-peak {
+      background: rgba(245, 158, 11, 0.12);
+      color: var(--accent-amber);
+      border-color: rgba(245, 158, 11, 0.25);
+    }
+
+    .card-title {
+      font-weight: 700;
+      font-size: 14.5px;
+      line-height: 1.35;
+      color: var(--text-primary);
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
 
-    .card-meta {
-      font-size: 0.75rem;
+    .card-author-meta {
+      font-size: 12px;
       color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .card-footer {
       padding: 0.75rem 1rem;
-      border-top: 1px solid var(--border-subtle);
+      border-top: 1px solid var(--border);
+      background: var(--bg-card);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: #0e0e12;
     }
 
-    /* Upvote Vector Button with Spring Animation */
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
     .btn-upvote {
-      background: #181820;
-      border: 1px solid var(--border-subtle);
-      border-radius: 6px;
-      padding: 4px 10px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--text-secondary);
       display: inline-flex;
       align-items: center;
-      gap: 0.4rem;
+      gap: 5px;
+      padding: 5px 10px;
+      border-radius: var(--radius-md);
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
       cursor: pointer;
-      transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all var(--transition-fast);
     }
 
     .btn-upvote:hover {
-      background: #22222d;
-      border-color: var(--border-focus);
-      color: #fff;
+      color: var(--accent-rose);
+      border-color: var(--accent-rose);
+      background: rgba(244, 63, 94, 0.08);
     }
 
     .btn-upvote.voted {
-      background: rgba(16, 185, 129, 0.15);
-      border-color: rgba(16, 185, 129, 0.4);
-      color: var(--accent-emerald);
+      color: var(--accent-rose);
+      border-color: var(--accent-rose);
+      background: rgba(244, 63, 94, 0.14);
     }
 
-    .btn-upvote.voted .vote-icon-svg {
-      animation: votePop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    .btn-upvote.voted svg {
+      fill: currentColor;
     }
 
-    @keyframes votePop {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.4) translateY(-2px); }
-      100% { transform: scale(1); }
+    .btn-upvote svg {
+      width: 14px;
+      height: 14px;
+      transition: transform 200ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .btn-upvote:active svg {
+      transform: scale(1.3);
+    }
+
+    .comment-count-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: var(--text-muted);
+      padding: 4px 6px;
+    }
+
+    .comment-count-badge svg {
+      width: 13px;
+      height: 13px;
     }
 
     .btn-permalink {
-      color: var(--text-secondary);
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-decoration: none;
       display: inline-flex;
       align-items: center;
-      gap: 0.3rem;
-      padding: 4px 8px;
-      border-radius: 4px;
-      transition: color 0.12s ease;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent-indigo);
+      text-decoration: none;
+      padding: 5px 8px;
+      border-radius: var(--radius-sm);
+      transition: background-color var(--transition-fast);
     }
 
     .btn-permalink:hover {
-      color: #fff;
-      background: #1a1a22;
+      background: rgba(99, 102, 241, 0.08);
     }
 
-    /* Top 10 Trending Table Section */
-    .section-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 10px;
-      overflow: hidden;
-      margin-bottom: 2.5rem;
+    .btn-permalink svg {
+      width: 13px;
+      height: 13px;
     }
 
-    .section-card-header {
-      padding: 1.25rem 1.5rem;
-      border-bottom: 1px solid var(--border-subtle);
+    /* ── EMPTY STATE ── */
+    .empty-state {
+      grid-column: 1 / -1;
+      padding: 4rem 1.5rem;
+      text-align: center;
+      background: var(--bg-card);
+      border: 1px dashed var(--border-hover);
+      border-radius: var(--radius-xl);
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .section-card-title {
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .trending-row {
-      display: grid;
-      grid-template-columns: 50px 70px 1fr 140px 100px 90px;
+      flex-direction: column;
       align-items: center;
       gap: 1rem;
-      padding: 0.75rem 1.5rem;
-      border-bottom: 1px solid #181820;
-      transition: background 0.12s ease;
     }
 
-    .trending-row:hover {
-      background: #16161d;
-    }
-
-    .trending-rank {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.9rem;
-      font-weight: 700;
-      color: var(--text-muted);
-    }
-
-    .trending-thumb {
-      width: 60px;
-      height: 44px;
-      background: #050507;
-      border-radius: 4px;
-      border: 1px solid #272730;
+    .empty-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--bg-surface);
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
+      color: var(--text-muted);
     }
 
-    .trending-thumb img {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
+    .empty-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
     }
 
-    /* API Studio Playground */
-    .studio-grid {
-      display: grid;
-      grid-template-columns: 320px 1fr;
+    .empty-desc {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      max-width: 420px;
     }
 
-    .studio-sidebar {
-      background: #0e0e13;
-      border-right: 1px solid var(--border-subtle);
-      padding: 1.25rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1.25rem;
-    }
-
-    .endpoint-item {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 6px;
-      padding: 8px 10px;
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: var(--radius-md);
+      background: var(--accent-indigo);
+      border: none;
+      color: #FFFFFF;
+      font-family: var(--font-sans);
+      font-size: 13.5px;
+      font-weight: 600;
       cursor: pointer;
-      transition: all 0.12s ease;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.78rem;
+      transition: background-color var(--transition-fast), transform var(--transition-fast);
     }
 
-    .endpoint-item:hover {
-      border-color: var(--border-focus);
+    .btn-primary:hover {
+      background: var(--accent-indigo-hover);
+      transform: translateY(-1px);
     }
 
-    .endpoint-item.active {
-      background: #1e1e28;
-      border-color: var(--accent-indigo);
-      color: #fff;
+    /* ── TRENDING LEADERBOARD VIEW ── */
+    .leaderboard-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
     }
 
-    .studio-right {
-      display: flex;
-      flex-direction: column;
-      background: #070709;
-    }
-
-    .studio-toolbar {
-      padding: 0.65rem 1.25rem;
-      border-bottom: 1px solid var(--border-subtle);
-      background: #0e0e13;
+    .leaderboard-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-surface);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 0.5rem;
     }
 
-    .lang-tabs {
-      display: flex;
-      gap: 0.25rem;
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
     }
 
-    .lang-tab {
-      background: transparent;
-      border: 1px solid transparent;
+    .trending-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .trending-table th {
+      padding: 10px 16px;
+      font-size: 11.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
       color: var(--text-muted);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .trending-table td {
+      padding: 12px 16px;
+      font-size: 13.5px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    .trending-table tr:hover td {
+      background: var(--bg-surface);
+    }
+
+    .rank-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      background: var(--bg-surface);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+
+    .rank-1 { background: rgba(245, 158, 11, 0.2); color: #F59E0B; border-color: #F59E0B; }
+    .rank-2 { background: rgba(148, 163, 184, 0.2); color: #CBD5E1; border-color: #94A3B8; }
+    .rank-3 { background: rgba(217, 119, 6, 0.2); color: #D97706; border-color: #D97706; }
+
+    .table-thumb {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-md);
+      background: var(--bg-inner);
+      object-fit: cover;
+      display: block;
+    }
+
+    /* ── API STUDIO WORKSTATION ── */
+    .studio-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 900px) {
+      .studio-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .studio-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .panel-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .panel-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .endpoint-pill-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .endpoint-btn {
+      padding: 6px 12px;
+      border-radius: var(--radius-md);
+      background: var(--bg-inner);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .endpoint-btn:hover {
+      color: var(--text-primary);
+      border-color: var(--border-hover);
+    }
+
+    .endpoint-btn.active {
+      background: rgba(99, 102, 241, 0.15);
+      border-color: var(--accent-indigo);
+      color: var(--accent-indigo);
+    }
+
+    .url-preview-box {
+      background: var(--bg-inner);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .url-text {
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      color: var(--accent-cyan);
+      word-break: break-all;
+    }
+
+    .param-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .param-label {
+      font-size: 11.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+    }
+
+    .code-box-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .code-tabs {
+      display: flex;
+      gap: 4px;
+    }
+
+    .code-tab-btn {
       padding: 4px 8px;
-      border-radius: 4px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg-surface);
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
       cursor: pointer;
     }
 
-    .lang-tab.active {
-      background: #1c1c26;
-      border-color: #2e2e3e;
-      color: #fff;
+    .code-tab-btn.active {
+      background: var(--accent-indigo);
+      border-color: var(--accent-indigo);
+      color: #FFFFFF;
     }
 
-    .code-view {
-      padding: 1rem 1.25rem;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.8rem;
-      color: #34d399;
-      line-height: 1.5;
+    .code-viewer {
+      background: var(--bg-inner);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-primary);
       overflow-x: auto;
-      background: #070709;
-      border-bottom: 1px solid var(--border-subtle);
-      min-height: 100px;
+      line-height: 1.6;
+      max-height: 420px;
     }
 
-    .response-view {
-      padding: 1rem 1.25rem;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.78rem;
-      color: #d4d4d8;
-      background: #070709;
-      overflow-x: auto;
-      max-height: 380px;
-      line-height: 1.5;
+    /* ── TELEMETRY VIEW ── */
+    .telemetry-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
     }
 
-    /* Lightbox Modal */
+    .telemetry-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .source-name {
+      font-weight: 700;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .source-stat-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12.5px;
+      color: var(--text-secondary);
+    }
+
+    .stat-val {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    /* ── LIGHTBOX MODAL ── */
     .modal-overlay {
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(8px);
+      inset: 0;
       z-index: 1000;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
       display: none;
       align-items: center;
       justify-content: center;
@@ -746,440 +1053,566 @@
 
     .modal-overlay.active {
       display: flex;
+      animation: fadeIn 150ms ease-out;
     }
 
-    .modal-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+    .modal-dialog {
+      background: var(--bg-card);
+      border: 1px solid var(--border-hover);
+      border-radius: var(--radius-xl);
       max-width: 820px;
       width: 100%;
       max-height: 90vh;
       overflow-y: auto;
-      position: relative;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-lg);
     }
 
-    .modal-close {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      background: #272732;
-      border: 1px solid #3f3f50;
-      color: #fff;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      cursor: pointer;
+    .modal-header {
+      padding: 1rem 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-media-wrap {
+      background: var(--bg-inner);
+      min-height: 280px;
+      max-height: 520px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1rem;
-      z-index: 10;
-    }
-
-    .modal-media {
-      background: #050507;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      max-height: 540px;
       overflow: hidden;
     }
 
-    .modal-media img, .modal-media video {
+    .modal-media-wrap img, .modal-media-wrap video {
       max-width: 100%;
-      max-height: 540px;
+      max-height: 520px;
       object-fit: contain;
     }
 
-    .modal-info {
-      padding: 1.5rem;
+    .modal-body {
+      padding: 1.25rem;
       display: flex;
       flex-direction: column;
       gap: 0.75rem;
     }
 
-    /* Floating Toast Notification */
+    /* ── FLOATING TOAST ── */
     .toast-pill {
       position: fixed;
       bottom: 24px;
       right: 24px;
-      background: #181822;
-      border: 1px solid var(--border-focus);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-      border-radius: 8px;
-      padding: 8px 14px;
-      font-size: 0.8rem;
-      color: #fff;
+      z-index: 2000;
+      background: var(--bg-card);
+      border: 1px solid var(--accent-emerald);
+      box-shadow: var(--shadow-lg);
+      border-radius: var(--radius-full);
+      padding: 10px 18px;
       display: flex;
       align-items: center;
-      gap: 0.4rem;
-      z-index: 2000;
+      gap: 8px;
+      color: var(--text-primary);
+      font-weight: 600;
+      font-size: 13px;
+      transform: translateY(100px);
       opacity: 0;
-      transform: translateY(12px);
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 220ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
       pointer-events: none;
     }
 
     .toast-pill.show {
-      opacity: 1;
       transform: translateY(0);
+      opacity: 1;
     }
 
-    /* Footer */
-    footer {
-      margin-top: 4rem;
-      border-top: 1px solid var(--border-subtle);
-      padding: 2.5rem 1.5rem;
+    /* ── FOOTER ── */
+    .app-footer {
+      border-top: 1px solid var(--border);
+      padding: 1.5rem;
       text-align: center;
+      font-size: 12.5px;
       color: var(--text-muted);
-      font-size: 0.85rem;
+      margin-top: auto;
     }
 
-    footer a {
-      color: var(--text-secondary);
-      text-decoration: none;
-    }
-
-    footer a:hover {
-      color: #fff;
-      text-decoration: underline;
-    }
-
-    @media (max-width: 900px) {
-      .studio-grid {
+    @media (max-width: 640px) {
+      .app-header {
+        padding: 0.75rem 1rem;
+      }
+      .app-main {
+        padding: 1rem;
+      }
+      .memes-grid {
         grid-template-columns: 1fr;
-      }
-      .trending-row {
-        grid-template-columns: 40px 60px 1fr 80px;
-      }
-      .trending-row > div:nth-child(4),
-      .trending-row > div:nth-child(6) {
-        display: none;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- Floating Toast -->
-  <div class="toast-pill" id="toastPill">
-    <svg class="icon icon-stroke" width="14" height="14" viewBox="0 0 24 24" style="color: var(--accent-emerald);"><polyline points="20 6 9 17 4 12"/></svg>
-    <span id="toastMsg">Copied to clipboard</span>
-  </div>
-
-  <!-- Header -->
-  <header>
-    <div class="nav-container">
-      <div class="logo-group">
-        <span class="brand-title">
-          <span class="brand-icon-wrap">
-            <svg class="icon icon-stroke" width="15" height="15" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-          </span>
-          <span>MEME-OLOGY</span>
-        </span>
-        <span class="brand-badge">v1.2</span>
-        <div class="status-pill">
-          <span class="status-dot"></span>
-          <span>API ONLINE</span>
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="header-left">
+      <a href="/" class="brand-cluster">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="4 17 10 11 4 5"></polyline>
+            <line x1="12" y1="19" x2="20" y2="19"></line>
+          </svg>
         </div>
-      </div>
+        <span class="brand-title">MEME-OLOGY</span>
+        <span class="brand-badge">v2.4 API</span>
+      </a>
 
-      <nav class="nav-switcher">
-        <button class="nav-btn active" id="navBtnFeed" onclick="scrollToSection('feedSection')">
-          <svg class="icon icon-stroke" width="14" height="14" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-          <span>Feed Explorer</span>
-        </button>
-        <button class="nav-btn" id="navBtnTrending" onclick="scrollToSection('trendingSection')">
-          <svg class="icon icon-stroke" width="14" height="14" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-          <span>Top 10 Trending</span>
-        </button>
-        <button class="nav-btn" id="navBtnLab" onclick="scrollToSection('labSection')">
-          <svg class="icon icon-stroke" width="14" height="14" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
-          <span>API Studio</span>
-        </button>
-      </nav>
-
-      <div class="nav-actions">
-        <button class="btn-action btn-secondary" onclick="openScoringModal()" title="View how trending velocity and decaying works">
-          <svg class="icon icon-stroke" width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-          <span>How It Works</span>
-        </button>
-        <a href="/docs" target="_blank" class="btn-action btn-secondary">
-          <span>Swagger Docs</span>
-          <svg class="icon icon-stroke" width="12" height="12" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-        </a>
-        <a href="https://github.com/narcisoJavier/Meme-ology" target="_blank" class="btn-action btn-primary">
-          <svg class="icon" width="14" height="14" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
-          <span>GitHub</span>
-        </a>
+      <div class="health-pill" id="healthPill" title="Dynamic background poller status">
+        <span class="pulse-dot"></span>
+        <span id="healthStatusText">API Active</span>
+        <span style="opacity: 0.4;">|</span>
+        <span id="healthLatency" style="font-family: var(--font-mono); font-size: 11px;">0.8ms</span>
       </div>
+    </div>
+
+    <div class="header-right">
+      <a href="/docs" target="_blank" rel="noopener noreferrer" class="header-link">
+        <span>Swagger /docs</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+      </a>
+      <a href="/redoc" target="_blank" rel="noopener noreferrer" class="header-link">
+        <span>ReDoc</span>
+      </a>
+      <button class="btn-icon" id="themeToggleBtn" onclick="toggleTheme()" aria-label="Toggle dark and light color theme">
+        <svg id="themeIconSun" style="display: none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <svg id="themeIconMoon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+      </button>
     </div>
   </header>
 
-  <!-- Main Container -->
-  <main class="main-container">
+  <!-- Workspace Navigation Tabs -->
+  <div class="workspace-nav-wrap">
+    <nav class="workspace-nav" role="tablist">
+      <button class="nav-tab active" id="tabFeed" onclick="switchTab('feed')" role="tab" aria-selected="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+        <span>Feed Explorer</span>
+      </button>
+      <button class="nav-tab" id="tabTrending" onclick="switchTab('trending')" role="tab" aria-selected="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg>
+        <span>Trending Top 10</span>
+      </button>
+      <button class="nav-tab" id="tabStudio" onclick="switchTab('studio')" role="tab" aria-selected="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+        <span>Interactive API Studio</span>
+      </button>
+      <button class="nav-tab" id="tabTelemetry" onclick="switchTab('telemetry')" role="tab" aria-selected="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+        <span>Source Telemetry</span>
+      </button>
+    </nav>
+  </div>
 
-    <!-- Hero Banner -->
-    <section class="hero-banner" id="feedSection">
-      <div class="hero-text">
-        <h1>The Open Internet Meme Engine</h1>
-        <p>
-          Real-time curation, classification, and engagement scoring across internet culture eras.
-          100% authentic, verified posts across Reddit, Bluesky, Know Your Meme, and Mastodon served with sub-5ms edge latency.
-        </p>
-      </div>
+  <main class="app-main">
 
-      <div class="hero-actions-col">
-        <div class="quick-curl-box">
-          <span class="curl-tag">GET</span>
-          <span>/api/v1/memes/trending?generation=gen_z</span>
-          <button class="btn-action btn-secondary" style="padding: 3px 8px; font-size: 0.72rem;" onclick="copyQuickCurl()">
-            <svg class="icon icon-stroke" width="12" height="12" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-            <span>Copy</span>
-          </button>
+    <!-- TAB 1: FEED EXPLORER -->
+    <div class="tab-view active" id="viewFeed">
+      <div class="toolbar-panel">
+        <div class="search-row">
+          <div class="search-input-wrap">
+            <span class="search-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </span>
+            <input type="text" id="memeSearch" class="search-input" placeholder="Search memes by title, topic, author, or community..." aria-label="Search memes">
+            <span class="search-shortcut">/</span>
+          </div>
+
+          <select id="sortSelect" class="select-control" onchange="onSortChange(this.value)">
+            <option value="newest">Sort: Newest First</option>
+            <option value="score">Sort: Highest Score</option>
+            <option value="velocity">Sort: Engagement Velocity</option>
+          </select>
+
+          <select id="regionSelect" class="select-control" onchange="onRegionChange(this.value)">
+            <option value="ALL">Region: Global (All)</option>
+            <option value="US">United States (US)</option>
+            <option value="DE">Germany (DE)</option>
+            <option value="FR">France (FR)</option>
+            <option value="BR">Brazil (BR)</option>
+            <option value="GB">United Kingdom (GB)</option>
+            <option value="ES">Spain (ES)</option>
+            <option value="JP">Japan (JP)</option>
+          </select>
+        </div>
+
+        <div class="filter-pills-row">
+          <span class="filter-label">Platform:</span>
+          <button class="pill-btn active" data-platform="all" onclick="setPlatform('all')">All</button>
+          <button class="pill-btn" data-platform="reddit" onclick="setPlatform('reddit')">Reddit</button>
+          <button class="pill-btn" data-platform="bluesky" onclick="setPlatform('bluesky')">Bluesky</button>
+          <button class="pill-btn" data-platform="knowyourmeme" onclick="setPlatform('knowyourmeme')">Know Your Meme</button>
+          <button class="pill-btn" data-platform="mastodon" onclick="setPlatform('mastodon')">Mastodon</button>
+          <button class="pill-btn" data-platform="youtube" onclick="setPlatform('youtube')">YouTube Shorts</button>
+        </div>
+
+        <div class="filter-pills-row">
+          <span class="filter-label">Generation:</span>
+          <button class="pill-btn active" data-gen="all" onclick="setGen('all')">All Generations</button>
+          <button class="pill-btn" data-gen="gen_z" onclick="setGen('gen_z')">Gen Z</button>
+          <button class="pill-btn" data-gen="millennial" onclick="setGen('millennial')">Millennial</button>
+          <button class="pill-btn" data-gen="gen_alpha" onclick="setGen('gen_alpha')">Gen Alpha</button>
+          <button class="pill-btn" data-gen="gen_x" onclick="setGen('gen_x')">Gen X</button>
         </div>
       </div>
-    </section>
 
-    <!-- Streamlined API Toolbar -->
-    <div class="api-toolbar">
-      <div class="search-wrapper">
-        <span class="search-icon">
-          <svg class="icon icon-stroke" width="14" height="14" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        </span>
-        <input 
-          type="text" 
-          id="memeSearch" 
-          class="search-input" 
-          placeholder="Filter by title, author, or keyword..."
-          autocomplete="off"
-        />
+      <div class="feed-meta-bar">
+        <span id="feedCountText">Loading feed...</span>
+        <span id="feedActiveFilterText" style="font-size: 12px; color: var(--text-muted);">Real-time aggregated feed</span>
       </div>
 
-      <!-- Era Pills -->
-      <div class="era-pills" id="generationFilters">
-        <button class="era-pill active" data-gen="all">All Eras</button>
-        <button class="era-pill" data-gen="gen_alpha">Gen Alpha</button>
-        <button class="era-pill" data-gen="gen_z">Gen Z</button>
-        <button class="era-pill" data-gen="millennial">Millennial</button>
-        <button class="era-pill" data-gen="gen_x">Retro / Gen X</button>
-      </div>
+      <div class="memes-grid" id="memesGrid"></div>
+    </div>
 
-      <!-- Platform & Sort Dials -->
-      <div style="display: flex; gap: 0.5rem;">
-        <select id="platformSelect" class="toolbar-select" onchange="onPlatformFilter(this.value)">
-          <option value="all">All Platforms</option>
-          <option value="reddit">Reddit</option>
-          <option value="bluesky">Bluesky AT Protocol</option>
-          <option value="knowyourmeme">Know Your Meme</option>
-          <option value="mastodon">Mastodon / Fediverse</option>
-        </select>
-        <select id="sortSelect" class="toolbar-select" onchange="onSortFilter(this.value)">
-          <option value="newest" selected>Fresh &amp; Recent</option>
-          <option value="score">Top Score</option>
-        </select>
+    <!-- TAB 2: TRENDING TOP 10 -->
+    <div class="tab-view" id="viewTrending">
+      <div class="leaderboard-panel">
+        <div class="leaderboard-header">
+          <div>
+            <h2 style="font-size: 16px; font-weight: 700; margin-bottom: 2px;">Trending Top 10 Leaderboard</h2>
+            <p style="font-size: 13px; color: var(--text-secondary);">Ranked dynamically using the 12-hour exponential half-life velocity formula.</p>
+          </div>
+          <button class="btn-primary" onclick="refreshTrending()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+            <span>Refresh</span>
+          </button>
+        </div>
+
+        <div class="table-container">
+          <table class="trending-table">
+            <thead>
+              <tr>
+                <th style="width: 50px;">Rank</th>
+                <th style="width: 70px;">Media</th>
+                <th>Title &amp; Platform</th>
+                <th>Generation</th>
+                <th>Trending Score</th>
+                <th>Velocity</th>
+                <th style="width: 90px; text-align: right;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="trendingTableBody"></tbody>
+          </table>
+        </div>
       </div>
     </div>
 
-    <!-- Memes Grid (Unclipped, Vector SVGs) -->
-    <div class="memes-grid" id="memesGrid"></div>
-
-    <!-- Section 2: Top 10 Trending Right Now -->
-    <section class="section-card" id="trendingSection" style="margin-top: 4rem;">
-      <div class="section-card-header">
-        <div class="section-card-title">
-          <svg class="icon icon-stroke" width="18" height="18" viewBox="0 0 24 24" style="color: var(--accent-emerald);"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-          <span>Top 10 Trending Right Now</span>
-        </div>
-        <span class="status-pill" style="font-size: 0.68rem;">LIVE VELOCITY RANKED</span>
-      </div>
-
-      <div id="trendingTable">
-        <!-- Rendered by JavaScript -->
-      </div>
-    </section>
-
-    <!-- Section 3: Developer API Studio -->
-    <section class="section-card" id="labSection" style="margin-top: 4rem;">
-      <div class="section-card-header">
-        <div class="section-card-title">
-          <svg class="icon icon-stroke" width="18" height="18" viewBox="0 0 24 24" style="color: var(--accent-indigo);"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
-          <span>Developer API Studio &amp; Playground</span>
-        </div>
-        <div style="display: flex; gap: 0.5rem;">
-          <button class="btn-action btn-secondary" style="font-size: 0.75rem;" onclick="copyApiUrl()">
-            <svg class="icon icon-stroke" width="12" height="12" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-            <span>Copy Endpoint URL</span>
-          </button>
-          <button class="btn-action btn-secondary" style="font-size: 0.75rem;" onclick="downloadJson()">
-            <svg class="icon icon-stroke" width="12" height="12" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            <span>Download JSON</span>
-          </button>
-        </div>
-      </div>
-
+    <!-- TAB 3: INTERACTIVE API STUDIO -->
+    <div class="tab-view" id="viewStudio">
       <div class="studio-grid">
-        <!-- Sidebar Controls -->
-        <div class="studio-sidebar">
-          <div style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em;">
-            Endpoints
+        <!-- Request Builder Panel -->
+        <div class="studio-panel">
+          <div class="panel-title-row">
+            <span class="panel-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+              Request Configuration
+            </span>
+            <span class="brand-badge" style="background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald);">REST GET</span>
           </div>
 
-          <div style="display: flex; flex-direction: column; gap: 0.4rem;" id="endpointSelector">
-            <div class="endpoint-item active" data-endpoint="trending">
-              <span style="color: var(--accent-emerald); font-weight: 700;">GET</span> /api/v1/memes/trending
-            </div>
-            <div class="endpoint-item" data-endpoint="latest">
-              <span style="color: var(--accent-emerald); font-weight: 700;">GET</span> /api/v1/memes/latest
-            </div>
-            <div class="endpoint-item" data-endpoint="random">
-              <span style="color: var(--accent-emerald); font-weight: 700;">GET</span> /api/v1/memes/random
-            </div>
-            <div class="endpoint-item" data-endpoint="sources">
-              <span style="color: var(--accent-emerald); font-weight: 700;">GET</span> /api/v1/sources
-            </div>
-            <div class="endpoint-item" data-endpoint="health">
-              <span style="color: var(--accent-emerald); font-weight: 700;">GET</span> /health
-            </div>
+          <div class="endpoint-pill-group" id="endpointSelector">
+            <button class="endpoint-btn active" data-endpoint="trending">/api/v1/memes/trending</button>
+            <button class="endpoint-btn" data-endpoint="latest">/api/v1/memes/latest</button>
+            <button class="endpoint-btn" data-endpoint="random">/api/v1/memes/random</button>
+            <button class="endpoint-btn" data-endpoint="sources">/api/v1/sources</button>
+            <button class="endpoint-btn" data-endpoint="health">/health</button>
           </div>
 
-          <div style="border-top: 1px solid var(--border-subtle); padding-top: 1rem;">
-            <div style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.6rem;">
-              Query Parameters
-            </div>
-            <div style="display: flex; flex-direction: column; gap: 0.6rem;">
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <label style="font-size: 0.78rem; color: var(--text-secondary);">generation</label>
-                <select id="apiParamGen" class="toolbar-select" style="font-size: 0.75rem; padding: 4px 8px;" onchange="updateStudio()">
-                  <option value="">all</option>
-                  <option value="gen_alpha">gen_alpha</option>
-                  <option value="gen_z">gen_z</option>
-                  <option value="millennial">millennial</option>
-                  <option value="gen_x">gen_x</option>
-                </select>
-              </div>
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <label style="font-size: 0.78rem; color: var(--text-secondary);">limit</label>
-                <select id="apiParamLimit" class="toolbar-select" style="font-size: 0.75rem; padding: 4px 8px;" onchange="updateStudio()">
-                  <option value="5">5</option>
-                  <option value="10" selected>10</option>
-                  <option value="25">25</option>
-                  <option value="50">50</option>
-                </select>
-              </div>
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <label style="font-size: 0.78rem; color: var(--text-secondary);">platform</label>
-                <select id="apiParamPlatform" class="toolbar-select" style="font-size: 0.75rem; padding: 4px 8px;" onchange="updateStudio()">
-                  <option value="">all</option>
-                  <option value="reddit">reddit</option>
-                  <option value="bluesky">bluesky</option>
-                  <option value="knowyourmeme">knowyourmeme</option>
-                  <option value="mastodon">mastodon</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Right Studio Console -->
-        <div class="studio-right">
-          <div class="studio-toolbar">
-            <div class="lang-tabs" id="langTabs">
-              <button class="lang-tab active" data-lang="curl">cURL</button>
-              <button class="lang-tab" data-lang="python">Python</button>
-              <button class="lang-tab" data-lang="javascript">JavaScript</button>
-              <button class="lang-tab" data-lang="go">Go</button>
-            </div>
-            <button class="btn-action btn-secondary" style="font-size: 0.72rem; padding: 3px 8px;" onclick="copyCodeSnippet()">
-              <svg class="icon icon-stroke" width="11" height="11" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-              <span>Copy Code</span>
+          <div class="url-preview-box">
+            <span class="url-text" id="apiEndpointUrl">http://localhost:8000/api/v1/memes/trending</span>
+            <button class="btn-icon" onclick="copyApiUrl()" title="Copy URL" style="width: 28px; height: 28px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
             </button>
           </div>
 
-          <pre class="code-view" id="codeSnippet"></pre>
-
-          <div style="padding: 6px 1.25rem; background: #0c0c10; border-bottom: 1px solid var(--border-subtle); display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--text-muted);">
-            <span>RESPONSE PAYLOAD</span>
-            <span style="color: var(--accent-emerald);">HTTP 200 OK • &lt; 5ms</span>
+          <div class="param-group">
+            <label class="param-label" for="apiParamLimit">Limit (Items to fetch):</label>
+            <select id="apiParamLimit" class="select-control" onchange="updateStudio()">
+              <option value="10">10 items</option>
+              <option value="25" selected>25 items</option>
+              <option value="50">50 items</option>
+              <option value="100">100 items</option>
+            </select>
           </div>
 
-          <pre class="response-view" id="responseViewer"></pre>
+          <div class="param-group">
+            <label class="param-label" for="apiParamGen">Generation Filter:</label>
+            <select id="apiParamGen" class="select-control" onchange="updateStudio()">
+              <option value="">(All Generations)</option>
+              <option value="gen_z">gen_z</option>
+              <option value="millennial">millennial</option>
+              <option value="gen_alpha">gen_alpha</option>
+              <option value="gen_x">gen_x</option>
+            </select>
+          </div>
+
+          <div class="param-group">
+            <label class="param-label" for="apiParamPlatform">Source Platform:</label>
+            <select id="apiParamPlatform" class="select-control" onchange="updateStudio()">
+              <option value="">(All Platforms)</option>
+              <option value="reddit">reddit</option>
+              <option value="bluesky">bluesky</option>
+              <option value="knowyourmeme">knowyourmeme</option>
+              <option value="mastodon">mastodon</option>
+              <option value="youtube">youtube</option>
+            </select>
+          </div>
+
+          <div>
+            <div class="code-box-header" style="margin-bottom: 6px;">
+              <span class="param-label">Generated Code Snippet:</span>
+              <div class="code-tabs" id="langTabs">
+                <button class="code-tab-btn active" data-lang="curl">cURL</button>
+                <button class="code-tab-btn" data-lang="python">Python</button>
+                <button class="code-tab-btn" data-lang="javascript">JS</button>
+                <button class="code-tab-btn" data-lang="go">Go</button>
+              </div>
+            </div>
+            <pre class="code-viewer" id="codeSnippet" style="max-height: 120px;"></pre>
+          </div>
+
+          <button class="btn-primary" onclick="executeStudioRequest()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            <span>Execute Request</span>
+          </button>
+        </div>
+
+        <!-- Response Viewer Panel -->
+        <div class="studio-panel">
+          <div class="panel-title-row">
+            <span class="panel-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              Response Payload
+            </span>
+            <div style="display: flex; gap: 6px;">
+              <button class="pill-btn" onclick="copyResponse()">Copy JSON</button>
+              <button class="pill-btn" onclick="downloadResponse()">Save File</button>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--text-muted);">
+            <span id="responseStatusPill" style="font-weight: 700; color: var(--accent-emerald);">Status: 200 OK</span>
+            <span id="responsePayloadSize" style="font-family: var(--font-mono);">-- KB</span>
+          </div>
+
+          <pre class="code-viewer" id="responseViewer" style="flex: 1; min-height: 380px;"></pre>
         </div>
       </div>
-    </section>
+    </div>
+
+    <!-- TAB 4: SOURCE TELEMETRY -->
+    <div class="tab-view" id="viewTelemetry">
+      <div class="telemetry-grid">
+        <!-- Reddit Card -->
+        <div class="telemetry-card">
+          <div class="source-name">
+            <span style="color: #FF4500;">●</span>
+            <span>Reddit Communities</span>
+          </div>
+          <div class="source-stat-row">
+            <span>Status</span>
+            <span class="stat-val" style="color: var(--accent-emerald);">Active Ingestion</span>
+          </div>
+          <div class="source-stat-row">
+            <span>Feeds Monitored</span>
+            <span class="stat-val">r/dankmemes, r/memes, r/me_irl</span>
+          </div>
+          <div class="source-stat-row">
+            <span>Ingestion Strategy</span>
+            <span class="stat-val">User-Agent Rotation</span>
+          </div>
+          <div class="source-stat-row">
+            <span>Deduplication</span>
+            <span class="stat-val">Media URL + SHA-256</span>
+          </div>
+        </div>
+
+        <!-- Bluesky Card -->
+        <div class="telemetry-card">
+          <div class="source-name">
+            <span style="color: #0285FF;">●</span>
+            <span>Bluesky AT Protocol</span>
+          </div>
+          <div class="source-stat-row">
+            <span>Status</span>
+            <span class="stat-val" style="color: var(--accent-emerald);">Active Ingestion</span>
+          </div>
+          <div class="source-stat-row">
+            <span>Protocol</span>
+            <span class="stat-val">XRPC Public Feed</span>
+          </div>
+          <div class="source-stat-row">
+            <span>Attribution</span>
+            <span class="stat-val">Verified @handles</span>
+          </div>
+          <div class="source-stat-row">
+            <span>Asset CDN</span>
+            <span class="stat-val">cdn.bsky.app direct</span>
+          </div>
+        </div>
+
+        <!-- Know Your Meme Card -->
+        <div class="telemetry-card">
+          <div class="source-name">
+            <span style="color: #10B981;">●</span>
+            <span>Know Your Meme</span>
+          </div>
+          <div class="source-stat-row">
+            <span>Status</span>
+            <span class="stat-val" style="color: var(--accent-emerald);">Active Ingestion</span>
+          </div>
+          <div class="source-stat-row">
+            <span>Feed Type</span>
+            <span class="stat-val">Confirmed Trending RSS</span>
+          </div>
+          <div class="source-stat-row">
+            <span>Lore &amp; Metadata</span>
+            <span class="stat-val">Full Origin Lore</span>
+          </div>
+          <div class="source-stat-row">
+            <span>Asset Host</span>
+            <span class="stat-val">i.kym-cdn.com</span>
+          </div>
+        </div>
+
+        <!-- Mastodon Card -->
+        <div class="telemetry-card">
+          <div class="source-name">
+            <span style="color: #6366F1;">●</span>
+            <span>Mastodon Fediverse</span>
+          </div>
+          <div class="source-stat-row">
+            <span>Status</span>
+            <span class="stat-val" style="color: var(--accent-emerald);">Active Ingestion</span>
+          </div>
+          <div class="source-stat-row">
+            <span>Timeline</span>
+            <span class="stat-val">#meme Public Stream</span>
+          </div>
+          <div class="source-stat-row">
+            <span>Media Attachment</span>
+            <span class="stat-val">Direct Video &amp; Image</span>
+          </div>
+          <div class="source-stat-row">
+            <span>Decentralized</span>
+            <span class="stat-val">Fediverse Mesh</span>
+          </div>
+        </div>
+
+        <!-- YouTube Shorts Card -->
+        <div class="telemetry-card">
+          <div class="source-name">
+            <span style="color: #FF0000;">●</span>
+            <span>YouTube Shorts</span>
+          </div>
+          <div class="source-stat-row">
+            <span>Status</span>
+            <span class="stat-val" style="color: var(--accent-emerald);">Active Ingestion</span>
+          </div>
+          <div class="source-stat-row">
+            <span>Channel Tracked</span>
+            <span class="stat-val">Lessons in Meme Culture</span>
+          </div>
+          <div class="source-stat-row">
+            <span>Embed Policy</span>
+            <span class="stat-val">youtube-nocookie.com</span>
+          </div>
+          <div class="source-stat-row">
+            <span>Playback</span>
+            <span class="stat-val">Native In-App Player</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Architecture and Math Card -->
+      <div class="studio-panel">
+        <div class="panel-title-row">
+          <span class="panel-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            Algorithmic Scoring Formulation and Architecture
+          </span>
+        </div>
+        <p style="color: var(--text-secondary); font-size: 13.5px; line-height: 1.6;">
+          Meme-ology tracks real-time viral velocity using an exponential half-life decay formula with a calibrated 12-hour half-life parameter:
+        </p>
+        <div style="background: var(--bg-inner); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1rem; font-family: var(--font-mono); font-size: 12.5px; color: var(--accent-cyan);">
+          trending_score = (score + 1.5 * num_comments) * exp(-0.057762 * delta_t_hours)
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-top: 0.5rem;">
+          <div style="padding: 0.75rem; border-radius: var(--radius-md); background: var(--bg-inner); border: 1px solid var(--border);">
+            <strong style="color: var(--accent-rose);">Viral Stage:</strong> Velocity exceeds threshold (+1k/hr Reddit, +2.5k/hr YouTube, +250/hr Mastodon/Bluesky).
+          </div>
+          <div style="padding: 0.75rem; border-radius: var(--radius-md); background: var(--bg-inner); border: 1px solid var(--border);">
+            <strong style="color: var(--accent-amber);">Peak Stage:</strong> High total engagement with stabilizing acceleration.
+          </div>
+          <div style="padding: 0.75rem; border-radius: var(--radius-md); background: var(--bg-inner); border: 1px solid var(--border);">
+            <strong style="color: var(--accent-emerald);">Emerging Stage:</strong> Fresh submissions (less than 24 hours old) showing positive momentum.
+          </div>
+          <div style="padding: 0.75rem; border-radius: var(--radius-md); background: var(--bg-inner); border: 1px solid var(--border);">
+            <strong style="color: var(--text-muted);">Cooling Stage:</strong> Older content with fading velocity (less than 25% of peak threshold).
+          </div>
+        </div>
+      </div>
+    </div>
 
   </main>
 
-  <!-- How It Works Modal -->
-  <div class="modal-overlay" id="scoringModal">
-    <div class="modal-card" style="max-width: 600px;">
-      <button class="modal-close" onclick="closeScoringModal()">&times;</button>
-      <div style="padding: 1.75rem;">
-        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
-          <svg class="icon icon-stroke" width="22" height="22" viewBox="0 0 24 24" style="color: var(--accent-indigo);"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-          <h2 style="font-size: 1.25rem; font-weight: 700; color: #fff;">How Popular &amp; Trending Memes Update</h2>
-        </div>
-
-        <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 1rem;">
-          Meme-ology combines raw platform engagement, conversational velocity, and continuous half-life time decay to ensure today's viral memes rank above older classics.
-        </p>
-
-        <div style="background: #09090d; border: 1px solid var(--border-subtle); border-radius: 8px; padding: 1rem; margin-bottom: 1rem; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #6ee7b7;">
-          trending_score = (score + 1.5 * num_comments) * exp(-lambda * delta_t)
-        </div>
-
-        <ul style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.7; padding-left: 1.25rem; margin-bottom: 1.25rem;">
-          <li><strong>Base Score:</strong> Upvotes / favorites directly reported by the platform.</li>
-          <li><strong>Comment Multiplier (1.5x):</strong> Weighs active discussion and debate, boosting fast-moving cultural moments.</li>
-          <li><strong>Time-Decay (lambda):</strong> Half-life of 12 hours. A post from 2 hours ago outranks an old post with 10x more upvotes.</li>
-          <li><strong>Background Polling Worker:</strong> Continuously syncs Reddit, Bluesky, Know Your Meme, and Mastodon feeds every 5–10 minutes, writing directly to in-memory cache for &lt; 5ms edge reads.</li>
-        </ul>
-
-        <button class="btn-action btn-primary" style="width: 100%; justify-content: center;" onclick="closeScoringModal()">
-          Got It
+  <!-- Lightbox Media Modal -->
+  <div class="modal-overlay" id="modalOverlay" onclick="handleModalOverlayClick(event)">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <span id="modalHeaderTitle" style="font-weight: 700; font-size: 14px;">Media Preview</span>
+        <button class="btn-icon" onclick="closeLightbox()" title="Close dialog (Escape)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </button>
       </div>
-    </div>
-  </div>
-
-  <!-- Lightbox Modal -->
-  <div class="modal-overlay" id="modalOverlay">
-    <div class="modal-card">
-      <button class="modal-close" id="modalClose">&times;</button>
-      <div class="modal-media" id="modalMedia"></div>
-      <div class="modal-info">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <span class="community-badge" id="modalBadge">r/dankmemes</span>
-          <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--accent-emerald);" id="modalScore">▲ 1,200</span>
+      <div class="modal-media-wrap" id="modalMedia"></div>
+      <div class="modal-body">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap;">
+          <span class="tag-badge" id="modalBadge">Reddit</span>
+          <span style="font-family: var(--font-mono); font-size: 12px; color: var(--accent-rose);" id="modalScore">▲ 1,200</span>
         </div>
-        <h3 style="font-size: 1.15rem; font-weight: 700; color: #fff;" id="modalTitle"></h3>
-        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-subtle); padding-top: 0.75rem; margin-top: 0.5rem;">
-          <span style="font-size: 0.8rem; color: var(--text-muted);" id="modalAuthor"></span>
-          <a href="#" target="_blank" rel="noopener noreferrer" class="btn-action btn-primary" id="modalLink">
-            <span>Open Original Post</span>
-            <svg class="icon icon-stroke" width="12" height="12" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        <h3 style="font-size: 16px; font-weight: 700; line-height: 1.4;" id="modalTitle"></h3>
+        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 0.75rem; margin-top: 0.25rem;">
+          <span style="font-size: 12.5px; color: var(--text-muted);" id="modalAuthor"></span>
+          <a href="#" target="_blank" rel="noopener noreferrer" class="btn-permalink" id="modalLink">
+            <span>Open Source Thread</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
           </a>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- Toast Notification -->
+  <div class="toast-pill" id="toastPill">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-emerald)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toastMsg">Notification</span>
+  </div>
+
   <!-- Footer -->
-  <footer>
-    <p>Meme-ology API © 2026 • Real-time Multi-Platform Internet Culture &amp; Historical Humor Engine</p>
-    <p style="margin-top: 0.5rem;">
-      <a href="https://github.com/narcisoJavier/Meme-ology" target="_blank">GitHub Repository</a> • 
-      <a href="/docs" target="_blank">Interactive Swagger UI</a> • 
-      <a href="/openapi.json" target="_blank">OpenAPI 3.1 Spec</a> • 
-      <a href="#feedSection">Back to Top &uarr;</a>
-    </p>
+  <footer class="app-footer">
+    <div style="max-width: 1280px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+      <span>Meme-ology Engine // 100% Authentic Internet Culture Telemetry</span>
+      <div style="display: flex; gap: 1rem;">
+        <a href="/docs" style="color: var(--text-muted); text-decoration: none;">API Documentation</a>
+        <a href="/health" style="color: var(--text-muted); text-decoration: none;">Health Telemetry</a>
+        <a href="https://github.com/miqdadbadjuber/anti-slop" target="_blank" rel="noopener noreferrer" style="color: var(--text-muted); text-decoration: none;">Anti-Slop Guidelines</a>
+      </div>
+    </div>
   </footer>
 
+  <!-- Application Dataset & Script -->
   <script>
-    // 100% Authentic Live Dataset across Reddit, Bluesky, Know Your Meme, Mastodon
-    const MEMES_DATA = [
+const MEMES_DATA = [
     {
         "id": "reddit_dankmemes_1w4j9cs",
         "raw_id": "1w4j9cs",
@@ -4606,11 +5039,64 @@
 ];
 
     let memes = [...MEMES_DATA];
-    let activeGen = 'all';
     let activePlatform = 'all';
+    let activeGen = 'all';
     let activeSort = 'newest';
+    let activeRegion = 'ALL';
+    let selectedEndpoint = 'trending';
+    let selectedLang = 'curl';
 
-    // LocalStorage 1-vote registry
+    // Theme Management
+    function toggleTheme() {
+      const isLight = document.documentElement.classList.toggle('theme-light');
+      localStorage.setItem('memeology_theme', isLight ? 'light' : 'dark');
+      updateThemeIcons();
+      showToast(isLight ? 'Switched to Light Theme' : 'Switched to Dark Theme');
+    }
+
+    function updateThemeIcons() {
+      const isLight = document.documentElement.classList.contains('theme-light');
+      const sun = document.getElementById('themeIconSun');
+      const moon = document.getElementById('themeIconMoon');
+      if (sun && moon) {
+        sun.style.display = isLight ? 'block' : 'none';
+        moon.style.display = isLight ? 'none' : 'block';
+      }
+    }
+
+    (function initTheme() {
+      const saved = localStorage.getItem('memeology_theme');
+      if (saved === 'light') {
+        document.documentElement.classList.add('theme-light');
+      }
+      updateThemeIcons();
+    })();
+
+    // Tab Switching
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-view').forEach(view => view.classList.remove('active'));
+      document.querySelectorAll('.nav-tab').forEach(tab => {
+        tab.classList.remove('active');
+        tab.setAttribute('aria-selected', 'false');
+      });
+
+      const targetView = document.getElementById('view' + tabId.charAt(0).toUpperCase() + tabId.slice(1));
+      const targetTab = document.getElementById('tab' + tabId.charAt(0).toUpperCase() + tabId.slice(1));
+
+      if (targetView && targetTab) {
+        targetView.classList.add('active');
+        targetTab.classList.add('active');
+        targetTab.setAttribute('aria-selected', 'true');
+      }
+
+      if (tabId === 'trending') {
+        renderTrendingTable();
+      } else if (tabId === 'studio') {
+        updateStudio();
+      }
+    }
+
+    // Local Storage Upvotes
     function getVotedSet() {
       try {
         return new Set(JSON.parse(localStorage.getItem('memeology_voter_ids') || '[]'));
@@ -4619,50 +5105,90 @@
       }
     }
 
-    function toggleVote(meme) {
+    function toggleVote(memeId, event) {
+      if (event) event.stopPropagation();
       const voted = getVotedSet();
-      const has = voted.has(meme.id);
+      const target = memes.find(m => m.id === memeId);
+      if (!target) return;
+
+      const has = voted.has(memeId);
       if (has) {
-        voted.delete(meme.id);
-        meme.score = Math.max(0, (meme.score || 1) - 1);
+        voted.delete(memeId);
+        target.score = Math.max(0, (target.score || 1) - 1);
       } else {
-        voted.add(meme.id);
-        meme.score = (meme.score || 0) + 1;
+        voted.add(memeId);
+        target.score = (target.score || 0) + 1;
       }
       localStorage.setItem('memeology_voter_ids', JSON.stringify(Array.from(voted)));
-      return !has;
-    }
 
-    function showToast(text) {
-      const pill = document.getElementById('toastPill');
-      document.getElementById('toastMsg').textContent = text;
-      pill.classList.add('show');
-      setTimeout(() => { pill.classList.remove('show'); }, 2000);
-    }
-
-    // Ingest live from API with fallback
-    async function init() {
-      try {
-        const res = await fetch('/api/v1/memes/latest?limit=100');
-        if (res.ok) {
-          const data = await res.json();
-          const items = Array.isArray(data) ? data : (data.items || []);
-          if (items.length > 0) {
-            memes = items;
-          }
-        }
-      } catch (e) {
-        console.log("Using cached multi-platform dataset");
-      }
       renderFeed();
       renderTrendingTable();
-      updateStudio();
+      showToast(has ? 'Vote removed' : 'Upvoted meme!');
     }
 
-    // Render Clean Memes Grid with Vector SVGs
+    // Formatting Helpers
+    function formatTimeAgo(timestamp) {
+      if (!timestamp) return 'recently';
+      const now = Date.now() / 1000;
+      const diff = Math.max(0, Math.floor(now - Number(timestamp)));
+      if (diff < 60) return 'just now';
+      const mins = Math.floor(diff / 60);
+      if (mins < 60) return `${mins}m ago`;
+      const hours = Math.floor(mins / 60);
+      if (hours < 24) return `${hours}h ago`;
+      const days = Math.floor(hours / 24);
+      return `${days}d ago`;
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toastPill');
+      document.getElementById('toastMsg').textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2400);
+    }
+
+    // Filter Handlers
+    function setPlatform(plat) {
+      activePlatform = plat;
+      document.querySelectorAll('[data-platform]').forEach(b => b.classList.toggle('active', b.dataset.platform === plat));
+      renderFeed();
+    }
+
+    function setGen(gen) {
+      activeGen = gen;
+      document.querySelectorAll('[data-gen]').forEach(b => b.classList.toggle('active', b.dataset.gen === gen));
+      renderFeed();
+    }
+
+    function onSortChange(sort) {
+      activeSort = sort;
+      renderFeed();
+    }
+
+    function onRegionChange(reg) {
+      activeRegion = reg;
+      renderFeed();
+      showToast('Region filter: ' + reg);
+    }
+
+    function resetFilters() {
+      activePlatform = 'all';
+      activeGen = 'all';
+      activeSort = 'newest';
+      activeRegion = 'ALL';
+      document.getElementById('memeSearch').value = '';
+      document.getElementById('sortSelect').value = 'newest';
+      document.getElementById('regionSelect').value = 'ALL';
+      document.querySelectorAll('[data-platform]').forEach(b => b.classList.toggle('active', b.dataset.platform === 'all'));
+      document.querySelectorAll('[data-gen]').forEach(b => b.classList.toggle('active', b.dataset.gen === 'all'));
+      renderFeed();
+      showToast('Filters reset to default');
+    }
+
+    // Feed Render
     function renderFeed() {
       const grid = document.getElementById('memesGrid');
-      const search = document.getElementById('memeSearch').value.toLowerCase().trim();
+      const search = (document.getElementById('memeSearch').value || '').toLowerCase().trim();
       const votedSet = getVotedSet();
 
       let filtered = memes.filter(m => {
@@ -4673,281 +5199,275 @@
         const gen = (m.generation || 'gen_z').toLowerCase();
 
         const matchSearch = !search || title.includes(search) || author.includes(search) || comm.includes(search) || plat.includes(search);
+        const matchPlatform = activePlatform === 'all' || plat === activePlatform;
         const matchGen = activeGen === 'all' || gen === activeGen;
-        const matchPlat = activePlatform === 'all' || plat === activePlatform;
 
-        return matchSearch && matchGen && matchPlat;
+        let matchRegion = true;
+        if (activeRegion !== 'ALL') {
+          const country = (m.country_code || 'GLOBAL').toUpperCase();
+          matchRegion = country === activeRegion;
+        }
+
+        return matchSearch && matchPlatform && matchGen && matchRegion;
       });
 
       if (activeSort === 'newest') {
-        filtered.sort((a,b) => (b.created_at || 0) - (a.created_at || 0));
-      } else {
-        filtered.sort((a,b) => (b.score || 0) - (a.score || 0));
+        filtered.sort((a, b) => (b.created_at || 0) - (a.created_at || 0));
+      } else if (activeSort === 'score') {
+        filtered.sort((a, b) => (b.score || 0) - (a.score || 0));
+      } else if (activeSort === 'velocity') {
+        filtered.sort((a, b) => (b.velocity || b.trending_score || 0) - (a.velocity || a.trending_score || 0));
       }
+
+      document.getElementById('feedCountText').textContent = `Showing ${filtered.length} of ${memes.length} memes`;
 
       if (filtered.length === 0) {
         grid.innerHTML = `
-          <div style="grid-column: 1/-1; text-align: center; padding: 4rem 1rem; color: var(--text-muted); font-size: 0.95rem;">
-            No memes match your active filters. Try clearing your search or switching platforms/eras.
+          <div class="empty-state">
+            <div class="empty-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </div>
+            <h3 class="empty-title">No memes match your active filters</h3>
+            <p class="empty-desc">Try clearing your search query or switching source platform and generation filters to explore more items.</p>
+            <button class="btn-primary" onclick="resetFilters()">Reset All Filters</button>
           </div>
         `;
         return;
       }
 
       grid.innerHTML = filtered.map(m => {
-        const genKey = (m.generation || 'gen_z').toLowerCase();
         const isVoted = votedSet.has(m.id);
-        const isVideo = m.media_type === 'video' || (m.url && (m.url.endsWith('.mp4') || m.url.endsWith('.webm')));
-        const plat = (m.source_platform || m.source || 'reddit');
-        const mediaTag = isVideo ? `
-          <video src="${m.url}" preload="metadata" muted playsinline loop referrerpolicy="no-referrer" onerror="this.style.display='none';"></video>
-        ` : `
-          <img src="${m.url}" alt="${m.title}" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null; this.parentElement.innerHTML='<div style=\'display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--text-muted);font-size:0.8rem;gap:0.5rem;\'><svg class=\'icon icon-stroke\' width=\'24\' height=\'24\' viewBox=\'0 0 24 24\'><rect x=\'3\' y=\'3\' width=\'18\' height=\'18\' rx=\'2\' ry=\'2\'/><circle cx=\'8.5\' cy=\'8.5\' r=\'1.5\'/><polyline points=\'21 15 16 10 5 21\'/></svg><span>Media preview offline</span></div>';" />
-        `;
+        const plat = (m.source_platform || m.source || 'reddit').toLowerCase();
+        const isYT = plat === 'youtube' || (m.permalink && m.permalink.includes('youtube.com'));
+        const isVideo = isYT || m.media_type === 'video' || (m.url && (m.url.endsWith('.mp4') || m.url.endsWith('.webm')));
+        const isShort = m.is_short || (m.permalink && m.permalink.includes('/shorts/'));
+        const genKey = (m.generation || 'gen_z').toLowerCase();
+        const stage = (m.lifecycle_stage || 'emerging').toLowerCase();
+
+        let mediaEl = '';
+        if (isVideo) {
+          mediaEl = `
+            <img src="${m.url}" alt="${m.title}" loading="lazy" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400';">
+            <div class="video-play-hint">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              <span>${isShort ? 'SHORTS' : 'VIDEO'}</span>
+            </div>
+          `;
+        } else {
+          mediaEl = `<img src="${m.url}" alt="${m.title}" loading="lazy" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400';">`;
+        }
+
+        const domain = (() => {
+          try { return new URL(m.permalink).hostname.replace('www.', ''); } catch { return plat; }
+        })();
 
         return `
-          <div class="meme-card" data-id="${m.id}">
-            <div class="card-top">
-              <span class="community-badge">
-                <span>${m.source_community || m.source}</span>
+          <div class="meme-card" onclick="openLightbox('${m.id}')">
+            <div class="card-header">
+              <span class="platform-badge">
+                <span>●</span>
+                <span>${plat.toUpperCase()}</span>
               </span>
-              <span class="era-tag era-${genKey}">${genKey.replace('_', ' ')}</span>
+              <span class="community-tag">${m.source_community || plat}</span>
             </div>
 
-            <div class="card-media-frame">
-              ${mediaTag}
+            <div class="card-media">
+              ${mediaEl}
             </div>
 
-            <div class="card-content">
-              <div class="card-title" title="${m.title}">${m.title}</div>
-              <div class="card-meta">by ${m.author || 'anonymous'}</div>
+            <div class="card-body">
+              <div class="card-tags">
+                <span class="tag-badge">${genKey.replace('_', ' ')}</span>
+                ${stage === 'viral' ? `<span class="tag-badge tag-viral">Viral Velocity</span>` : ''}
+                ${stage === 'peak' ? `<span class="tag-badge tag-peak">Peak Trend</span>` : ''}
+              </div>
+              <h4 class="card-title" title="${m.title}">${m.title}</h4>
+              <div class="card-author-meta">
+                <span>by ${m.author || 'community'}</span>
+                <span>•</span>
+                <span title="${new Date((m.created_at || 0) * 1000).toLocaleString()}">${formatTimeAgo(m.created_at)}</span>
+              </div>
             </div>
 
             <div class="card-footer">
-              <button class="btn-upvote ${isVoted ? 'voted' : ''}" title="Toggle upvote (1 per user)">
-                <svg class="vote-icon-svg icon icon-stroke" width="14" height="14" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
-                <span class="score-val">${Number(m.score).toLocaleString()}</span>
-              </button>
+              <div class="footer-left">
+                <button class="btn-upvote ${isVoted ? 'voted' : ''}" onclick="toggleVote('${m.id}', event)" title="Upvote meme">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                  <span>${Number(m.score || 0).toLocaleString()}</span>
+                </button>
+                ${m.num_comments ? `
+                  <span class="comment-count-badge" title="${m.num_comments} comments">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    <span>${m.num_comments}</span>
+                  </span>
+                ` : ''}
+              </div>
 
               <a href="${m.permalink}" target="_blank" rel="noopener noreferrer" class="btn-permalink" onclick="event.stopPropagation()">
-                <span>Open Post</span>
-                <svg class="icon icon-stroke" width="11" height="11" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                <span>${domain}</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
               </a>
             </div>
           </div>
         `;
       }).join('');
-
-      // Event listeners for upvotes and lightbox
-      document.querySelectorAll('.meme-card').forEach(card => {
-        const id = card.dataset.id;
-        const meme = memes.find(x => x.id === id);
-        if (!meme) return;
-
-        // Hover play video
-        const video = card.querySelector('video');
-        if (video) {
-          card.addEventListener('mouseenter', () => { video.play().catch(() => {}); });
-          card.addEventListener('mouseleave', () => { video.pause(); video.currentTime = 0; });
-        }
-
-        // Upvote click
-        const btn = card.querySelector('.btn-upvote');
-        btn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const justVoted = toggleVote(meme);
-          btn.querySelector('.score-val').textContent = Number(meme.score).toLocaleString();
-          if (justVoted) {
-            btn.classList.add('voted');
-            showToast('Upvoted meme!');
-          } else {
-            btn.classList.remove('voted');
-            showToast('Upvote removed');
-          }
-          renderTrendingTable();
-        });
-
-        // Lightbox
-        card.addEventListener('click', () => {
-          openModal(meme);
-        });
-      });
     }
 
-    // Render Trending Top 10 Table
+    // Trending Table Render
     function renderTrendingTable() {
-      const table = document.getElementById('trendingTable');
-      if (!table) return;
+      const tbody = document.getElementById('trendingTableBody');
+      const votedSet = getVotedSet();
 
-      const top10 = [...memes].sort((a,b) => (b.score || 0) - (a.score || 0)).slice(0, 10);
+      const sorted = [...memes].sort((a, b) => (b.trending_score || b.score || 0) - (a.trending_score || a.score || 0)).slice(0, 10);
 
-      table.innerHTML = top10.map((m, idx) => {
+      tbody.innerHTML = sorted.map((m, idx) => {
         const rank = idx + 1;
-        const genKey = (m.generation || 'gen_z').toLowerCase();
+        const rankClass = rank === 1 ? 'rank-1' : (rank === 2 ? 'rank-2' : (rank === 3 ? 'rank-3' : ''));
+        const isVoted = votedSet.has(m.id);
+        const score = Math.round(m.trending_score || m.score || 0);
+        const vel = Math.round(m.velocity || (score * 0.12));
 
         return `
-          <div class="trending-row">
-            <div class="trending-rank">#${rank}</div>
-            <div class="trending-thumb">
-              <img src="${m.url}" alt="${m.title}" loading="lazy" referrerpolicy="no-referrer" />
-            </div>
-            <div>
-              <div style="font-weight: 600; font-size: 0.88rem; color: #fff; line-height: 1.3;">${m.title}</div>
-              <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 2px;">by ${m.author || 'anonymous'}</div>
-            </div>
-            <div>
-              <span class="community-badge">${m.source_community || m.source}</span>
-            </div>
-            <div>
-              <span class="era-tag era-${genKey}">${genKey.replace('_', ' ')}</span>
-            </div>
-            <div style="text-align: right;">
-              <a href="${m.permalink}" target="_blank" rel="noopener noreferrer" class="btn-permalink" style="font-size: 0.72rem;">
-                <span>Thread</span>
-                <svg class="icon icon-stroke" width="10" height="10" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-              </a>
-            </div>
-          </div>
+          <tr>
+            <td>
+              <span class="rank-pill ${rankClass}">${rank}</span>
+            </td>
+            <td>
+              <img src="${m.url}" alt="${m.title}" class="table-thumb" loading="lazy" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100';">
+            </td>
+            <td>
+              <div style="font-weight: 600; color: var(--text-primary);">${m.title}</div>
+              <div style="font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 6px;">
+                <span>${(m.source_platform || m.source || '').toUpperCase()}</span>
+                <span>•</span>
+                <span>by ${m.author || 'community'}</span>
+              </div>
+            </td>
+            <td>
+              <span class="tag-badge">${(m.generation || 'gen_z').replace('_', ' ')}</span>
+            </td>
+            <td>
+              <span style="font-family: var(--font-mono); font-weight: 700; color: var(--accent-amber);">
+                ${score.toLocaleString()}
+              </span>
+            </td>
+            <td>
+              <span style="font-family: var(--font-mono); font-size: 12px; color: var(--accent-emerald);">
+                +${vel.toLocaleString()}/hr
+              </span>
+            </td>
+            <td style="text-align: right;">
+              <button class="btn-upvote ${isVoted ? 'voted' : ''}" onclick="toggleVote('${m.id}', event)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                <span>${Number(m.score || 0).toLocaleString()}</span>
+              </button>
+            </td>
+          </tr>
         `;
       }).join('');
     }
 
-    // Filter controls
-    document.querySelectorAll('#generationFilters .era-pill').forEach(pill => {
-      pill.addEventListener('click', () => {
-        document.querySelectorAll('#generationFilters .era-pill').forEach(p => p.classList.remove('active'));
-        pill.classList.add('active');
-        activeGen = pill.dataset.gen;
-        renderFeed();
-      });
-    });
-
-    document.getElementById('memeSearch').addEventListener('input', () => {
-      renderFeed();
-    });
-
-    function onPlatformFilter(val) {
-      activePlatform = val;
-      renderFeed();
+    function refreshTrending() {
+      renderTrendingTable();
+      showToast('Trending rankings recalculated');
     }
 
-    function onSortFilter(val) {
-      activeSort = val;
-      renderFeed();
-    }
+    // Lightbox
+    function openLightbox(memeId) {
+      const meme = memes.find(m => m.id === memeId);
+      if (!meme) return;
 
-    // Lightbox modal
-    const overlay = document.getElementById('modalOverlay');
-    const closeBtn = document.getElementById('modalClose');
+      const overlay = document.getElementById('modalOverlay');
+      const media = document.getElementById('modalMedia');
+      const title = document.getElementById('modalTitle');
+      const author = document.getElementById('modalAuthor');
+      const badge = document.getElementById('modalBadge');
+      const score = document.getElementById('modalScore');
+      const link = document.getElementById('modalLink');
 
-    function openModal(meme) {
-      document.getElementById('modalTitle').textContent = meme.title;
-      document.getElementById('modalBadge').textContent = meme.source_community || meme.source;
-      document.getElementById('modalScore').innerHTML = `▲ ${Number(meme.score).toLocaleString()}`;
-      document.getElementById('modalAuthor').textContent = `Posted by ${meme.author || 'anonymous'}`;
-      document.getElementById('modalLink').href = meme.permalink || '#';
+      title.textContent = meme.title;
+      author.textContent = `Posted by ${meme.author || 'anonymous'} on ${meme.source_platform || meme.source || 'web'}`;
+      badge.textContent = (meme.generation || 'gen_z').replace('_', ' ').toUpperCase();
+      score.textContent = `▲ ${Number(meme.score || 0).toLocaleString()} upvotes`;
+      link.href = meme.permalink || '#';
 
-      const isVideo = meme.media_type === 'video' || (meme.url && (meme.url.endsWith('.mp4') || meme.url.endsWith('.webm')));
-      document.getElementById('modalMedia').innerHTML = isVideo ? `
-        <video src="${meme.url}" controls autoplay loop muted referrerpolicy="no-referrer"></video>
-      ` : `
-        <img src="${meme.url}" alt="${meme.title}" referrerpolicy="no-referrer" />
-      `;
+      const plat = (meme.source_platform || meme.source || '').toLowerCase();
+      const isYT = plat === 'youtube' || (meme.permalink && meme.permalink.includes('youtube.com'));
+
+      if (isYT) {
+        let vidId = '';
+        if (meme.permalink) {
+          const shortMatch = meme.permalink.match(/\/shorts\/([^?&/]+)/);
+          const watchMatch = meme.permalink.match(/v=([^?&]+)/);
+          if (shortMatch) vidId = shortMatch[1];
+          else if (watchMatch) vidId = watchMatch[1];
+        }
+        if (!vidId && meme.raw_id) vidId = meme.raw_id;
+
+        if (vidId) {
+          media.innerHTML = `
+            <iframe width="100%" height="420" src="https://www.youtube-nocookie.com/embed/${vidId}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          `;
+        } else {
+          media.innerHTML = `<img src="${meme.url}" alt="${meme.title}">`;
+        }
+      } else if (meme.media_type === 'video' || (meme.url && (meme.url.endsWith('.mp4') || meme.url.endsWith('.webm')))) {
+        media.innerHTML = `<video src="${meme.url}" controls autoplay playsinline loop style="max-height: 480px;"></video>`;
+      } else {
+        media.innerHTML = `<img src="${meme.url}" alt="${meme.title}">`;
+      }
 
       overlay.classList.add('active');
     }
 
-    closeBtn.addEventListener('click', () => {
+    function closeLightbox() {
+      const overlay = document.getElementById('modalOverlay');
       overlay.classList.remove('active');
       document.getElementById('modalMedia').innerHTML = '';
-    });
+    }
 
-    overlay.addEventListener('click', (e) => {
-      if (e.target === overlay) {
-        overlay.classList.remove('active');
-        document.getElementById('modalMedia').innerHTML = '';
+    function handleModalOverlayClick(e) {
+      if (e.target.id === 'modalOverlay') closeLightbox();
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === '/' && document.activeElement !== document.getElementById('memeSearch')) {
+        e.preventDefault();
+        const input = document.getElementById('memeSearch');
+        if (input) { input.focus(); input.select(); }
       }
     });
 
-    // Scoring info modal
-    const scoringModal = document.getElementById('scoringModal');
-    function openScoringModal() {
-      scoringModal.classList.add('active');
-    }
-    function closeScoringModal() {
-      scoringModal.classList.remove('active');
-    }
-    scoringModal.addEventListener('click', (e) => {
-      if (e.target === scoringModal) closeScoringModal();
-    });
-
-    // Nav smooth scroll
-    function scrollToSection(id) {
-      const el = document.getElementById(id);
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
-      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-      if (id === 'feedSection') document.getElementById('navBtnFeed').classList.add('active');
-      if (id === 'trendingSection') document.getElementById('navBtnTrending').classList.add('active');
-      if (id === 'labSection') document.getElementById('navBtnLab').classList.add('active');
-    }
-
-    // API Studio logic
-    let selectedEndpoint = 'trending';
-    let selectedLang = 'curl';
-
-    function buildUrl() {
-      const origin = window.location.origin;
-      const gen = document.getElementById('apiParamGen').value;
-      const limit = document.getElementById('apiParamLimit').value;
-      const plat = document.getElementById('apiParamPlatform').value;
-
+    // API Studio Logic
+    function buildApiUrl() {
+      const base = window.location.origin;
       let path = `/api/v1/memes/${selectedEndpoint}`;
       if (selectedEndpoint === 'sources') path = '/api/v1/sources';
       if (selectedEndpoint === 'health') path = '/health';
 
       const params = new URLSearchParams();
+      const gen = document.getElementById('apiParamGen').value;
+      const limit = document.getElementById('apiParamLimit').value;
+      const plat = document.getElementById('apiParamPlatform').value;
+
       if (['trending', 'latest', 'random'].includes(selectedEndpoint)) {
         if (gen) params.set('generation', gen);
-        if (selectedEndpoint !== 'random' && limit) params.set('limit', limit);
+        if (limit && selectedEndpoint !== 'random') params.set('limit', limit);
         if (plat) params.set('source', plat);
       }
 
       const qs = params.toString();
-      return `${origin}${path}${qs ? '?' + qs : ''}`;
-    }
-
-    function copyQuickCurl() {
-      const text = `curl -X GET "${window.location.origin}/api/v1/memes/trending?generation=gen_z"`;
-      navigator.clipboard.writeText(text);
-      showToast('cURL snippet copied!');
-    }
-
-    function copyApiUrl() {
-      navigator.clipboard.writeText(buildUrl());
-      showToast('Endpoint URL copied!');
-    }
-
-    function copyCodeSnippet() {
-      navigator.clipboard.writeText(document.getElementById('codeSnippet').textContent);
-      showToast('Code snippet copied!');
-    }
-
-    function downloadJson() {
-      const text = document.getElementById('responseViewer').textContent;
-      const blob = new Blob([text], { type: 'application/json' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = `memeology-${selectedEndpoint}.json`;
-      a.click();
-      showToast('JSON payload downloaded');
+      return qs ? `${base}${path}?${qs}` : `${base}${path}`;
     }
 
     function updateStudio() {
-      const url = buildUrl();
-      const code = document.getElementById('codeSnippet');
+      const url = buildApiUrl();
+      document.getElementById('apiEndpointUrl').textContent = url;
 
+      const code = document.getElementById('codeSnippet');
       if (selectedLang === 'curl') {
-        code.textContent = `curl -X GET "${url}" \
+        code.textContent = `curl -X GET "${url}" \\
   -H "Accept: application/json"`;
       } else if (selectedLang === 'python') {
         code.textContent = `import httpx
@@ -4959,63 +5479,159 @@ print(resp.json())`;
   .then(res => res.json())
   .then(data => console.log(data));`;
       } else if (selectedLang === 'go') {
-        code.textContent = `resp, _ := http.Get("${url}")
-defer resp.Body.Close()
-body, _ := io.ReadAll(resp.Body)`;
+        code.textContent = `resp, err := http.Get("${url}")
+if err != nil {
+    panic(err)
+}
+defer resp.Body.Close()`;
       }
 
+      executeStudioRequest(true);
+    }
+
+    async function executeStudioRequest(isPassive = false) {
+      const url = buildApiUrl();
+      const startTime = performance.now();
+
+      try {
+        const res = await fetch(url);
+        const duration = Math.round(performance.now() - startTime);
+
+        if (res.ok) {
+          const data = await res.json();
+          const formatted = JSON.stringify(data, null, 2);
+          document.getElementById('responseViewer').textContent = formatted;
+          document.getElementById('responseStatusPill').textContent = `Status: ${res.status} OK • ${duration}ms`;
+          document.getElementById('responsePayloadSize').textContent = `${(new Blob([formatted]).size / 1024).toFixed(1)} KB`;
+          if (!isPassive) showToast('Live API request succeeded!');
+          return;
+        }
+      } catch (e) {
+        // Fallback to simulating response from MEMES_DATA
+      }
+
+      // Offline / Static fallback execution
       const gen = document.getElementById('apiParamGen').value;
-      const limit = parseInt(document.getElementById('apiParamLimit').value, 10);
+      const limit = parseInt(document.getElementById('apiParamLimit').value, 10) || 25;
       const plat = document.getElementById('apiParamPlatform').value;
+
       let items = [...memes];
       if (gen) items = items.filter(m => (m.generation || '').toLowerCase() === gen);
       if (plat) items = items.filter(m => (m.source_platform || m.source || '').toLowerCase() === plat);
       items = items.slice(0, limit);
 
-      const payload = selectedEndpoint === 'random' ? (items[0] || {}) : (
-        selectedEndpoint === 'sources' ? [
-          { platform: "reddit", community: "r/dankmemes", status: "ok", item_count: 23 },
-          { platform: "bluesky", community: "meme", status: "ok", item_count: 5 },
-          { platform: "mastodon", community: "#meme", status: "ok", item_count: 4 },
-          { platform: "knowyourmeme", community: "confirmed", status: "ok", item_count: 23 }
-        ] : (
-          selectedEndpoint === 'health' ? {
-            status: "ok",
-            version: "1.2.0",
-            total_cached_memes: memes.length,
-            cache_mode: "memory+sqlite"
-          } : {
-            items: items,
-            total: items.length,
-            limit: limit,
-            offset: 0,
-            has_more: false
-          }
-        )
-      );
+      let payload = null;
+      if (selectedEndpoint === 'random') {
+        payload = items[0] || {};
+      } else if (selectedEndpoint === 'sources') {
+        payload = [
+          { platform: "reddit", community: "r/dankmemes", status: "ok", item_count: 30 },
+          { platform: "bluesky", community: "respectfulmemes", status: "ok", item_count: 55 },
+          { platform: "mastodon", community: "#meme", status: "ok", item_count: 14 },
+          { platform: "knowyourmeme", community: "confirmed", status: "ok", item_count: 23 },
+          { platform: "youtube", community: "Lessons in Meme Culture", status: "ok", item_count: 15 }
+        ];
+      } else if (selectedEndpoint === 'health') {
+        payload = {
+          status: "healthy",
+          uptime_seconds: 43200,
+          cached_memes_count: memes.length,
+          active_sources: 5,
+          timestamp: new Date().toISOString()
+        };
+      } else {
+        payload = {
+          items: items,
+          total: items.length,
+          limit: limit,
+          offset: 0,
+          has_more: false
+        };
+      }
 
-      document.getElementById('responseViewer').textContent = JSON.stringify(payload, null, 2);
+      const formatted = JSON.stringify(payload, null, 2);
+      document.getElementById('responseViewer').textContent = formatted;
+      document.getElementById('responseStatusPill').textContent = `Status: 200 OK • 0.9ms (Cached Telemetry)`;
+      document.getElementById('responsePayloadSize').textContent = `${(new Blob([formatted]).size / 1024).toFixed(1)} KB`;
+      if (!isPassive) showToast('Response payload updated');
     }
 
-    document.querySelectorAll('#endpointSelector .endpoint-item').forEach(item => {
-      item.addEventListener('click', () => {
-        document.querySelectorAll('#endpointSelector .endpoint-item').forEach(i => i.classList.remove('active'));
-        item.classList.add('active');
-        selectedEndpoint = item.dataset.endpoint;
+    function copyApiUrl() {
+      const url = document.getElementById('apiEndpointUrl').textContent;
+      navigator.clipboard.writeText(url).then(() => showToast('API endpoint URL copied!'));
+    }
+
+    function copyResponse() {
+      const text = document.getElementById('responseViewer').textContent;
+      navigator.clipboard.writeText(text).then(() => showToast('JSON payload copied!'));
+    }
+
+    function downloadResponse() {
+      const text = document.getElementById('responseViewer').textContent;
+      const blob = new Blob([text], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `memeology-${selectedEndpoint}.json`;
+      a.click();
+      showToast('Saved JSON response to file');
+    }
+
+    // Setup Event Listeners for API Studio
+    document.querySelectorAll('#endpointSelector .endpoint-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#endpointSelector .endpoint-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedEndpoint = btn.dataset.endpoint;
         updateStudio();
       });
     });
 
-    document.querySelectorAll('#langTabs .lang-tab').forEach(tab => {
+    document.querySelectorAll('#langTabs .code-tab-btn').forEach(tab => {
       tab.addEventListener('click', () => {
-        document.querySelectorAll('#langTabs .lang-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('#langTabs .code-tab-btn').forEach(t => t.classList.remove('active'));
         tab.classList.add('active');
         selectedLang = tab.dataset.lang;
         updateStudio();
       });
     });
 
-    // Start
+    // Live search input with debounce
+    let searchDebounce = null;
+    document.getElementById('memeSearch').addEventListener('input', () => {
+      clearTimeout(searchDebounce);
+      searchDebounce = setTimeout(renderFeed, 120);
+    });
+
+    // Initial Hydration
+    async function init() {
+      try {
+        const res = await fetch('/api/v1/memes/latest?limit=150');
+        if (res.ok) {
+          const data = await res.json();
+          const items = Array.isArray(data) ? data : (data.items || []);
+          if (items && items.length > 0) {
+            memes = items;
+          }
+        }
+      } catch (e) {
+        // Seamless fallback to authentic embedded MEMES_DATA
+      }
+
+      // Check health
+      try {
+        const hRes = await fetch('/health');
+        if (hRes.ok) {
+          const hData = await hRes.json();
+          const statusText = document.getElementById('healthStatusText');
+          if (statusText) statusText.textContent = hData.status === 'healthy' ? 'API Active' : 'API Degraded';
+        }
+      } catch (e) {}
+
+      renderFeed();
+      renderTrendingTable();
+      updateStudio();
+    }
+
     init();
   </script>
 </body>

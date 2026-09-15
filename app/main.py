@@ -20,7 +20,6 @@ from app.models.source import HealthResponse
 from app.storage.memory_store import MemoryStore
 from app.storage.sqlite_store import SqliteStore
 
-# Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
@@ -34,21 +33,21 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     settings = get_settings()
     logger.info("Starting up %s (env=%s)...", settings.APP_NAME, settings.APP_ENV)
 
-    # 1. Initialize persistent SQLite database
+    # Initialize persistent SQLite database
     sqlite_store = getattr(app.state, "sqlite_store", None)
     if sqlite_store is None:
         sqlite_store = SqliteStore(database_path=settings.DB_PATH)
         app.state.sqlite_store = sqlite_store
     await sqlite_store.initialize()
 
-    # 2. Initialize in-memory cache and hydrate from DB
+    # Initialize in-memory cache and hydrate from DB
     memory_store = getattr(app.state, "memory_store", None)
     if memory_store is None:
         memory_store = MemoryStore()
         app.state.memory_store = memory_store
     await memory_store.hydrate_from_db(sqlite_store)
 
-    # 3. Initialize and start background polling worker (skip on Vercel serverless)
+    # Initialize and start background polling worker (skip on Vercel serverless)
     is_vercel = os.environ.get("VERCEL") is not None
     if not is_vercel:
         poller = getattr(app.state, "poller", None)
@@ -67,7 +66,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 
     yield
 
-    # 4. Graceful shutdown
+    # Graceful shutdown
     logger.info("Shutting down %s...", settings.APP_NAME)
     if hasattr(app.state, "poller") and app.state.poller:
         await app.state.poller.stop()
@@ -110,7 +109,6 @@ def create_app() -> FastAPI:
         lifespan=None if os.environ.get("VERCEL") else lifespan,
     )
 
-    # Cross-Origin Resource Sharing (CORS)
     application.add_middleware(
         CORSMiddleware,
         allow_origins=["*"],
@@ -119,10 +117,8 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
-    # Mount API v1 router
     application.include_router(api_v1_router, prefix="/api/v1")
 
-    # Root health endpoint
     @application.get(
         "/health",
         response_model=HealthResponse,
@@ -138,7 +134,6 @@ def create_app() -> FastAPI:
         """Return operational health status and cached metrics."""
         return store.get_health_status()
 
-    # Root index endpoint
     @application.get(
         "/",
         status_code=status.HTTP_200_OK,
@@ -161,7 +156,6 @@ def create_app() -> FastAPI:
             "health_url": "/health",
         })
 
-    # Web portal endpoint
     @application.get(
         "/web",
         response_class=HTMLResponse,

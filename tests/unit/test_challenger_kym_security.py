@@ -35,9 +35,7 @@ from app.ingestion.knowyourmeme import (
 from app.models.meme import MediaType, NormalizedMeme, SourcePlatform
 
 
-# =============================================================================
-# 1. RFC 822 / 2822 TIMEZONE & DATE PARSING TESTS
-# =============================================================================
+# RFC 822 / 2822 TIMEZONE & DATE PARSING TESTS
 
 class TestRFC822TimezoneParsing:
     """Stress-tests for RFC 822 pubDate parser with diverse timezones and corrupt strings."""
@@ -92,9 +90,7 @@ class TestRFC822TimezoneParsing:
         assert before <= ts <= after
 
 
-# =============================================================================
-# 2. IMAGE EXTRACTION FROM HTML DESCRIPTION
-# =============================================================================
+# IMAGE EXTRACTION FROM HTML DESCRIPTION
 
 class TestImageExtractionFromDescription:
     """Stress-tests for regex-based image extraction from diverse HTML snippets."""
@@ -148,9 +144,7 @@ class TestImageExtractionFromDescription:
         assert result is None or result == ""
 
 
-# =============================================================================
-# 3. ADVERSARIAL RSS XML PAYLOADS
-# =============================================================================
+# ADVERSARIAL RSS XML PAYLOADS
 
 class TestAdversarialRSSXMLPayloads:
     """Stress-tests for KYM RSS parser with hostile, corrupt, and edge-case XML feeds."""
@@ -334,9 +328,7 @@ class TestAdversarialRSSXMLPayloads:
         assert duration < 1.0  # Should parse 1,000 items in well under 1 second
 
 
-# =============================================================================
-# 4. SECURITY MODULE: USER-AGENT ROTATION, HEADERS & BACKOFF
-# =============================================================================
+# SECURITY MODULE: USER-AGENT ROTATION, HEADERS & BACKOFF
 
 class TestSecurityModuleAdversarial:
     """Stress-tests for security headers, User-Agent entropy, backoff math, and rate limiter."""

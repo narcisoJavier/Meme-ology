@@ -62,9 +62,7 @@ def oracle_trending_score_12h(
     return float(engagement * decay)
 
 
-# ==============================================================================
 # TIER 1: Feature Coverage Tests
-# ==============================================================================
 
 
 @pytest.mark.asyncio
@@ -322,9 +320,7 @@ class TestTier1FeatureCoverage:
         assert "object-fit: contain" in html_content or "contain" in html_content
 
 
-# ==============================================================================
 # TIER 2: Boundary & Corner Case Tests
-# ==============================================================================
 
 
 @pytest.mark.asyncio
@@ -450,9 +446,7 @@ class TestTier2BoundaryAndCornerCases:
         assert norm_a == norm_b == norm_c == "https://i.redd.it/meme123.jpg"
 
 
-# ==============================================================================
 # TIER 3: Cross-Feature Combinations Tests
-# ==============================================================================
 
 
 @pytest.mark.asyncio
@@ -725,9 +719,7 @@ class TestTier3CrossFeatureCombinations:
         assert any(m.is_nsfw for m in all_items)
 
 
-# ==============================================================================
 # TIER 4: Real-World Scenarios Tests
-# ==============================================================================
 
 
 @pytest.mark.asyncio
@@ -884,26 +876,26 @@ class TestTier4RealWorldScenarios:
         Simulates developer executing queries from API Studio across all core endpoints
         and verifies strict Pydantic model compliance.
         """
-        # 1. /api/v1/memes/latest
+        # /api/v1/memes/latest
         r_latest = await async_client.get("/api/v1/memes/latest?limit=5")
         assert r_latest.status_code == 200
         latest_paginated = PaginatedMemeResponse(**r_latest.json())
         assert latest_paginated.limit == 5
 
-        # 2. /api/v1/memes/trending
+        # /api/v1/memes/trending
         r_trending = await async_client.get("/api/v1/memes/trending?limit=5")
         assert r_trending.status_code == 200
         trending_paginated = PaginatedMemeResponse(**r_trending.json())
         assert trending_paginated.limit == 5
 
-        # 3. /api/v1/memes/random
+        # /api/v1/memes/random
         r_random = await async_client.get("/api/v1/memes/random")
         if r_random.status_code == 200:
             random_meme = Meme(**r_random.json())
             assert random_meme.id
             assert random_meme.url or random_meme.media_url
 
-        # 4. /api/v1/sources
+        # /api/v1/sources
         r_sources = await async_client.get("/api/v1/sources")
         assert r_sources.status_code == 200
         sources_data = r_sources.json()
@@ -911,7 +903,7 @@ class TestTier4RealWorldScenarios:
         for s in sources_data:
             SourceStatus(**s)
 
-        # 5. /health
+        # /health
         r_health = await async_client.get("/health")
         assert r_health.status_code == 200
         health_obj = HealthResponse(**r_health.json())

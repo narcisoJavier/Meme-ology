@@ -160,3 +160,23 @@ class TestApiLatestEndpoint:
                 assert "reddit" in str(item.get("source_platform") or item.get("source")).lower()
             elif source == "knowyourmeme":
                 assert "knowyourmeme" in str(item.get("source_platform") or item.get("source")).lower() or "kym" in str(item.get("source_platform") or item.get("source")).lower()
+
+    async def test_get_latest_format_and_category_filters(self, async_client: httpx.AsyncClient) -> None:
+        """Verify format, category, and is_short query filters work as expected."""
+        # Test format=image
+        resp_img = await async_client.get("/api/v1/memes/latest?format=image&limit=5")
+        assert resp_img.status_code == 200
+        for item in resp_img.json()["items"]:
+            assert item["media_type"] == "image"
+
+        # Test category=community_forum
+        resp_cat = await async_client.get("/api/v1/memes/latest?category=community_forum&limit=5")
+        assert resp_cat.status_code == 200
+        for item in resp_cat.json()["items"]:
+            assert item.get("source_category") == "community_forum"
+
+        # Test is_short filter
+        resp_short = await async_client.get("/api/v1/memes/latest?is_short=true&limit=5")
+        assert resp_short.status_code == 200
+        for item in resp_short.json()["items"]:
+            assert item.get("is_short") is True

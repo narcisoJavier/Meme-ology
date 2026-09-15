@@ -63,9 +63,7 @@ from app.storage.memory_store import MemoryStore, _extract_source_tokens
 from app.storage.sqlite_store import SqliteStore
 
 
-# ==============================================================================
 # SECTION 1: High Concurrency & Lock Contention Stress on Storage
-# ==============================================================================
 
 class TestStorageConcurrencyStress:
     """Adversarial concurrent reading and writing to in-memory store and SQLite."""
@@ -220,9 +218,7 @@ class TestStorageConcurrencyStress:
                     pass
 
 
-# ==============================================================================
 # SECTION 2: Invariant Hardening (Engagement Merge, Temporal Anchor, NSFW Taint)
-# ==============================================================================
 
 class TestStoreInvariantsAndTypeHeterogeneity:
     """Verify core domain invariants during upsert and retrieval."""
@@ -328,9 +324,7 @@ class TestStoreInvariantsAndTypeHeterogeneity:
         assert store.get_by_id("norm_meme_03") is not None
 
 
-# ==============================================================================
 # SECTION 3: URL Canonicalization & Content Hashing Boundary Permutations
-# ==============================================================================
 
 class TestDedupAndCanonicalizationHardening:
     """Adversarial testing of URL normalization, tracking parameter stripping, and hashing."""
@@ -386,9 +380,7 @@ class TestDedupAndCanonicalizationHardening:
         assert s1 == s2
 
 
-# ==============================================================================
 # SECTION 4: Temporal & Boundary Timestamp Hardening
-# ==============================================================================
 
 class TestTemporalBoundaryConditions:
     """Stress test trending calculations and time window filters on edge timestamps."""
@@ -400,24 +392,24 @@ class TestTemporalBoundaryConditions:
         """
         now = time.time()
 
-        # 1. Negative scores and comments (clamped to 0)
+        # Negative scores and comments (clamped to 0)
         neg_score = calculate_trending_score(score=-500, comments=-20, created_at=now)
         assert neg_score == 0.0
 
-        # 2. Future timestamp (created_at > now -> age = 0)
+        # Future timestamp (created_at > now -> age = 0)
         future_score = calculate_trending_score(score=1000, comments=50, created_at=now + 3600.0, current_time=now)
         normal_score = calculate_trending_score(score=1000, comments=50, created_at=now, current_time=now)
         assert future_score == normal_score
 
-        # 3. Epoch 0 (1970) timestamp
+        # Epoch 0 (1970) timestamp
         ancient_score = calculate_trending_score(score=100000, comments=5000, created_at=0.0, current_time=now)
         assert ancient_score < 0.1  # Deeply decayed
 
-        # 4. Astronomical engagement values
+        # Astronomical engagement values
         huge_score = calculate_trending_score(score=10_000_000, comments=1_000_000, created_at=now, current_time=now)
         assert huge_score > 0 and not (huge_score == float("inf"))
 
-        # 5. num_comments keyword argument precedence
+        # num_comments keyword argument precedence
         kw_score = calculate_trending_score(score=100, comments=10, num_comments=50, created_at=now, current_time=now)
         expected_score = calculate_trending_score(score=100, comments=50, created_at=now, current_time=now)
         assert kw_score == expected_score
@@ -481,9 +473,7 @@ class TestTemporalBoundaryConditions:
         assert t_items_1h[0].id == "time_meme_30m"
 
 
-# ==============================================================================
 # SECTION 5: Source Filter Resolution & Token Permutations
-# ==============================================================================
 
 class TestSourceFilterResolutionPermutations:
     """Test every conceivable syntax and variation of the source query parameter."""
@@ -535,9 +525,7 @@ class TestSourceFilterResolutionPermutations:
         assert random_meme is None
 
 
-# ==============================================================================
 # SECTION 6: Ingestion Parser Adversarial Payload Hardening
-# ==============================================================================
 
 class TestIngestionParsersAdversarialHardening:
     """Fuzz Reddit and KYM parsers with corrupt, deeply nested, or malformed data."""
@@ -581,7 +569,7 @@ class TestIngestionParsersAdversarialHardening:
         """Test Reddit parser against edge cases: galleries, v.redd.it secure_media, deleted authors, etc."""
         fetcher = RedditFetcher(subreddit="memes")
 
-        # 1. Post with deleted author or removed text -> must be skipped
+        # Post with deleted author or removed text -> must be skipped
         deleted_post = {
             "id": "del01",
             "title": "Deleted post",
@@ -590,7 +578,7 @@ class TestIngestionParsersAdversarialHardening:
         }
         assert fetcher.parse_post_data(deleted_post) is None
 
-        # 2. Stickied / Pinned / is_self post -> must be skipped
+        # Stickied / Pinned / is_self post -> must be skipped
         stickied_post = {
             "id": "stk01",
             "title": "Sticky rules",
@@ -600,7 +588,7 @@ class TestIngestionParsersAdversarialHardening:
         }
         assert fetcher.parse_post_data(stickied_post) is None
 
-        # 3. Native Reddit Video via secure_media
+        # Native Reddit Video via secure_media
         video_post = {
             "id": "vid01",
             "title": "Video Meme",
@@ -618,7 +606,7 @@ class TestIngestionParsersAdversarialHardening:
         assert v_meme.media_type == MediaType.VIDEO
         assert "DASH_720.mp4" in v_meme.media_url
 
-        # 4. Imgur link transformation
+        # Imgur link transformation
         imgur_post = {
             "id": "img01",
             "title": "Imgur Meme",
@@ -631,7 +619,7 @@ class TestIngestionParsersAdversarialHardening:
         assert i_meme.media_url == "https://i.imgur.com/aBcDeFg.jpg"
         assert i_meme.media_type == MediaType.IMAGE
 
-        # 5. .gifv to .mp4 transformation
+        # .gifv to .mp4 transformation
         gifv_post = {
             "id": "gifv01",
             "title": "Gifv Meme",
@@ -644,7 +632,7 @@ class TestIngestionParsersAdversarialHardening:
         assert g_meme.media_url == "https://i.imgur.com/animation.mp4"
         assert g_meme.media_type == MediaType.VIDEO
 
-        # 6. Reddit Gallery with media_metadata fallback
+        # Reddit Gallery with media_metadata fallback
         gallery_post = {
             "id": "gal01",
             "title": "Gallery Meme",
@@ -668,7 +656,7 @@ class TestIngestionParsersAdversarialHardening:
         """Test KYM parser with edge XML elements, CDATA, missing tags, and trending JSON."""
         fetcher = KnowYourMemeFetcher(category="confirmed")
 
-        # 1. Top-level helper function parse_kym_rss
+        # Top-level helper function parse_kym_rss
         sample_xml = """<?xml version="1.0" encoding="UTF-8"?>
         <rss version="2.0">
           <channel>
@@ -688,10 +676,10 @@ class TestIngestionParsersAdversarialHardening:
         assert memes[0].title == "Special Character & Meme"
         assert memes[0].media_url == "https://i.kym-cdn.com/entries/icons/original/special.jpg"
 
-        # 2. Corrupt XML
+        # Corrupt XML
         assert fetcher.parse_rss_xml("<unclosed><xml>") == []
 
-        # 3. Trending JSON parsing with string IDs and numeric field variations
+        # Trending JSON parsing with string IDs and numeric field variations
         json_payload = json.dumps([
             {
                 "id": "kym_trend_01",
@@ -728,9 +716,7 @@ class TestIngestionParsersAdversarialHardening:
         assert extract_image_from_description(html_desc) == "https://i.kym-cdn.com/photo.jpg"
 
 
-# ==============================================================================
 # SECTION 7: Background Worker Lifecycle & Fault Isolation
-# ==============================================================================
 
 class TestWorkerLifecycleAndFaultIsolation:
     """Stress background poller start/stop cycles and error recovery."""
@@ -804,9 +790,7 @@ class TestWorkerLifecycleAndFaultIsolation:
         assert sources["knowyourmeme:confirmed"].status == "degraded"
 
 
-# ==============================================================================
 # SECTION 8: Security, Rate Limiter & Configuration Hardening
-# ==============================================================================
 
 class TestSecurityAndConfigHardening:
     """Stress backoff delay calculation, user agent generation, and rate limiter concurrency."""
@@ -830,23 +814,23 @@ class TestSecurityAndConfigHardening:
 
     def test_calculate_backoff_delay_header_permutations(self) -> None:
         """Verify backoff calculation with various HTTP headers."""
-        # 1. Retry-After header as integer/float
+        # Retry-After header as integer/float
         d1 = calculate_backoff_delay(0, response_headers={"Retry-After": "5"})
         assert d1 == 5.0
 
-        # 2. Retry-After exceeding max_backoff -> clamped to max_backoff
+        # Retry-After exceeding max_backoff -> clamped to max_backoff
         d2 = calculate_backoff_delay(0, response_headers={"Retry-After": "3600"}, max_backoff=16.0)
         assert d2 == 16.0
 
-        # 3. x-ratelimit-reset header
+        # x-ratelimit-reset header
         d3 = calculate_backoff_delay(0, response_headers={"x-ratelimit-reset": "3.5"})
         assert d3 == 3.5
 
-        # 4. Invalid Retry-After header string falls back to exponential jitter
+        # Invalid Retry-After header string falls back to exponential jitter
         d4 = calculate_backoff_delay(0, response_headers={"Retry-After": "invalid_date_format"})
         assert 1.0 <= d4 <= 2.0
 
-        # 5. Negative attempt index is handled safely
+        # Negative attempt index is handled safely
         d5 = calculate_backoff_delay(-5)
         assert 1.0 <= d5 <= 2.0
 
@@ -865,9 +849,7 @@ class TestSecurityAndConfigHardening:
         assert Settings.parse_list_fields("[memes, dankmemes") == ["[memes", "dankmemes"]
 
 
-# ==============================================================================
 # SECTION 9: REST API Endpoints Pagination & Validation Hardening
-# ==============================================================================
 
 class TestApiV1AdversarialPermutations:
     """Stress FastAPI endpoints with boundary parameters and error permutations."""

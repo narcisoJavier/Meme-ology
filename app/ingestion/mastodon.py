@@ -17,6 +17,7 @@ import httpx
 
 from app.config import get_settings
 from app.core.dedup import compute_content_hash, normalize_url
+from app.core.language import is_english_content
 from app.core.ranking import calculate_trending_score
 from app.core.security import (
     PoliteRateLimiter,
@@ -51,14 +52,46 @@ def strip_html_tags(content_html: Optional[str]) -> str:
     """Strip HTML markup, replace line breaks with spaces, and unescape entities."""
     if not content_html:
         return ""
+    # Normalize Mastodon hashtag spans: #<span>tag</span> -> #tag
+    pre_cleaned = re.sub(r"#\s*<span[^>]*>([^<]+)</span>", r"#\1", content_html, flags=re.IGNORECASE)
     # Replace <br> and </p> with spaces to avoid smashing words together
-    spaced = re.sub(r"</?(?:p|br|div|blockquote)[^>]*>", " ", content_html, flags=re.IGNORECASE)
+    spaced = re.sub(r"</?(?:p|br|div|blockquote)[^>]*>", " ", pre_cleaned, flags=re.IGNORECASE)
     # Remove remaining HTML tags
     clean = re.sub(r"<[^>]+>", " ", spaced)
     # Unescape HTML entities
     unescaped = html.unescape(clean)
     # Collapse multiple whitespaces
     return " ".join(unescaped.split()).strip()
+
+
+def clean_hashtag_title(title: str) -> str:
+    """Clean up hashtag spam from titles."""
+    if not title:
+        return ""
+    # Normalize spaced hashtags e.g. "# meme" -> "#meme"
+    normalized = re.sub(r"#\s+([a-zA-Z0-9_]+)", r"#\1", title.strip())
+    words = normalized.split()
+    if not words:
+        return ""
+
+    # Strip leading sequences of hashtags
+    while words and words[0].startswith("#"):
+        words.pop(0)
+
+    if not words:
+        return ""
+
+    # If post is essentially all hashtags (>75%), filter remaining hashtags
+    hashtag_count = sum(1 for w in words if w.startswith("#"))
+    if hashtag_count / len(words) > 0.75:
+        words = [w for w in words if not w.startswith("#")]
+
+    cleaned = " ".join(words).strip()
+    if len(cleaned) < 3:
+        return ""
+
+    return cleaned
+
 
 
 def parse_mastodon_timeline(
@@ -165,6 +198,8 @@ class MastodonFetcher(BaseSourceFetcher):
         # Content / Title
         content_html = status_data.get("content")
         clean_title = strip_html_tags(str(content_html) if content_html is not None else "")
+        clean_title = clean_hashtag_title(clean_title)
+        
         if not clean_title:
             spoiler = str(status_data.get("spoiler_text") or "").strip()
             if spoiler:
@@ -173,6 +208,13 @@ class MastodonFetcher(BaseSourceFetcher):
                 clean_title = str(media_desc).strip()
             else:
                 clean_title = f"Mastodon #{self.tag} {status_id}"
+
+        # English-only filter
+        settings = get_settings()
+        if getattr(settings, "ENGLISH_ONLY", True):
+            declared_lang = status_data.get("language")
+            if not is_english_content(clean_title, declared_language=declared_lang):
+                return None
 
         # Direct post permalink
         raw_permalink = status_data.get("url") or status_data.get("uri")
@@ -198,6 +240,12 @@ class MastodonFetcher(BaseSourceFetcher):
         created_str = status_data.get("created_at")
         created_at = parse_iso8601_date(created_str) if created_str else time.time()
 
+        # Minimum engagement filter
+        if score == 0 and replies == 0:
+            age_seconds = time.time() - created_at
+            if age_seconds > 1800:  # 30 minutes
+                return None
+
         # NSFW flag
         is_nsfw = bool(status_data.get("sensitive", False))
         if re.search(r"\b(nsfw|explicit|adult)\b", clean_title.lower()):
@@ -217,6 +265,29 @@ class MastodonFetcher(BaseSourceFetcher):
         except Exception:
             pass
 
+        # Content authenticity & meme validation
+        from app.core.classifier import is_valid_meme_content
+        if not is_valid_meme_content(clean_title, media_url, author_handle, self.community):
+            return None
+
+        # Detect bot reposts from Reddit (e.g. ich_iel bot on Fediverse)
+        source_plat = SourcePlatform.MASTODON
+        source_comm = self.community
+        reddit_match = re.search(r"https?://(?:www\.)?reddit\.com/r/(\w+)/comments/(\w+)", clean_title)
+        if not reddit_match and "reddit.com" in permalink:
+            reddit_match = re.search(r"https?://(?:www\.)?reddit\.com/r/(\w+)/comments/(\w+)", permalink)
+        if reddit_match:
+            sub = reddit_match.group(1)
+            u_match = re.search(r"\bvon u/(\w+)\b", clean_title, re.I)
+            if u_match:
+                author_handle = f"u/{u_match.group(1)}"
+            source_plat = SourcePlatform.REDDIT
+            source_comm = f"r/{sub}"
+
+        # Detect language and country
+        from app.core.location import detect_meme_location
+        detected_country, detected_lang = detect_meme_location(clean_title, source_comm, "mastodon", author_handle)
+
         meme_id = f"mastodon_{status_id}"
         content_hash = compute_content_hash(media_url, clean_title)
         trending_score = calculate_trending_score(score, replies, created_at)
@@ -227,8 +298,8 @@ class MastodonFetcher(BaseSourceFetcher):
             title=clean_title,
             media_url=media_url,
             media_type=media_type,
-            source_platform=SourcePlatform.MASTODON,
-            source_community=self.community,
+            source_platform=source_plat,
+            source_community=source_comm,
             permalink=permalink,
             author=author_handle,
             score=score,
@@ -238,6 +309,8 @@ class MastodonFetcher(BaseSourceFetcher):
             domain=domain,
             content_hash=content_hash,
             trending_score=trending_score,
+            language=detected_lang,
+            country_code=detected_country,
         )
 
     def parse_timeline_list(self, payload: Any) -> List[NormalizedMeme]:

@@ -48,11 +48,27 @@ class SourceStatus(BaseModel):
         default=None,
         description="HTTP round-trip latency in milliseconds",
     )
+    category: Optional[str] = Field(
+        default="community_forum",
+        description="Source category taxonomy: 'video_creator', 'community_forum', 'encyclopedia', 'federated_social'",
+    )
 
     @model_validator(mode="before")
     @classmethod
     def sync_fields(cls, data: Any) -> Any:
         if isinstance(data, dict):
+            if not data.get("category"):
+                plat_raw = data.get("platform")
+                plat = (plat_raw.value if isinstance(plat_raw, SourcePlatform) else str(plat_raw or "")).lower()
+                if "youtube" in plat:
+                    data["category"] = "video_creator"
+                elif "knowyourmeme" in plat or "kym" in plat:
+                    data["category"] = "encyclopedia"
+                elif "bluesky" in plat or "mastodon" in plat:
+                    data["category"] = "federated_social"
+                else:
+                    data["category"] = "community_forum"
+
             if not data.get("id") and data.get("name"):
                 data["id"] = data["name"].replace(":", "_").replace("/", "_").replace(" ", "_").lower()
             if not data.get("name") and data.get("id"):

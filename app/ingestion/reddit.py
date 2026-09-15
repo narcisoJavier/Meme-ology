@@ -86,7 +86,7 @@ class RedditFetcher(BaseSourceFetcher):
         raw_secure_media = data.get("secure_media")
         secure_media = raw_secure_media if isinstance(raw_secure_media, dict) else {}
 
-        # 1. Native Reddit Video (v.redd.it)
+        # Native Reddit Video (v.redd.it)
         if is_video or domain == "v.redd.it" or "reddit_video" in media or "reddit_video" in secure_media:
             raw_vid = media.get("reddit_video") if isinstance(media.get("reddit_video"), dict) else None
             if not raw_vid:
@@ -97,7 +97,7 @@ class RedditFetcher(BaseSourceFetcher):
                 clean_video_url = html.unescape(fallback_url)
                 return clean_video_url, MediaType.VIDEO, domain
 
-        # 2. Direct Image / GIF by URL extension (strip query params for extension check)
+        # Direct Image / GIF by URL extension (strip query params for extension check)
         clean_url = html.unescape(url) if url else ""
         lower_url = clean_url.lower()
         lower_path = re.sub(r"\?.*$", "", lower_url)
@@ -111,7 +111,7 @@ class RedditFetcher(BaseSourceFetcher):
         if lower_path.endswith(".webm") or lower_path.endswith(".mp4"):
             return clean_url, MediaType.VIDEO, domain
 
-        # 3. Imgur Link Normalization
+        # Imgur Link Normalization
         if ("imgur.com" in domain or "imgur.com" in lower_path) and clean_url:
             match = re.search(r"imgur\.com/(?:gallery/|a/)?([a-zA-Z0-9]+)", clean_url)
             if match:
@@ -119,7 +119,7 @@ class RedditFetcher(BaseSourceFetcher):
                 canonical_imgur = f"https://i.imgur.com/{img_id}.jpg"
                 return canonical_imgur, MediaType.IMAGE, "i.imgur.com"
 
-        # 4. Reddit Gallery Post
+        # Reddit Gallery Post
         is_gallery = bool(data.get("is_gallery", False) or post_hint == "gallery")
         raw_gallery_data = data.get("gallery_data")
         gallery_data = raw_gallery_data if isinstance(raw_gallery_data, dict) else {}
@@ -146,7 +146,7 @@ class RedditFetcher(BaseSourceFetcher):
                         media_type = MediaType.GIF if item_info.get("m") == "image/gif" else MediaType.IMAGE
                         return clean_gallery_url, media_type, "preview.redd.it"
 
-        # 5. Check crosspost parent if available
+        # Check crosspost parent if available
         crosspost_parents = data.get("crosspost_parent_list")
         if isinstance(crosspost_parents, list) and crosspost_parents:
             for parent_data in crosspost_parents:
@@ -155,7 +155,7 @@ class RedditFetcher(BaseSourceFetcher):
                     if p_url:
                         return p_url, p_type, p_domain
 
-        # 6. Preview Source Fallback
+        # Preview Source Fallback
         raw_preview = data.get("preview")
         preview = raw_preview if isinstance(raw_preview, dict) else {}
         images = preview.get("images") if isinstance(preview.get("images"), list) else []
@@ -166,7 +166,7 @@ class RedditFetcher(BaseSourceFetcher):
                 clean_preview_url = html.unescape(raw_preview_url)
                 return clean_preview_url, MediaType.IMAGE, "preview.redd.it"
 
-        # 7. Post hint == image fallback
+        # Post hint == image fallback
         if post_hint == "image" and url:
             return clean_url, MediaType.IMAGE, domain
 
@@ -397,7 +397,7 @@ class RedditFetcher(BaseSourceFetcher):
         should_close = self._custom_client is None
 
         try:
-            # 1. Primary: High-availability gateway to avoid Reddit datacenter 403 blocks
+            # Primary: High-availability gateway to avoid Reddit datacenter 403 blocks
             try:
                 gateway_url = f"https://meme-api.com/gimme/{self.subreddit}/30"
                 gw_resp = await client.get(gateway_url, timeout=5.0)
@@ -410,7 +410,7 @@ class RedditFetcher(BaseSourceFetcher):
             except Exception as gw_err:
                 logger.debug(f"Gateway fallback check: {gw_err}")
 
-            # 2. Secondary: Direct Reddit JSON
+            # Secondary: Direct Reddit JSON
             endpoints = [
                 f"https://www.reddit.com/r/{self.subreddit}/hot.json?limit=50&raw_json=1",
                 f"https://old.reddit.com/r/{self.subreddit}/hot.json?limit=50&raw_json=1",

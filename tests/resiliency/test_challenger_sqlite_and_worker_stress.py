@@ -37,9 +37,7 @@ from app.storage.memory_store import MemoryStore
 from app.storage.sqlite_store import SqliteStore
 
 
-# ---------------------------------------------------------------------------
 # Dimension 1: SqliteStore Heavy Load, Concurrency, WAL & Data Integrity
-# ---------------------------------------------------------------------------
 
 class TestSqliteStoreStressAndDurability:
     """Stress tests for SQLite async persistence engine."""
@@ -367,9 +365,7 @@ class TestSqliteStoreStressAndDurability:
         await store.close()
 
 
-# ---------------------------------------------------------------------------
 # Dimension 2: MemePollingWorker Lifecycle, Concurrency, and Resiliency
-# ---------------------------------------------------------------------------
 
 class TestWorkerStressAndResiliency:
     """Stress tests for MemePollingWorker lifecycle, cancellation, and error isolation."""

@@ -12,6 +12,7 @@ from app.ingestion.bluesky import BlueskyFetcher
 from app.ingestion.knowyourmeme import KnowYourMemeFetcher
 from app.ingestion.mastodon import MastodonFetcher
 from app.ingestion.reddit import RedditFetcher
+from app.ingestion.youtube import YouTubeFetcher
 from app.models.meme import NormalizedMeme
 from app.storage.memory_store import MemoryStore
 from app.storage.sqlite_store import SqliteStore
@@ -68,6 +69,8 @@ class MemePollingWorker:
             fetcher_list.append(BlueskyFetcher(feed_name=feed))
         for server in getattr(settings, "MASTODON_SERVERS", ["mastodon.social"]):
             fetcher_list.append(MastodonFetcher(instance_url=server, tag="meme"))
+        for channel_id in getattr(settings, "YOUTUBE_CHANNELS", []):
+            fetcher_list.append(YouTubeFetcher(channel_id=channel_id))
         return fetcher_list
 
     async def fetch_all_sources(self) -> List[NormalizedMeme]:

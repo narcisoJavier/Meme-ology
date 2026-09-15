@@ -1,4 +1,4 @@
-"""Generational meme classification and taxonomy engine."""
+"""Generational meme classification and authenticity validation engine."""
 
 from __future__ import annotations
 
@@ -93,6 +93,24 @@ RE_GEN_Z = re.compile("|".join(GEN_Z_PATTERNS), re.IGNORECASE)
 RE_MILLENNIAL = re.compile("|".join(MILLENNIAL_PATTERNS), re.IGNORECASE)
 RE_GEN_X = re.compile("|".join(GEN_X_BOOMER_PATTERNS), re.IGNORECASE)
 
+# Patterns for non-meme false positives
+RE_FRENCH_HOMOGRAPH = re.compile(
+    r"\b(quand\s+m[eê]me|tout\s+de\s+m[eê]me|m[eê]me\s+si|le\s+m[eê]me\s+pour|de\s+m[eê]me)\b",
+    re.IGNORECASE,
+)
+RE_MEME_INTENT = re.compile(
+    r"\b(meme|memes|humour|shitpost|shitposting|lmao|funny|dank|joke|satire|pov)\b|#\w*meme\w*",
+    re.IGNORECASE,
+)
+RE_SPAM_OR_PROMO = re.compile(
+    r"\b(totagoal\.com|funhouseradio\.com|tunein\.com|affiliate|subscribe\s+to\s+my)\b",
+    re.IGNORECASE,
+)
+RE_OBITUARY_HOAX = re.compile(
+    r"\b(lost\s+a\s+trailblazer|rest\s+in\s+peace|r\.?i\.?p\.?|sad\s+news\.\.\.|tue\s+un\s+autre\s+chasseur|gloria\s+steinem)\b",
+    re.IGNORECASE,
+)
+
 
 def classify_meme_generation(
     title: str,
@@ -129,7 +147,41 @@ def classify_meme_generation(
     if "me_irl" in community or "dankmemes" in community:
         return "gen_z"
     if "memes" in community:
-        # Balanced general memes default to gen_z
         return "gen_z"
 
     return "gen_z"
+
+
+def is_valid_meme_content(
+    title: str,
+    media_url: str = "",
+    author: str = "",
+    source_community: Optional[str] = None,
+) -> bool:
+    """Validate that ingested content is authentic meme material and not false positive/spam."""
+    clean_title = (title or "").strip()
+    clean_url = (media_url or "").strip()
+    clean_comm = (source_community or "").lower()
+
+    # Reddit meme communities and Know Your Meme entries are trusted by default
+    if clean_comm.startswith("r/") or "knowyourmeme" in clean_comm or clean_comm in ("confirmed", "trending"):
+        return True
+
+    # Reject promotional spam domains
+    if RE_SPAM_OR_PROMO.search(clean_title) or RE_SPAM_OR_PROMO.search(clean_url):
+        return False
+
+    # Reject serious death / obituary hoaxes unless marked satire
+    if RE_OBITUARY_HOAX.search(clean_title) and not re.search(r"\b(satire|parody|meme)\b", clean_title, re.I):
+        return False
+
+    # Reject French homographs where "même" was matched as a regular adverb/adjective
+    if RE_FRENCH_HOMOGRAPH.search(clean_title):
+        # Only accept if there is explicit meme context or hashtag
+        has_explicit_meme = bool(RE_MEME_INTENT.search(clean_title))
+        # If title only matched "quand même" or "le même pour tous" without meme hashtags, reject
+        clean_no_homo = RE_FRENCH_HOMOGRAPH.sub("", clean_title)
+        if not RE_MEME_INTENT.search(clean_no_homo):
+            return False
+
+    return True

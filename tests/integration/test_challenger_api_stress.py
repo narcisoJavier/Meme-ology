@@ -155,7 +155,7 @@ class TestEmptyStateResponses:
         store: MemoryStore = app.state.memory_store
         store.clear()
 
-        # 1. /latest on empty store
+        # /latest on empty store
         resp_latest = await async_client.get("/api/v1/memes/latest")
         assert resp_latest.status_code == 200
         data_latest = resp_latest.json()
@@ -165,7 +165,7 @@ class TestEmptyStateResponses:
         assert data_latest["limit"] == 20
         assert data_latest["offset"] == 0
 
-        # 2. /trending on empty store
+        # /trending on empty store
         resp_trending = await async_client.get("/api/v1/memes/trending")
         assert resp_trending.status_code == 200
         data_trending = resp_trending.json()
@@ -173,12 +173,12 @@ class TestEmptyStateResponses:
         assert data_trending["total"] == 0
         assert data_trending["has_more"] is False
 
-        # 3. /random on empty store -> 404
+        # /random on empty store -> 404
         resp_random = await async_client.get("/api/v1/memes/random")
         assert resp_random.status_code == 404
         assert "detail" in resp_random.json()
 
-        # 4. /sources on empty store -> 200 OK with sources list
+        # /sources on empty store -> 200 OK with sources list
         resp_sources = await async_client.get("/api/v1/sources")
         assert resp_sources.status_code == 200
         sources = resp_sources.json()
@@ -186,7 +186,7 @@ class TestEmptyStateResponses:
         assert len(sources) > 0
         assert all(s["item_count"] == 0 for s in sources)
 
-        # 5. /health on empty store -> 200 OK
+        # /health on empty store -> 200 OK
         resp_health = await async_client.get("/health")
         assert resp_health.status_code == 200
         health = resp_health.json()

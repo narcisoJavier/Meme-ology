@@ -146,3 +146,47 @@ class TestContentHashing:
         h1 = compute_content_hash("", "")
         assert len(h1) == 64
         assert isinstance(h1, str)
+
+
+class TestCrossPlatformAndMirrorDedup:
+    """Tests for cross-platform identity canonicalization, Bridgy Fed mirrors, and semantic deduplication."""
+
+    def test_normalize_author_handle_bridgy_fed_activitypub(self) -> None:
+        from app.core.dedup import normalize_author_handle
+        # ActivityPub -> Bluesky bridge
+        raw = "@cnk.sharkey.world.ap.brid.gy"
+        canonical = normalize_author_handle(raw)
+        assert canonical == "cnk@sharkey.world"
+
+        # Compare with Mastodon handle
+        mastodon_handle = "@cnk@sharkey.world"
+        assert normalize_author_handle(mastodon_handle) == canonical
+
+    def test_normalize_author_handle_bridgy_fed_bluesky(self) -> None:
+        from app.core.dedup import normalize_author_handle
+        # Bluesky -> Mastodon bridge
+        raw = "@danielle_c@bsky.brid.gy"
+        assert normalize_author_handle(raw) == "danielle_c"
+
+    def test_normalize_title_preserves_numbers_strips_hashtags(self) -> None:
+        from app.core.dedup import normalize_title
+        title = "The demons told elmo to... #meme #memes #humour #shitpost #DailyMemes"
+        normalized = normalize_title(title)
+        assert normalized == "the demons told elmo to"
+
+        # Verify #1 or #42 is preserved
+        title_num = "Meme #42 The Ultimate Answer #funny"
+        assert normalize_title(title_num) == "meme 42 the ultimate answer"
+
+    def test_are_memes_duplicate_cross_platform_bridgy_elmo(self) -> None:
+        from app.core.dedup import are_memes_duplicate
+        u1 = "https://cdn.bsky.app/img/feed_fullsize/plain/did:plc:3cd5ik2in4bkraoyke7nrlim/bafkreicki2etr2kn6fwl66vfdj6stjahgki4zc2eybqhket6pdmihyl7le"
+        t1 = "The demons told elmo to... #meme #memes #humour #shitpost #lmao #shitposting #\U0001facd #DailyMemes"
+        a1 = "@cnk.sharkey.world.ap.brid.gy"
+
+        u2 = "https://files.mastodon.social/cache/media_attachments/files/117/207/462/068/774/604/original/aeb14172b0d900cb.webp"
+        t2 = "The demons told elmo to... #meme #memes #humour #shitpost #lmao #shitposting #\U0001facd #DailyMemes"
+        a2 = "@cnk@sharkey.world"
+
+        assert are_memes_duplicate(u1, t1, a1, u2, t2, a2) is True
+

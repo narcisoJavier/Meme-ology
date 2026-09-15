@@ -7,6 +7,7 @@ from app.ingestion.base import (
 )
 from app.ingestion.reddit import RedditFetcher, RedditMemeFetcher
 from app.ingestion.knowyourmeme import KnowYourMemeFetcher
+from app.ingestion.youtube import YouTubeFetcher
 
 __all__ = [
     "BaseSourceFetcher",
@@ -15,4 +16,5 @@ __all__ = [
     "RedditFetcher",
     "RedditMemeFetcher",
     "KnowYourMemeFetcher",
+    "YouTubeFetcher",
 ]

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
 import random
 import threading
@@ -10,7 +11,13 @@ from typing import Any, Dict, List, Optional, Sequence, Set, Tuple, Union
 
 from app.config import get_settings
 from app.core.dedup import compute_content_hash
+from app.core.lifecycle import (
+    calculate_velocity_and_acceleration,
+    classify_lifecycle_stage,
+    LifecycleStage,
+)
 from app.core.ranking import calculate_trending_score
+from app.core.webhooks import dispatch_viral_webhook
 from app.models.meme import MediaType, Meme, NormalizedMeme, SourcePlatform
 from app.models.source import HealthResponse, SourceStatus
 
@@ -39,6 +46,9 @@ def _extract_source_tokens(platform_val: str, comm_val: str) -> Set[str]:
         tokens.add("mastodon")
         tokens.add("masto")
         tokens.add("fediverse")
+    elif plat in ("youtube", "yt"):
+        tokens.add("youtube")
+        tokens.add("yt")
 
     # Community tokens
     if comm:
@@ -60,6 +70,8 @@ def _extract_source_tokens(platform_val: str, comm_val: str) -> Set[str]:
         plats.extend(["bluesky", "bsky"])
     elif plat in ("mastodon", "masto", "fediverse"):
         plats.extend(["mastodon", "masto", "fediverse"])
+    elif plat in ("youtube", "yt"):
+        plats.extend(["youtube", "yt"])
 
     comms = [c for c in (comm, clean_comm, f"r/{clean_comm}" if clean_comm and plat == "reddit" else None, f"#{clean_comm}" if clean_comm and plat == "mastodon" else None) if c]
     for p in set(plats):
@@ -77,7 +89,9 @@ class MemoryStore:
         self._lock = threading.RLock()
         self._by_id: Dict[str, NormalizedMeme] = {}
         self._by_content_hash: Dict[str, str] = {}
+        self._by_author_title: Dict[str, str] = {}
         self._source_tokens_by_id: Dict[str, Set[str]] = {}
+        self._snapshots: Dict[str, List[Tuple[float, int]]] = {}
 
         # Primary pre-sorted lists
         self._latest_index: List[NormalizedMeme] = []
@@ -106,6 +120,7 @@ class MemoryStore:
                 name=name,
                 platform=SourcePlatform.REDDIT,
                 community=f"r/{clean_sub}",
+                category="community_forum",
                 status="ok",
                 item_count=0,
             )
@@ -117,6 +132,7 @@ class MemoryStore:
                 name=name,
                 platform=SourcePlatform.KNOWYOURMEME,
                 community=cat,
+                category="encyclopedia",
                 status="ok",
                 item_count=0,
             )
@@ -129,6 +145,7 @@ class MemoryStore:
                 name=name,
                 platform=SourcePlatform.BLUESKY,
                 community=clean_feed,
+                category="federated_social",
                 status="ok",
                 item_count=0,
             )
@@ -141,6 +158,27 @@ class MemoryStore:
                 name=name,
                 platform=SourcePlatform.MASTODON,
                 community="#meme",
+                category="federated_social",
+                status="ok",
+                item_count=0,
+            )
+
+        channel_names = {
+            "UCaHT88aobpcvRFEuy4v5Clg": "Lessons in Meme Culture",
+            "UCbrPqq29C9Q_TQP7OFFRzcw": "Know Your Meme Video",
+            "UCq9UQ0TUfI9GyzSiZ2uNx5Q": "Daily Dose of Memes",
+            "UC9sY9S-ddN-1E0jD2fFWLig": "Grandayy",
+            "UC2vpvibGYfBcb14l6CLVdiA": "Memer Man",
+        }
+        for channel_id in getattr(settings, "YOUTUBE_CHANNELS", []):
+            name = f"youtube:{channel_id}"
+            comm = channel_names.get(channel_id, channel_id)
+            self._source_status[name] = SourceStatus(
+                id=f"youtube_{channel_id.lower()}",
+                name=name,
+                platform=SourcePlatform.YOUTUBE,
+                community=comm,
+                category="video_creator",
                 status="ok",
                 item_count=0,
             )
@@ -155,6 +193,7 @@ class MemoryStore:
         with self._lock:
             self._by_id.clear()
             self._by_content_hash.clear()
+            self._by_author_title.clear()
             self._source_tokens_by_id.clear()
             self._latest_index.clear()
             self._latest_index_sfw.clear()
@@ -206,8 +245,19 @@ class MemoryStore:
                 else:
                     m = item
 
+                from app.core.dedup import normalize_title, normalize_author_handle, compute_semantic_title_hash
+
                 content_hash = m.content_hash or compute_content_hash(m.media_url, m.title)
                 existing_id = self._by_content_hash.get(content_hash)
+
+                norm_auth = normalize_author_handle(m.author)
+                clean_t = normalize_title(m.title)
+                title_hash = compute_semantic_title_hash(m.title) if clean_t else ""
+                author_title_key = f"{norm_auth}|{title_hash}" if (norm_auth and norm_auth not in ("unknown", "anonymous", "test_author") and len(clean_t) >= 5) else ""
+
+                if not existing_id and author_title_key:
+                    existing_id = self._by_author_title.get(author_title_key)
+
                 target_id = existing_id if existing_id else m.id
 
                 plat_str = (
@@ -217,6 +267,8 @@ class MemoryStore:
                 )
                 comm_str = m.source_community or ""
                 new_tokens = _extract_source_tokens(plat_str, comm_str)
+
+                now = time.time()
 
                 if target_id in self._by_id:
                     existing = self._by_id[target_id]
@@ -232,35 +284,96 @@ class MemoryStore:
                         merged_created_at,
                     )
 
+                    # Snapshot tracking for velocity & acceleration
+                    snaps = self._snapshots.setdefault(target_id, [])
+                    if not snaps or (now - snaps[-1][0]) >= 30.0:
+                        snaps.append((now, merged_score))
+                        if len(snaps) > 20:
+                            self._snapshots[target_id] = snaps[-20:]
+
+                    velocity, acceleration = calculate_velocity_and_acceleration(snaps)
+                    stage = classify_lifecycle_stage(
+                        velocity=velocity,
+                        acceleration=acceleration,
+                        created_at=merged_created_at,
+                        platform=plat_str,
+                        total_score=merged_score,
+                    )
+
                     updated_meme = existing.model_copy(
                         update={
+                            "title": m.title or existing.title,
                             "score": merged_score,
                             "num_comments": merged_comments,
                             "created_at": merged_created_at,
                             "is_nsfw": merged_nsfw,
                             "content_hash": content_hash,
                             "trending_score": recalculated_trending,
+                            "velocity": velocity,
+                            "acceleration": acceleration,
+                            "lifecycle_stage": stage.value,
+                            "first_seen_at": getattr(existing, "first_seen_at", None) or now,
+                            "last_seen_at": now,
                         }
                     )
                     self._by_id[target_id] = updated_meme
                     self._by_content_hash[content_hash] = target_id
+                    if author_title_key:
+                        self._by_author_title[author_title_key] = target_id
                     existing_tokens = self._source_tokens_by_id.get(target_id, set())
                     self._source_tokens_by_id[target_id] = existing_tokens | new_tokens
+
+                    # Trigger breakout webhook alert if entering viral stage
+                    if stage == LifecycleStage.VIRAL:
+                        try:
+                            loop = asyncio.get_running_loop()
+                            loop.create_task(dispatch_viral_webhook(updated_meme))
+                        except RuntimeError:
+                            pass
                 else:
                     trending = m.trending_score or calculate_trending_score(
                         m.score,
                         m.num_comments,
                         m.created_at,
                     )
+
+                    # Initial snapshot for new meme
+                    snaps = self._snapshots.setdefault(m.id, [])
+                    snaps.append((now, m.score))
+                    age_hours = max(0.01, (now - m.created_at) / 3600.0)
+                    initial_velocity = round(m.score / age_hours, 2) if age_hours <= 48.0 else 0.0
+
+                    stage = classify_lifecycle_stage(
+                        velocity=initial_velocity,
+                        acceleration=0.0,
+                        created_at=m.created_at,
+                        platform=plat_str,
+                        total_score=m.score,
+                    )
+
                     new_meme = m.model_copy(
                         update={
                             "content_hash": content_hash,
                             "trending_score": trending,
+                            "velocity": initial_velocity,
+                            "acceleration": 0.0,
+                            "lifecycle_stage": stage.value,
+                            "first_seen_at": now,
+                            "last_seen_at": now,
                         }
                     )
                     self._by_id[new_meme.id] = new_meme
                     self._by_content_hash[content_hash] = new_meme.id
+                    if author_title_key:
+                        self._by_author_title[author_title_key] = new_meme.id
                     self._source_tokens_by_id[new_meme.id] = new_tokens
+
+                    if stage == LifecycleStage.VIRAL:
+                        try:
+                            loop = asyncio.get_running_loop()
+                            loop.create_task(dispatch_viral_webhook(new_meme))
+                        except RuntimeError:
+                            pass
 
             # Rebuild pre-sorted primary and secondary indices atomically
             all_memes = list(self._by_id.values())
@@ -333,7 +446,9 @@ class MemoryStore:
                         == plat_prefix
                         and (
                             source_name.split(":")[-1] in (m.source_community or "")
+                            or (m.source_community or "") in source_name
                             or not source_name.split(":")[-1]
+                            or (plat_prefix == "youtube")
                         )
                     )
                     status.item_count = matching_count
@@ -348,18 +463,18 @@ class MemoryStore:
         if not q:
             return None
 
-        # 1. Exact match in indexed tokens
+        # Exact match in indexed tokens
         if q in self._by_source_latest:
             return q
 
-        # 2. Subreddit prefix variation (r/memes <-> memes)
+        # Subreddit prefix variation (r/memes <-> memes)
         clean_q = q[2:].strip() if q.startswith("r/") else q
         if clean_q in self._by_source_latest:
             return clean_q
         if f"r/{clean_q}" in self._by_source_latest:
             return f"r/{clean_q}"
 
-        # 3. Composite parsing (reddit:r/memes, reddit/memes, etc.)
+        # Composite parsing (reddit:r/memes, reddit/memes, etc.)
         if ":" in q or "/" in q:
             parts = [p.strip() for p in q.replace(":", "/").split("/") if p.strip()]
             if len(parts) >= 2:
@@ -419,7 +534,7 @@ class MemoryStore:
         clean_q = q[2:].strip() if q.startswith("r/") else q
         clean_comm = comm_str[2:].strip() if comm_str.startswith("r/") else comm_str
 
-        if q in ("reddit", "knowyourmeme", "bluesky", "mastodon"):
+        if q in ("reddit", "knowyourmeme", "bluesky", "mastodon", "youtube"):
             return plat_str == q
         if q in ("kym", "know your meme"):
             return plat_str in ("knowyourmeme", "kym")
@@ -427,6 +542,8 @@ class MemoryStore:
             return plat_str in ("bluesky", "bsky")
         if q in ("masto", "fediverse"):
             return plat_str in ("mastodon", "masto", "fediverse")
+        if q in ("yt",):
+            return plat_str in ("youtube", "yt")
         if clean_q == clean_comm or q == comm_str:
             return True
 
@@ -444,6 +561,88 @@ class MemoryStore:
 
         return q == plat_str
 
+    def _apply_secondary_filters(
+        self,
+        candidates: List[NormalizedMeme],
+        generation: Optional[str] = None,
+        media_format: Optional[str] = None,
+        category: Optional[str] = None,
+        is_short: Optional[bool] = None,
+        lifecycle: Optional[str] = None,
+        min_velocity: Optional[float] = None,
+        country: Optional[str] = None,
+        language: Optional[str] = None,
+    ) -> List[NormalizedMeme]:
+        """Apply generation, media format, source category, short-form, lifecycle, country, and language filters."""
+        if not candidates:
+            return []
+
+        res = candidates
+        if generation and generation.lower() != "all":
+            gen_val = generation.lower().strip()
+            res = [
+                m for m in res
+                if str(getattr(m, "generation", "gen_z")).lower() == gen_val
+                or (hasattr(getattr(m, "generation", None), "value") and getattr(m, "generation").value == gen_val)
+            ]
+
+        if media_format:
+            fmt_val = media_format.lower().strip()
+            res = [
+                m for m in res
+                if (isinstance(m.media_type, MediaType) and m.media_type.value == fmt_val)
+                or str(m.media_type).lower() == fmt_val
+            ]
+
+        if category:
+            cat_val = category.lower().strip()
+            res = [
+                m for m in res
+                if getattr(m, "source_category", "community_forum").lower() == cat_val
+            ]
+
+        if is_short is not None:
+            res = [
+                m for m in res
+                if getattr(m, "is_short", False) == is_short
+            ]
+
+        if lifecycle and lifecycle.lower() != "all":
+            life_val = lifecycle.lower().strip()
+            res = [
+                m for m in res
+                if getattr(m, "lifecycle_stage", "emerging").lower() == life_val
+            ]
+
+        if min_velocity is not None:
+            res = [
+                m for m in res
+                if getattr(m, "velocity", 0.0) >= min_velocity
+            ]
+
+        if country and country.lower() != "all":
+            c_target = country.upper().strip()
+            if c_target == "GLOBAL":
+                res = [
+                    m for m in res
+                    if getattr(m, "country_code", "GLOBAL").upper() == "GLOBAL"
+                    or not getattr(m, "country_code", None)
+                ]
+            else:
+                res = [
+                    m for m in res
+                    if getattr(m, "country_code", "GLOBAL").upper() == c_target
+                ]
+
+        if language and language.lower() != "all":
+            l_target = language.lower().strip()
+            res = [
+                m for m in res
+                if getattr(m, "language", "en").lower() == l_target
+            ]
+
+        return res
+
     def get_latest(
         self,
         limit: int = 20,
@@ -452,10 +651,17 @@ class MemoryStore:
         nsfw: bool = False,
         time_window: Optional[str] = None,
         generation: Optional[str] = None,
+        format: Optional[str] = None,
+        category: Optional[str] = None,
+        is_short: Optional[bool] = None,
+        lifecycle: Optional[str] = None,
+        min_velocity: Optional[float] = None,
+        country: Optional[str] = None,
+        language: Optional[str] = None,
     ) -> Tuple[List[NormalizedMeme], int]:
         """Retrieve newest memes sorted by created_at descending."""
         with self._lock:
-            # 1. Resolve candidate list via pre-indexed maps
+            # Resolve candidate list via pre-indexed maps
             if source:
                 key = self._resolve_source_query_key(source)
                 if key is None:
@@ -471,19 +677,23 @@ class MemoryStore:
             if not candidates:
                 return [], 0
 
-            # 2. Generational filter
-            if generation and generation.lower() != "all":
-                gen_val = generation.lower().strip()
-                candidates = [
-                    m for m in candidates
-                    if str(getattr(m, "generation", "gen_z")).lower() == gen_val
-                    or (hasattr(getattr(m, "generation", None), "value") and getattr(m, "generation").value == gen_val)
-                ]
+            # Apply secondary filters (generation, format, category, shorts, lifecycle, country, language)
+            candidates = self._apply_secondary_filters(
+                candidates,
+                generation=generation,
+                media_format=format,
+                category=category,
+                is_short=is_short,
+                lifecycle=lifecycle,
+                min_velocity=min_velocity,
+                country=country,
+                language=language,
+            )
 
             if not candidates:
                 return [], 0
 
-            # 3. Time window cutoff
+            # Time window cutoff
             window_seconds = self._parse_time_window(time_window)
             if window_seconds is not None:
                 cutoff = time.time() - window_seconds
@@ -508,10 +718,17 @@ class MemoryStore:
         nsfw: bool = False,
         time_window: Optional[str] = None,
         generation: Optional[str] = None,
+        format: Optional[str] = None,
+        category: Optional[str] = None,
+        is_short: Optional[bool] = None,
+        lifecycle: Optional[str] = None,
+        min_velocity: Optional[float] = None,
+        country: Optional[str] = None,
+        language: Optional[str] = None,
     ) -> Tuple[List[NormalizedMeme], int]:
         """Retrieve trending memes sorted by trending_score descending."""
         with self._lock:
-            # 1. Resolve candidate list via pre-indexed maps
+            # Resolve candidate list via pre-indexed maps
             if source:
                 key = self._resolve_source_query_key(source)
                 if key is None:
@@ -527,19 +744,23 @@ class MemoryStore:
             if not candidates:
                 return [], 0
 
-            # 2. Generational filter
-            if generation and generation.lower() != "all":
-                gen_val = generation.lower().strip()
-                candidates = [
-                    m for m in candidates
-                    if str(getattr(m, "generation", "gen_z")).lower() == gen_val
-                    or (hasattr(getattr(m, "generation", None), "value") and getattr(m, "generation").value == gen_val)
-                ]
+            # Apply secondary filters (generation, format, category, shorts, lifecycle, country, language)
+            candidates = self._apply_secondary_filters(
+                candidates,
+                generation=generation,
+                media_format=format,
+                category=category,
+                is_short=is_short,
+                lifecycle=lifecycle,
+                min_velocity=min_velocity,
+                country=country,
+                language=language,
+            )
 
             if not candidates:
                 return [], 0
 
-            # 3. Time window cutoff
+            # Time window cutoff
             window_seconds = self._parse_time_window(time_window)
             if window_seconds is not None:
                 cutoff = time.time() - window_seconds
@@ -557,6 +778,13 @@ class MemoryStore:
         source: Optional[str] = None,
         nsfw: bool = False,
         generation: Optional[str] = None,
+        format: Optional[str] = None,
+        category: Optional[str] = None,
+        is_short: Optional[bool] = None,
+        lifecycle: Optional[str] = None,
+        min_velocity: Optional[float] = None,
+        country: Optional[str] = None,
+        language: Optional[str] = None,
     ) -> Optional[NormalizedMeme]:
         """Retrieve single random meme matching filter criteria."""
         with self._lock:
@@ -575,13 +803,17 @@ class MemoryStore:
             if not candidates:
                 return None
 
-            if generation and generation.lower() != "all":
-                gen_val = generation.lower().strip()
-                candidates = [
-                    m for m in candidates
-                    if str(getattr(m, "generation", "gen_z")).lower() == gen_val
-                    or (hasattr(getattr(m, "generation", None), "value") and getattr(m, "generation").value == gen_val)
-                ]
+            candidates = self._apply_secondary_filters(
+                candidates,
+                generation=generation,
+                media_format=format,
+                category=category,
+                is_short=is_short,
+                lifecycle=lifecycle,
+                min_velocity=min_velocity,
+                country=country,
+                language=language,
+            )
 
             if not candidates:
                 return None

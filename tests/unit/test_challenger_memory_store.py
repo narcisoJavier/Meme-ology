@@ -97,7 +97,7 @@ class TestChallengerLatencyBenchmark:
 
         iterations = 500
 
-        # 1. Benchmark get_latest default
+        # Benchmark get_latest default
         latencies_latest: List[float] = []
         for _ in range(iterations):
             t0 = time.perf_counter()
@@ -110,7 +110,7 @@ class TestChallengerLatencyBenchmark:
         mean_latest = statistics.mean(latencies_latest)
         p95_latest = statistics.quantiles(latencies_latest, n=20)[18]  # 95th percentile
 
-        # 2. Benchmark get_trending with 24h window filter
+        # Benchmark get_trending with 24h window filter
         latencies_trending: List[float] = []
         for _ in range(iterations):
             t0 = time.perf_counter()
@@ -123,7 +123,7 @@ class TestChallengerLatencyBenchmark:
         mean_trending = statistics.mean(latencies_trending)
         p95_trending = statistics.quantiles(latencies_trending, n=20)[18]
 
-        # 3. Benchmark get_latest with source filter
+        # Benchmark get_latest with source filter
         latencies_source_filter: List[float] = []
         for _ in range(iterations):
             t0 = time.perf_counter()
@@ -135,7 +135,7 @@ class TestChallengerLatencyBenchmark:
         mean_source = statistics.mean(latencies_source_filter)
         p95_source = statistics.quantiles(latencies_source_filter, n=20)[18]
 
-        # 4. Benchmark get_random (unfiltered)
+        # Benchmark get_random (unfiltered)
         latencies_random_unfiltered: List[float] = []
         for _ in range(iterations):
             t0 = time.perf_counter()
@@ -146,7 +146,7 @@ class TestChallengerLatencyBenchmark:
 
         mean_random = statistics.mean(latencies_random_unfiltered)
 
-        # 5. Benchmark get_by_id and get_by_content_hash (O(1) hash map lookup)
+        # Benchmark get_by_id and get_by_content_hash (O(1) hash map lookup)
         sample_m = memes[1234]
         latencies_id_lookup: List[float] = []
         for _ in range(iterations):
@@ -202,27 +202,27 @@ class TestChallengerPagination:
         memes = _generate_memes(100)
         store.upsert_memes(memes)
 
-        # 1. offset == total
+        # offset == total
         items, total = store.get_latest(limit=10, offset=100, nsfw=True)
         assert items == []
         assert total == 100
 
-        # 2. offset > total
+        # offset > total
         items, total = store.get_latest(limit=10, offset=5000, nsfw=True)
         assert items == []
         assert total == 100
 
-        # 3. limit == 0
+        # limit == 0
         items, total = store.get_latest(limit=0, offset=0, nsfw=True)
         assert items == []
         assert total == 100
 
-        # 4. limit >> total
+        # limit >> total
         items, total = store.get_latest(limit=10000, offset=0, nsfw=True)
         assert len(items) == 100
         assert total == 100
 
-        # 5. offset near end
+        # offset near end
         items, total = store.get_latest(limit=10, offset=95, nsfw=True)
         assert len(items) == 5
         assert total == 100
@@ -577,37 +577,37 @@ class TestChallengerTimeWindowFilters:
         store.upsert_memes(memes)
         assert store.count() == 5
 
-        # 1. Test 1h
+        # Test 1h
         items_1h, total_1h = store.get_trending(time_window="1h", nsfw=True)
         assert [m.id for m in items_1h] == ["m_20m"]
         assert total_1h == 1
 
-        # 2. Test 6h
+        # Test 6h
         items_6h, total_6h = store.get_trending(time_window="6h", nsfw=True)
         assert {m.id for m in items_6h} == {"m_20m", "m_2h"}
         assert total_6h == 2
 
-        # 3. Test 24h
+        # Test 24h
         items_24h, total_24h = store.get_trending(time_window="24h", nsfw=True)
         assert {m.id for m in items_24h} == {"m_20m", "m_2h", "m_10h"}
         assert total_24h == 3
 
-        # 4. Test 7d
+        # Test 7d
         items_7d, total_7d = store.get_trending(time_window="7d", nsfw=True)
         assert {m.id for m in items_7d} == {"m_20m", "m_2h", "m_10h", "m_3d"}
         assert total_7d == 4
 
-        # 5. Test all
+        # Test all
         items_all, total_all = store.get_trending(time_window="all", nsfw=True)
         assert total_all == 5
         assert len(items_all) == 5
 
-        # 6. Test None
+        # Test None
         items_none, total_none = store.get_trending(time_window=None, nsfw=True)
         assert total_none == 5
         assert len(items_none) == 5
 
-        # 7. Test case & whitespace insensitivity: ' 1H ', ' 24h '
+        # Test case & whitespace insensitivity: ' 1H ', ' 24h '
         items_1h_upper, _ = store.get_trending(time_window="  1H  ", nsfw=True)
         assert [m.id for m in items_1h_upper] == ["m_20m"]
 

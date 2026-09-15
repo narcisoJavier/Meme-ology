@@ -1,7 +1,7 @@
 """Application configuration settings using Pydantic Settings."""
 
 from functools import lru_cache
-from typing import List, Union
+from typing import List, Optional, Union
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 import json
@@ -56,6 +56,41 @@ class Settings(BaseSettings):
         default=["mastodon.social"],
         description="List of Mastodon instance servers to monitor",
     )
+    YOUTUBE_CHANNELS: List[str] = Field(
+        default=[
+            "UCaHT88aobpcvRFEuy4v5Clg",  # Lessons in Meme Culture (@LIMC)
+            "UCbrPqq29C9Q_TQP7OFFRzcw",  # Know Your Meme Video (@KnowYourMeme)
+            "UCq9UQ0TUfI9GyzSiZ2uNx5Q",  # Daily Dose of Memes (@DailyDoseOfMemes)
+            "UC9sY9S-ddN-1E0jD2fFWLig",  # Grandayy (@grandayy)
+            "UC2vpvibGYfBcb14l6CLVdiA",  # Memer Man (@MemerMan)
+        ],
+        description="List of YouTube channel IDs to monitor for meme content",
+    )
+
+    # Content Filtering
+    ENGLISH_ONLY: bool = Field(
+        default=True,
+        description="Filter for English-only meme content across all sources",
+    )
+
+    # Webhook Alerts for Viral Breakouts
+    DISCORD_WEBHOOK_URL: Optional[str] = Field(
+        default=None,
+        description="Discord Webhook URL for real-time viral meme breakout alerts",
+    )
+    SLACK_WEBHOOK_URL: Optional[str] = Field(
+        default=None,
+        description="Slack Incoming Webhook URL for viral meme alerts",
+    )
+    GENERIC_WEBHOOK_URL: Optional[str] = Field(
+        default=None,
+        description="Generic HTTP POST endpoint for viral meme alerts",
+    )
+
+    # Adaptive Viral Thresholds (velocity per hour)
+    VIRAL_VELOCITY_REDDIT: float = Field(default=1000.0, description="Score growth/hr to trigger viral on Reddit")
+    VIRAL_VELOCITY_YOUTUBE: float = Field(default=2500.0, description="Views growth/hr to trigger viral on YouTube")
+    VIRAL_VELOCITY_FEDIVERSE: float = Field(default=250.0, description="Engagement growth/hr to trigger viral on Mastodon/Bluesky")
 
     # Persistence & Storage
     DB_PATH: str = Field(
@@ -63,7 +98,7 @@ class Settings(BaseSettings):
         description="Path to SQLite database file",
     )
 
-    @field_validator("REDDIT_SUBREDDITS", "KYM_FEED_URLS", "BLUESKY_FEEDS", "MASTODON_SERVERS", mode="before")
+    @field_validator("REDDIT_SUBREDDITS", "KYM_FEED_URLS", "BLUESKY_FEEDS", "MASTODON_SERVERS", "YOUTUBE_CHANNELS", mode="before")
     @classmethod
     def parse_list_fields(cls, v: Union[str, List[str]]) -> List[str]:
         if isinstance(v, str):

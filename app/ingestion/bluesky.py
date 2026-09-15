@@ -17,6 +17,7 @@ import httpx
 
 from app.config import get_settings
 from app.core.dedup import compute_content_hash, normalize_url
+from app.core.language import is_english_content
 from app.core.ranking import calculate_trending_score
 from app.core.security import (
     PoliteRateLimiter,
@@ -104,7 +105,7 @@ class BlueskyFetcher(BaseSourceFetcher):
         record = post_data.get("record") if isinstance(post_data.get("record"), dict) else {}
         record_embed = record.get("embed") if isinstance(record.get("embed"), dict) else {}
 
-        # 1. Inspect embed in top-level view
+        # Inspect embed in top-level view
         if isinstance(embed, dict):
             embed_type = embed.get("$type", "")
 
@@ -149,7 +150,7 @@ class BlueskyFetcher(BaseSourceFetcher):
                                 )
                                 return url, media_type, alt
 
-        # 2. Inspect record-level embed (raw AT Protocol record)
+        # Inspect record-level embed (raw AT Protocol record)
         if isinstance(record_embed, dict):
             rec_type = record_embed.get("$type", "")
             if "embed.images" in rec_type or "images" in record_embed:
@@ -245,6 +246,19 @@ class BlueskyFetcher(BaseSourceFetcher):
         created_str = record.get("createdAt") or item.get("indexedAt")
         created_at = parse_iso8601_date(created_str) if created_str else time.time()
 
+        # English-only filter
+        settings = get_settings()
+        if getattr(settings, "ENGLISH_ONLY", True):
+            langs = record.get("langs") if isinstance(record.get("langs"), list) else []
+            declared_lang = str(langs[0]) if langs else None
+            if not is_english_content(clean_text, declared_language=declared_lang):
+                return None
+
+        # Content authenticity & meme validation
+        from app.core.classifier import is_valid_meme_content
+        if not is_valid_meme_content(clean_text, media_url, author_handle, self.community):
+            return None
+
         # NSFW flag
         labels = item.get("labels", [])
         is_nsfw = False
@@ -265,6 +279,10 @@ class BlueskyFetcher(BaseSourceFetcher):
                 domain = parsed_domain
         except Exception:
             pass
+
+        # Detect language and country
+        from app.core.location import detect_meme_location
+        detected_country, detected_lang = detect_meme_location(clean_text, self.community, "bluesky", author_handle)
 
         meme_id = f"bluesky_{rkey}"
         content_hash = compute_content_hash(media_url, clean_text)
@@ -287,6 +305,8 @@ class BlueskyFetcher(BaseSourceFetcher):
             domain=domain,
             content_hash=content_hash,
             trending_score=trending_score,
+            language=detected_lang,
+            country_code=detected_country,
         )
 
     def parse_search_dict(self, payload: Any) -> List[NormalizedMeme]:
@@ -376,8 +396,8 @@ class BlueskyFetcher(BaseSourceFetcher):
         should_close = self._custom_client is None
 
         endpoints = [
-            f"https://public.api.bsky.app/xrpc/app.bsky.feed.searchPosts?q={self.feed_name}&limit=50",
-            f"https://api.bsky.app/xrpc/app.bsky.feed.searchPosts?q={self.feed_name}&limit=50",
+            f"https://public.api.bsky.app/xrpc/app.bsky.feed.searchPosts?q={self.feed_name}&limit=50&lang=en",
+            f"https://api.bsky.app/xrpc/app.bsky.feed.searchPosts?q={self.feed_name}&limit=50&lang=en",
         ]
 
         try:
@@ -397,7 +417,14 @@ class BlueskyFetcher(BaseSourceFetcher):
                                 self.update_success(len(memes), latency_ms)
                                 return memes
 
-                        if resp.status_code in (429, 403, 500, 502, 503, 504):
+                        if resp.status_code == 403:
+                            logger.debug(
+                                "Bluesky [%s] public search API blocked by CDN (HTTP 403). Falling back cleanly.",
+                                self.name,
+                            )
+                            break
+
+                        if resp.status_code in (429, 500, 502, 503, 504):
                             backoff = calculate_backoff_delay(attempt, resp.headers)
                             logger.warning(
                                 "Bluesky [%s] HTTP %d. Attempt %d/%d, backing off %.2fs",
