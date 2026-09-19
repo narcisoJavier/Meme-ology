@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import time
 from typing import Any, Dict, List, Optional
 
 from app.config import get_settings
@@ -82,6 +83,37 @@ class MemePollingWorker:
         async def _fetch_single(fetcher: BaseSourceFetcher) -> List[NormalizedMeme]:
             try:
                 memes = await fetcher.fetch_memes()
+                settings = get_settings()
+                def _origin_value(meme: NormalizedMeme) -> str:
+                    origin = getattr(meme, "data_origin", "live")
+                    return origin.value if hasattr(origin, "value") else str(origin)
+
+                fixture_count = sum(1 for meme in (memes or []) if _origin_value(meme) == "fixture")
+                if fixture_count and not settings.OFFLINE_MODE:
+                    # A fixture fallback is useful for local callers, but it must not enter
+                    # the production cache as if it were a live observation.
+                    fetcher.status.status = "degraded"
+                    logger.warning(
+                        "%s returned %d fixture records after live ingestion failed; excluding them from production cache.",
+                        fetcher.name,
+                        fixture_count,
+                    )
+                    memes = [
+                        meme
+                        for meme in (memes or [])
+                        if _origin_value(meme) != "fixture"
+                    ]
+                if memes and not settings.OFFLINE_MODE:
+                    observed_at = time.time()
+                    memes = [
+                        meme.model_copy(
+                            update={
+                                "data_origin": "live",
+                                "observed_at": observed_at,
+                            }
+                        )
+                        for meme in memes
+                    ]
                 self.memory_store.update_source_status(fetcher.status)
                 return memes or []
             except Exception as e:

@@ -112,25 +112,29 @@ class YouTubeFetcher(BaseSourceFetcher):
                 author = author_elem.text if author_elem is not None and author_elem.text else feed_author
 
                 published_elem = entry.find("atom:published", ns)
-                created_at = time.time()
-                if published_elem is not None and published_elem.text:
-                    try:
-                        # Parse ISO 8601 string to Unix timestamp
-                        dt = datetime.fromisoformat(published_elem.text.replace('Z', '+00:00'))
-                        created_at = dt.timestamp()
-                    except ValueError:
-                        pass
+                if published_elem is None or not published_elem.text:
+                    continue
+                try:
+                    # Parse ISO 8601 string to Unix timestamp. A missing or invalid
+                    # publication date must not be replaced with the current time.
+                    dt = datetime.fromisoformat(published_elem.text.replace('Z', '+00:00'))
+                    created_at = dt.timestamp()
+                except (TypeError, ValueError, OverflowError):
+                    continue
 
                 score = 0
                 num_comments = 0
+                metrics_quality = "unknown"
                 if media_group is not None:
                     stats_elem = media_group.find("media:community/media:statistics", ns)
                     if stats_elem is not None and stats_elem.get("views"):
                         score = int(stats_elem.get("views"))
+                        metrics_quality = "observed"
                         
                     rating_elem = media_group.find("media:community/media:starRating", ns)
                     if rating_elem is not None and rating_elem.get("count"):
                         num_comments = int(rating_elem.get("count"))
+                        metrics_quality = "observed"
 
                 # Detect if item is a YouTube Short (from alternate link or title)
                 link_elem = entry.find("atom:link[@rel='alternate']", ns)
@@ -164,6 +168,7 @@ class YouTubeFetcher(BaseSourceFetcher):
                     trending_score=trending_score,
                     is_short=is_short,
                     source_category="video_creator",
+                    metrics_quality=metrics_quality,
                 )
                 results.append(meme)
             except Exception as item_err:
@@ -219,6 +224,7 @@ class YouTubeFetcher(BaseSourceFetcher):
                 logger.error(f"Error loading YouTube JSON fixture {self.fixture_json_path}: {e}")
 
         if results:
+            results = self.mark_fixture_items(results)
             self.update_success(len(results), latency_ms=0.5)
         else:
             self.update_failure(FileNotFoundError("No valid YouTube fixtures found"))

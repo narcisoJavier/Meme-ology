@@ -193,8 +193,10 @@ class BlueskyFetcher(BaseSourceFetcher):
             if len(parts) >= 3:
                 rkey = parts[-1]
         if not rkey:
-            rkey = str(item.get("id") or cid or str(int(time.time())))
-            rkey = rkey.replace("bluesky_", "")
+            rkey = str(item.get("id") or cid or "").strip()
+        if not rkey:
+            return None
+        rkey = rkey.replace("bluesky_", "")
 
         # Extract author
         author_obj = item.get("author") if isinstance(item.get("author"), dict) else {}
@@ -218,7 +220,8 @@ class BlueskyFetcher(BaseSourceFetcher):
             if alt_text:
                 clean_text = html.unescape(alt_text).strip()
             else:
-                clean_text = f"Bluesky Meme #{rkey}"
+                # A synthetic title is not evidence that an attachment is a meme.
+                return None
 
         # Clean handle for permalink
         clean_handle = handle or author_did or "profile"
@@ -244,7 +247,21 @@ class BlueskyFetcher(BaseSourceFetcher):
 
         # Timestamp
         created_str = record.get("createdAt") or item.get("indexedAt")
-        created_at = parse_iso8601_date(created_str) if created_str else time.time()
+        metrics_quality = "observed" if all(
+            key in item for key in ("likeCount", "repostCount", "replyCount")
+        ) else "partial"
+        if not created_str:
+            # Keep the item, but make its missing publication time explicit. It
+            # cannot outrank dated observations because its metrics are partial.
+            created_at = 0.0
+            metrics_quality = "partial"
+        else:
+            try:
+                created_at = parse_iso8601_date(created_str)
+                datetime.datetime.fromtimestamp(created_at, tz=datetime.timezone.utc)
+            except (TypeError, ValueError, OverflowError, OSError):
+                created_at = 0.0
+                metrics_quality = "partial"
 
         # English-only filter
         settings = get_settings()
@@ -286,7 +303,11 @@ class BlueskyFetcher(BaseSourceFetcher):
 
         meme_id = f"bluesky_{rkey}"
         content_hash = compute_content_hash(media_url, clean_text)
-        trending_score = calculate_trending_score(score, reply_count, created_at)
+        trending_score = (
+            calculate_trending_score(score, reply_count, created_at)
+            if metrics_quality == "observed"
+            else float(max(0, score) + (max(0, reply_count) * 1.5))
+        )
 
         return NormalizedMeme(
             id=meme_id,
@@ -305,6 +326,7 @@ class BlueskyFetcher(BaseSourceFetcher):
             domain=domain,
             content_hash=content_hash,
             trending_score=trending_score,
+            metrics_quality=metrics_quality,
             language=detected_lang,
             country_code=detected_country,
         )
@@ -370,7 +392,7 @@ class BlueskyFetcher(BaseSourceFetcher):
 
         try:
             content = path.read_text(encoding="utf-8")
-            memes = self.parse_search_json(content)
+            memes = self.mark_fixture_items(self.parse_search_json(content))
             if memes:
                 self.update_success(len(memes), latency_ms=0.5)
             else:

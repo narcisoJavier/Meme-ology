@@ -96,6 +96,23 @@ console.log(`Random Meme: ${meme.title}`);
 console.log(`Image: ${meme.url}`);
 ```
 
+### Build a live dataset
+
+Use the live harvester before publishing the static `public/data` files:
+
+```bash
+python scripts/harvest_live_sources.py
+```
+
+The harvester fails closed. It keeps source IDs, publication timestamps, and
+engagement values from upstream responses. It does not estimate comments or
+timestamps, and it does not publish fixture records as live data. Records also
+include `data_origin`, `metrics_quality`, and `observed_at` so downstream users
+can see how each item was collected.
+
+The older `scripts/harvest_multiplatform_memes.py` filename remains available as
+a compatibility entrypoint and now runs the same live-only harvester.
+
 ---
 
 ## 📡 API Reference

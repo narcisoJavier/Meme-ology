@@ -20,4 +20,13 @@ else:
 
 def get_initial_generational_memes() -> List[NormalizedMeme]:
     """Return normalized instances of the curated generational catalog."""
-    return [NormalizedMeme(**item) for item in INITIAL_GENERATIONAL_MEMES]
+    catalog_items = []
+    for item in INITIAL_GENERATIONAL_MEMES:
+        normalized = dict(item)
+        # Checked-in harvest output is a seed snapshot, not a fresh upstream
+        # observation. Keep that distinction visible to ranking and clients.
+        normalized["data_origin"] = "fixture"
+        normalized["metrics_quality"] = "fixture"
+        normalized["observed_at"] = None
+        catalog_items.append(NormalizedMeme(**normalized))
+    return catalog_items

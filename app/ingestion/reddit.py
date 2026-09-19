@@ -222,10 +222,18 @@ class RedditFetcher(BaseSourceFetcher):
             num_comments = 0
 
         raw_created = post_data.get("created_utc")
-        try:
-            created_utc = float(raw_created) if raw_created is not None else time.time()
-        except (ValueError, TypeError):
-            created_utc = time.time()
+        metrics_quality = "observed" if raw_comments is not None else "partial"
+        if raw_created is None:
+            # Do not replace an undated post with the current time. Keep it as a
+            # partial observation so it cannot be mistaken for a fresh post.
+            created_utc = 0.0
+            metrics_quality = "partial"
+        else:
+            try:
+                created_utc = float(raw_created)
+            except (ValueError, TypeError):
+                created_utc = 0.0
+                metrics_quality = "partial"
 
         is_nsfw = bool(post_data.get("over_18", False))
 
@@ -249,6 +257,7 @@ class RedditFetcher(BaseSourceFetcher):
             domain=domain or "",
             content_hash=content_hash,
             trending_score=trending_score,
+            metrics_quality=metrics_quality,
         )
 
     def parse_listing_dict(self, payload: Any, sub_override: Optional[str] = None) -> List[NormalizedMeme]:
@@ -306,7 +315,7 @@ class RedditFetcher(BaseSourceFetcher):
 
         try:
             content = path.read_text(encoding="utf-8")
-            memes = self.parse_listing_json(content, sub_override=sub)
+            memes = self.mark_fixture_items(self.parse_listing_json(content, sub_override=sub))
             self.update_success(len(memes), latency_ms=0.5)
             return memes
         except Exception as e:
@@ -333,7 +342,6 @@ class RedditFetcher(BaseSourceFetcher):
             return []
 
         results: List[NormalizedMeme] = []
-        now = time.time()
         sub = (sub_override or self.subreddit).lstrip("r/").strip()
 
         for item in items:
@@ -346,7 +354,16 @@ class RedditFetcher(BaseSourceFetcher):
 
             post_link = item.get("postLink", "")
             post_id = post_link.rstrip("/").split("/")[-1] if post_link else ""
-            meme_id = f"reddit_{sub}_{post_id}" if post_id else f"reddit_{sub}_{str(now)}"
+            raw_created = item.get("created_utc") or item.get("createdAt")
+            if not post_id or raw_created is None:
+                # meme-api.com does not consistently expose the original timestamp.
+                # Do not manufacture one because it would pollute trending rankings.
+                continue
+            try:
+                created_at = float(raw_created)
+            except (ValueError, TypeError):
+                continue
+            meme_id = f"reddit_{sub}_{post_id}"
 
             lower_url = url.lower()
             media_type = MediaType.IMAGE
@@ -355,9 +372,16 @@ class RedditFetcher(BaseSourceFetcher):
             elif lower_url.endswith((".mp4", ".webm")):
                 media_type = MediaType.VIDEO
 
-            score = int(item.get("ups", 0))
-            comments = max(10, score // 30)
-            trending = calculate_trending_score(score, comments, now)
+            try:
+                score = int(item.get("ups", 0))
+            except (ValueError, TypeError):
+                score = 0
+            try:
+                comments = int(item.get("num_comments", 0))
+            except (ValueError, TypeError):
+                comments = 0
+            metrics_quality = "observed" if "num_comments" in item else "partial"
+            trending = calculate_trending_score(score, comments, created_at)
             chash = compute_content_hash(url, title)
 
             results.append(
@@ -373,11 +397,12 @@ class RedditFetcher(BaseSourceFetcher):
                     author=str(item.get("author", "reddit_user")),
                     score=score,
                     num_comments=comments,
-                    created_at=now,
+                    created_at=created_at,
                     is_nsfw=bool(item.get("nsfw", False)),
                     domain="i.redd.it",
                     content_hash=chash,
                     trending_score=trending,
+                    metrics_quality=metrics_quality,
                 )
             )
         return results

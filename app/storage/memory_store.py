@@ -241,6 +241,9 @@ class MemoryStore:
                         domain=item.domain,
                         content_hash=item.content_hash,
                         trending_score=item.trending_score,
+                        data_origin=getattr(item, "data_origin", "live"),
+                        metrics_quality=getattr(item, "metrics_quality", "observed"),
+                        observed_at=getattr(item, "observed_at", None),
                     )
                 else:
                     m = item
@@ -314,6 +317,13 @@ class MemoryStore:
                             "lifecycle_stage": stage.value,
                             "first_seen_at": getattr(existing, "first_seen_at", None) or now,
                             "last_seen_at": now,
+                            "data_origin": getattr(m, "data_origin", getattr(existing, "data_origin", "live")),
+                            "metrics_quality": getattr(
+                                m,
+                                "metrics_quality",
+                                getattr(existing, "metrics_quality", "observed"),
+                            ),
+                            "observed_at": getattr(m, "observed_at", getattr(existing, "observed_at", None)),
                         }
                     )
                     self._by_id[target_id] = updated_meme
@@ -378,8 +388,20 @@ class MemoryStore:
             # Rebuild pre-sorted primary and secondary indices atomically
             all_memes = list(self._by_id.values())
             latest_sorted = sorted(all_memes, key=lambda x: (-x.created_at, x.id))
+            settings = get_settings()
+
+            def is_rankable(item: NormalizedMeme) -> bool:
+                if settings.OFFLINE_MODE:
+                    return True
+                origin = getattr(item, "data_origin", "live")
+                origin_value = origin.value if hasattr(origin, "value") else str(origin)
+                quality = getattr(item, "metrics_quality", "observed")
+                quality_value = quality.value if hasattr(quality, "value") else str(quality)
+                return origin_value != "fixture" and quality_value == "observed"
+
             trending_sorted = sorted(
-                all_memes, key=lambda x: (-x.trending_score, -x.created_at, x.id)
+                [item for item in all_memes if is_rankable(item)],
+                key=lambda x: (-x.trending_score, -x.created_at, x.id),
             )
 
             self._latest_index = latest_sorted

@@ -238,10 +238,25 @@ class MastodonFetcher(BaseSourceFetcher):
 
         # Timestamp
         created_str = status_data.get("created_at")
-        created_at = parse_iso8601_date(created_str) if created_str else time.time()
+        metrics_quality = "observed" if all(
+            key in status_data
+            for key in ("favourites_count", "reblogs_count", "replies_count")
+        ) else "partial"
+        if not created_str:
+            created_at = 0.0
+            metrics_quality = "partial"
+        else:
+            try:
+                clean_created = str(created_str).strip()
+                if clean_created.endswith("Z"):
+                    clean_created = clean_created[:-1] + "+00:00"
+                created_at = datetime.datetime.fromisoformat(clean_created).timestamp()
+            except (TypeError, ValueError, OverflowError, OSError):
+                created_at = 0.0
+                metrics_quality = "partial"
 
         # Minimum engagement filter
-        if score == 0 and replies == 0:
+        if score == 0 and replies == 0 and created_at > 0:
             age_seconds = time.time() - created_at
             if age_seconds > 1800:  # 30 minutes
                 return None
@@ -309,6 +324,7 @@ class MastodonFetcher(BaseSourceFetcher):
             domain=domain,
             content_hash=content_hash,
             trending_score=trending_score,
+            metrics_quality=metrics_quality,
             language=detected_lang,
             country_code=detected_country,
         )
@@ -359,7 +375,7 @@ class MastodonFetcher(BaseSourceFetcher):
 
         try:
             content = path.read_text(encoding="utf-8")
-            memes = self.parse_timeline_json(content)
+            memes = self.mark_fixture_items(self.parse_timeline_json(content))
             if memes:
                 self.update_success(len(memes), latency_ms=0.5)
             else:

@@ -65,7 +65,10 @@ class SqliteStore:
                     trending_score REAL NOT NULL DEFAULT 0.0,
                     discovered_at REAL NOT NULL DEFAULT 0.0,
                     language TEXT DEFAULT 'en',
-                    country_code TEXT DEFAULT 'GLOBAL'
+                    country_code TEXT DEFAULT 'GLOBAL',
+                    data_origin TEXT DEFAULT 'live',
+                    metrics_quality TEXT DEFAULT 'observed',
+                    observed_at REAL
                 );
                 """
             )
@@ -77,6 +80,20 @@ class SqliteStore:
                 pass
             try:
                 await db.execute("ALTER TABLE memes ADD COLUMN country_code TEXT DEFAULT 'GLOBAL';")
+            except Exception:
+                pass
+            try:
+                # Existing rows predate provenance tracking, so treat them as a
+                # seed snapshot until a fresh upstream observation replaces them.
+                await db.execute("ALTER TABLE memes ADD COLUMN data_origin TEXT DEFAULT 'fixture';")
+            except Exception:
+                pass
+            try:
+                await db.execute("ALTER TABLE memes ADD COLUMN metrics_quality TEXT DEFAULT 'unknown';")
+            except Exception:
+                pass
+            try:
+                await db.execute("ALTER TABLE memes ADD COLUMN observed_at REAL;")
             except Exception:
                 pass
 
@@ -129,6 +146,11 @@ class SqliteStore:
             )
             lang = getattr(m, "language", "en") or "en"
             country = getattr(m, "country_code", "GLOBAL") or "GLOBAL"
+            data_origin = getattr(m, "data_origin", "live")
+            data_origin = data_origin.value if hasattr(data_origin, "value") else str(data_origin)
+            metrics_quality = getattr(m, "metrics_quality", "observed")
+            metrics_quality = metrics_quality.value if hasattr(metrics_quality, "value") else str(metrics_quality)
+            observed_at = getattr(m, "observed_at", None)
 
             rows.append(
                 (
@@ -151,6 +173,9 @@ class SqliteStore:
                     now,
                     lang,
                     country,
+                    data_origin,
+                    metrics_quality,
+                    observed_at,
                 )
             )
 
@@ -161,9 +186,10 @@ class SqliteStore:
                     id, raw_id, title, media_url, media_type, source_platform,
                     source_community, permalink, author, score, num_comments,
                     created_at, is_nsfw, domain, content_hash, trending_score,
-                    discovered_at, language, country_code
+                    discovered_at, language, country_code, data_origin,
+                    metrics_quality, observed_at
                 ) VALUES (
-                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
                 )
                 ON CONFLICT(id) DO UPDATE SET
                     title = excluded.title,
@@ -181,7 +207,10 @@ class SqliteStore:
                     content_hash = excluded.content_hash,
                     trending_score = excluded.trending_score,
                     language = excluded.language,
-                    country_code = excluded.country_code;
+                    country_code = excluded.country_code,
+                    data_origin = excluded.data_origin,
+                    metrics_quality = excluded.metrics_quality,
+                    observed_at = excluded.observed_at;
                 """,
                 rows,
             )
@@ -212,6 +241,9 @@ class SqliteStore:
 
         lang = row[17] if len(row) > 17 and row[17] else "en"
         country = row[18] if len(row) > 18 and row[18] else "GLOBAL"
+        data_origin = row[19] if len(row) > 19 and row[19] else "live"
+        metrics_quality = row[20] if len(row) > 20 and row[20] else "observed"
+        observed_at = row[21] if len(row) > 21 else None
 
         try:
             m_type = MediaType(media_type)
@@ -242,6 +274,9 @@ class SqliteStore:
             trending_score=float(trending_score or 0.0),
             language=lang,
             country_code=country,
+            data_origin=data_origin,
+            metrics_quality=metrics_quality,
+            observed_at=observed_at,
         )
 
     async def load_all_memes(self) -> list[NormalizedMeme]:
@@ -253,7 +288,8 @@ class SqliteStore:
                     id, raw_id, title, media_url, media_type, source_platform,
                     source_community, permalink, author, score, num_comments,
                     created_at, is_nsfw, domain, content_hash, trending_score,
-                    discovered_at, language, country_code
+                    discovered_at, language, country_code, data_origin,
+                    metrics_quality, observed_at
                 FROM memes
                 ORDER BY created_at DESC;
                 """
@@ -270,7 +306,8 @@ class SqliteStore:
                     id, raw_id, title, media_url, media_type, source_platform,
                     source_community, permalink, author, score, num_comments,
                     created_at, is_nsfw, domain, content_hash, trending_score,
-                    discovered_at, language, country_code
+                    discovered_at, language, country_code, data_origin,
+                    metrics_quality, observed_at
                 FROM memes
                 WHERE id = ?;
                 """,
@@ -290,7 +327,8 @@ class SqliteStore:
                     id, raw_id, title, media_url, media_type, source_platform,
                     source_community, permalink, author, score, num_comments,
                     created_at, is_nsfw, domain, content_hash, trending_score,
-                    discovered_at, language, country_code
+                    discovered_at, language, country_code, data_origin,
+                    metrics_quality, observed_at
                 FROM memes
                 WHERE content_hash = ?
                 ORDER BY created_at DESC

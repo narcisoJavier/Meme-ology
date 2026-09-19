@@ -5,7 +5,7 @@ import hashlib
 import re
 import time
 from typing import List, Optional
-from app.models.meme import NormalizedMeme, SourcePlatform
+from app.models.meme import DataOrigin, MetricsQuality, NormalizedMeme, SourcePlatform
 from app.models.source import SourceStatus
 
 
@@ -77,3 +77,31 @@ class BaseSourceFetcher(abc.ABC):
         """Update health metrics on failed fetch."""
         self.status.status = "degraded"
         self.status.last_error = str(error)
+
+    @staticmethod
+    def mark_fixture_items(memes: List[NormalizedMeme]) -> List[NormalizedMeme]:
+        """Mark local fixture records so callers cannot mistake them for live observations."""
+        return [
+            meme.model_copy(
+                update={
+                    "data_origin": DataOrigin.FIXTURE,
+                    "metrics_quality": MetricsQuality.FIXTURE,
+                    "observed_at": None,
+                }
+            )
+            for meme in memes
+        ]
+
+    @staticmethod
+    def mark_live_items(memes: List[NormalizedMeme], observed_at: Optional[float] = None) -> List[NormalizedMeme]:
+        """Attach a fetch timestamp to records returned by a live upstream response."""
+        fetched_at = observed_at if observed_at is not None else time.time()
+        return [
+            meme.model_copy(
+                update={
+                    "data_origin": DataOrigin.LIVE,
+                    "observed_at": fetched_at,
+                }
+            )
+            for meme in memes
+        ]

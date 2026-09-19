@@ -27,6 +27,23 @@ class SourcePlatform(str, Enum):
     TWITTER = "twitter"
 
 
+class DataOrigin(str, Enum):
+    """Where a normalized record came from."""
+
+    LIVE = "live"
+    FIXTURE = "fixture"
+    MANUAL = "manual"
+
+
+class MetricsQuality(str, Enum):
+    """How trustworthy the engagement fields are for ranking."""
+
+    OBSERVED = "observed"
+    PARTIAL = "partial"
+    UNKNOWN = "unknown"
+    FIXTURE = "fixture"
+
+
 class LifecycleStage(str, Enum):
     """Virality lifecycle stages."""
     EMERGING = "emerging"
@@ -141,6 +158,18 @@ class NormalizedMeme(BaseModel):
     upcoming_score: float = Field(
         default=0.0,
         description="Calculated upcoming breakout potential score based on acceleration and multi-platform presence",
+    )
+    data_origin: Union[DataOrigin, str] = Field(
+        default=DataOrigin.LIVE,
+        description="Whether this record came from a live source, fixture, or manual catalog",
+    )
+    metrics_quality: Union[MetricsQuality, str] = Field(
+        default=MetricsQuality.OBSERVED,
+        description="Whether engagement metrics are observed, partial, unknown, or fixture-derived",
+    )
+    observed_at: Optional[float] = Field(
+        default=None,
+        description="UTC epoch timestamp when this source observation was fetched",
     )
 
     @model_validator(mode="before")
@@ -282,6 +311,18 @@ class Meme(BaseModel):
         default="GLOBAL",
         description="Originating or primary country/region (e.g. US, DE, FR, BR, GLOBAL)",
     )
+    data_origin: Union[DataOrigin, str] = Field(
+        default=DataOrigin.LIVE,
+        description="Whether this record came from a live source, fixture, or manual catalog",
+    )
+    metrics_quality: Union[MetricsQuality, str] = Field(
+        default=MetricsQuality.OBSERVED,
+        description="Whether engagement metrics are observed, partial, unknown, or fixture-derived",
+    )
+    observed_at: Optional[float] = Field(
+        default=None,
+        description="UTC epoch timestamp when this source observation was fetched",
+    )
 
     @model_validator(mode="before")
     @classmethod
@@ -377,6 +418,9 @@ class Meme(BaseModel):
                 "last_seen_at": getattr(data, "last_seen_at", None),
                 "language": getattr(data, "language", "en") or "en",
                 "country_code": getattr(data, "country_code", "GLOBAL") or "GLOBAL",
+                "data_origin": getattr(data, "data_origin", DataOrigin.LIVE),
+                "metrics_quality": getattr(data, "metrics_quality", MetricsQuality.OBSERVED),
+                "observed_at": getattr(data, "observed_at", None),
             }
         return data
 
@@ -412,6 +456,9 @@ class Meme(BaseModel):
             last_seen_at=getattr(norm, "last_seen_at", None),
             language=getattr(norm, "language", "en") or "en",
             country_code=getattr(norm, "country_code", "GLOBAL") or "GLOBAL",
+            data_origin=getattr(norm, "data_origin", DataOrigin.LIVE),
+            metrics_quality=getattr(norm, "metrics_quality", MetricsQuality.OBSERVED),
+            observed_at=getattr(norm, "observed_at", None),
         )
 
 

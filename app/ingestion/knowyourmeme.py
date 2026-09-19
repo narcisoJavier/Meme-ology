@@ -124,10 +124,6 @@ class KnowYourMemeFetcher(BaseSourceFetcher):
                 link_elem = item.find("link")
                 permalink = link_elem.text.strip() if (link_elem is not None and link_elem.text) else ""
 
-                pubdate_elem = item.find("pubDate")
-                pubdate_str = pubdate_elem.text if pubdate_elem is not None else ""
-                created_at = parse_rfc822_date(pubdate_str)
-
                 desc_elem = item.find("description")
                 desc_text = desc_elem.text if desc_elem is not None else ""
                 media_url = extract_image_from_description(desc_text)
@@ -137,8 +133,20 @@ class KnowYourMemeFetcher(BaseSourceFetcher):
                     if enclosure is not None and enclosure.get("url"):
                         media_url = enclosure.get("url")
 
+                metrics_quality = "observed"
                 if not media_url:
+                    # Keep the catalog row for compatibility, but mark the
+                    # placeholder so the live publisher can exclude it.
                     media_url = "https://i.kym-cdn.com/photos/images/original/000/000/000/kym_placeholder.jpg"
+                    metrics_quality = "unknown"
+
+                pubdate_elem = item.find("pubDate")
+                pubdate_str = pubdate_elem.text if pubdate_elem is not None else ""
+                if pubdate_str:
+                    created_at = parse_rfc822_date(pubdate_str)
+                else:
+                    created_at = 0.0
+                    metrics_quality = "unknown"
 
                 lower_url = media_url.lower()
                 media_type = MediaType.GIF if lower_url.endswith(".gif") else MediaType.IMAGE
@@ -146,10 +154,12 @@ class KnowYourMemeFetcher(BaseSourceFetcher):
 
                 is_nsfw = bool(re.search(r"\b(nsfw|explicit|adult)\b|\[nsfw\]", (title + " " + desc_text).lower()))
 
-                score = 100
-                num_comments = 10
+                # KYM RSS is a catalog feed, not a social engagement feed. It does
+                # not provide upvotes or comments, so never invent popularity.
+                score = 0
+                num_comments = 0
                 content_hash = compute_content_hash(media_url, title)
-                trending_score = calculate_trending_score(score, num_comments, created_at)
+                trending_score = 0.0
 
                 meme = NormalizedMeme(
                     id=meme_id,
@@ -168,6 +178,7 @@ class KnowYourMemeFetcher(BaseSourceFetcher):
                     domain=domain,
                     content_hash=content_hash,
                     trending_score=trending_score,
+                    metrics_quality=metrics_quality,
                 )
                 results.append(meme)
             except Exception as item_err:
@@ -191,15 +202,17 @@ class KnowYourMemeFetcher(BaseSourceFetcher):
                 raw_id = raw_id.replace("kym_", "")
                 title = str(item.get("title") or "").strip()
                 media_url = str(item.get("media_url") or item.get("url") or "")
-                if not title or not media_url:
+                if not raw_id or not title or not media_url:
                     continue
 
                 meme_id = f"kym_{raw_id}"
                 permalink = str(item.get("permalink") or f"https://knowyourmeme.com/photos/{raw_id}")
                 author = str(item.get("author") or "Know Your Meme")
-                score = int(item.get("score") or 100)
+                if "created_at" not in item:
+                    continue
+                score = int(item.get("score") or 0)
                 num_comments = int(item.get("num_comments") or 0)
-                created_at = float(item.get("created_at") or time.time())
+                created_at = float(item.get("created_at"))
                 is_nsfw = bool(item.get("is_nsfw", False))
 
                 lower_url = media_url.lower()
@@ -226,6 +239,11 @@ class KnowYourMemeFetcher(BaseSourceFetcher):
                     domain=domain,
                     content_hash=content_hash,
                     trending_score=trending_score,
+                    metrics_quality=(
+                        "observed"
+                        if "score" in item or "num_comments" in item
+                        else "unknown"
+                    ),
                 )
                 results.append(meme)
             except Exception as item_err:
@@ -255,6 +273,7 @@ class KnowYourMemeFetcher(BaseSourceFetcher):
                 logger.error(f"Error loading KYM JSON fixture {self.fixture_json_path}: {e}")
 
         if results:
+            results = self.mark_fixture_items(results)
             self.update_success(len(results), latency_ms=0.5)
         else:
             self.update_failure(FileNotFoundError("No valid KYM fixtures found"))
