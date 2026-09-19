@@ -1,7 +1,7 @@
 """Meme domain models and response schemas."""
 
 from enum import Enum
-from typing import Any, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 from pydantic import BaseModel, Field, model_validator
 from app.core.dedup import compute_content_hash
 from app.core.ranking import calculate_trending_score
@@ -22,11 +22,15 @@ class SourcePlatform(str, Enum):
     KNOWYOURMEME = "knowyourmeme"
     MASTODON = "mastodon"
     YOUTUBE = "youtube"
+    TIKTOK = "tiktok"
+    GOOGLE_TRENDS = "google_trends"
+    TWITTER = "twitter"
 
 
 class LifecycleStage(str, Enum):
     """Virality lifecycle stages."""
     EMERGING = "emerging"
+    BREAKOUT = "breakout"
     VIRAL = "viral"
     PEAK = "peak"
     COOLING = "cooling"
@@ -118,6 +122,26 @@ class NormalizedMeme(BaseModel):
         default="GLOBAL",
         description="Originating or primary country/region (e.g. US, DE, FR, BR, GLOBAL)",
     )
+    explanation: Optional[str] = Field(
+        default=None,
+        description="Concise cultural explanation of what the meme is and why it is trending",
+    )
+    origin_platform: Optional[str] = Field(
+        default=None,
+        description="Platform where the trend ignited (e.g. tiktok, youtube, twitter, twitch)",
+    )
+    viral_sound_or_template: Optional[str] = Field(
+        default=None,
+        description="Name or URL of the viral sound, CapCut template, or format",
+    )
+    evidence_links: List[Dict[str, str]] = Field(
+        default_factory=list,
+        description="List of cross-platform verification links [{platform: 'youtube', url: '...', title: '...'}]",
+    )
+    upcoming_score: float = Field(
+        default=0.0,
+        description="Calculated upcoming breakout potential score based on acceleration and multi-platform presence",
+    )
 
     @model_validator(mode="before")
     @classmethod
@@ -140,9 +164,13 @@ class NormalizedMeme(BaseModel):
                 plat = (plat_raw.value if isinstance(plat_raw, SourcePlatform) else str(plat_raw or "")).lower()
                 if "youtube" in plat:
                     data["source_category"] = "video_creator"
+                elif "tiktok" in plat:
+                    data["source_category"] = "shortform_video"
+                elif "trends" in plat or "google" in plat:
+                    data["source_category"] = "search_breakout"
                 elif "knowyourmeme" in plat or "kym" in plat:
                     data["source_category"] = "encyclopedia"
-                elif "bluesky" in plat or "mastodon" in plat:
+                elif "bluesky" in plat or "mastodon" in plat or "twitter" in plat:
                     data["source_category"] = "federated_social"
                 else:
                     data["source_category"] = "community_forum"

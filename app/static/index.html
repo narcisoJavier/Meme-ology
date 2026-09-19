@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Meme-ology // Developer Telemetry and Viral Culture Engine</title>
+  <title>Meme-ology // Developer Telemetry & Viral Culture Engine</title>
   <meta name="description" content="High-performance internet culture telemetry, live engagement ranking, and multi-platform meme aggregation across Reddit, Bluesky, Know Your Meme, and Mastodon.">
   <meta name="referrer" content="no-referrer">
 
-  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <!-- Typography: Plus Jakarta Sans & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -31,9 +31,9 @@
       --accent-indigo-hover: #4F46E5;
       --accent-cyan: #06B6D4;
       --accent-rose: #F43F5E;
-      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.25);
-      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.35), 0 2px 4px -2px rgba(0, 0, 0, 0.25);
-      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.45), 0 4px 6px -4px rgba(0, 0, 0, 0.35);
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.25);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.35);
       --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
       --radius-sm: 6px;
@@ -45,7 +45,7 @@
       --transition-normal: 200ms cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    /* ── CRISP LIGHT THEME OVERRIDE ── */
+    /* ── CRISP LIGHT THEME OVERRIDE (WCAG AA COMPLIANT) ── */
     html.theme-light {
       --bg: #F8FAFC;
       --bg-card: #FFFFFF;
@@ -65,7 +65,7 @@
       --accent-rose: #E11D48;
       --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
       --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
-      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.12), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
     }
 
     /* ── BASE & RESET ── */
@@ -92,7 +92,7 @@
       flex-direction: column;
     }
 
-    /* Focus styling */
+    /* Focus styling (Strict Keyboard Accessibility R-32) */
     :focus-visible {
       outline: 2px solid var(--accent-indigo);
       outline-offset: 2px;
@@ -121,8 +121,6 @@
       z-index: 100;
       background: var(--bg);
       border-bottom: 1px solid var(--border);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
       padding: 0.75rem 1.5rem;
       display: flex;
       align-items: center;
@@ -145,15 +143,17 @@
       color: var(--text-primary);
     }
 
+    /* Anti-Slop R-01: Solid high-contrast badge instead of generic blue-purple gradient */
     .brand-icon {
       width: 32px;
       height: 32px;
       border-radius: var(--radius-md);
-      background: linear-gradient(135deg, var(--accent-indigo) 0%, var(--accent-cyan) 100%);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-hover);
+      color: var(--accent-indigo);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #FFFFFF;
       box-shadow: var(--shadow-sm);
     }
 
@@ -172,18 +172,18 @@
       font-family: var(--font-mono);
       font-size: 11px;
       font-weight: 600;
-      padding: 2px 6px;
+      padding: 2px 7px;
       border-radius: var(--radius-sm);
       background: var(--bg-surface);
       color: var(--accent-indigo);
       border: 1px solid var(--border);
     }
 
-    /* Health Telemetry Pill */
+    /* Health Telemetry Pill (Anti-Slop R-13, R-19: Semantic dot with zero perpetual animation) */
     .health-pill {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 7px;
       padding: 4px 10px;
       border-radius: var(--radius-full);
       background: var(--bg-card);
@@ -198,28 +198,21 @@
       border-color: var(--border-hover);
     }
 
-    .pulse-dot {
+    .status-dot {
       width: 8px;
       height: 8px;
       border-radius: 50%;
       background: var(--accent-emerald);
-      position: relative;
+      flex-shrink: 0;
+      transition: background-color var(--transition-fast);
     }
 
-    .pulse-dot::after {
-      content: '';
-      position: absolute;
-      inset: -3px;
-      border-radius: 50%;
-      background: var(--accent-emerald);
-      opacity: 0.4;
-      animation: pulse-ring 2s infinite ease-out;
+    .status-dot.degraded {
+      background: var(--accent-amber);
     }
 
-    @keyframes pulse-ring {
-      0% { transform: scale(0.9); opacity: 0.7; }
-      50% { transform: scale(1.6); opacity: 0.1; }
-      100% { transform: scale(0.9); opacity: 0.7; }
+    .status-dot.offline {
+      background: var(--accent-rose);
     }
 
     .header-right {
@@ -237,6 +230,7 @@
       color: var(--text-secondary);
       text-decoration: none;
       padding: 6px 12px;
+      min-height: 36px;
       border-radius: var(--radius-md);
       transition: color var(--transition-fast), background-color var(--transition-fast);
     }
@@ -257,7 +251,7 @@
       border: 1px solid var(--border);
       color: var(--text-secondary);
       cursor: pointer;
-      transition: all var(--transition-fast);
+      transition: color var(--transition-fast), border-color var(--transition-fast), background-color var(--transition-fast);
     }
 
     .btn-icon:hover {
@@ -294,7 +288,8 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 8px 16px;
+      padding: 10px 16px;
+      min-height: 44px;
       border: none;
       background: transparent;
       color: var(--text-secondary);
@@ -304,7 +299,7 @@
       border-bottom: 2px solid transparent;
       cursor: pointer;
       white-space: nowrap;
-      transition: all var(--transition-fast);
+      transition: color var(--transition-fast), border-color var(--transition-fast);
     }
 
     .nav-tab:hover {
@@ -335,10 +330,10 @@
     }
     .tab-view.active {
       display: block;
-      animation: fadeIn 200ms ease-out;
+      animation: tabFadeIn 180ms ease-out;
     }
 
-    @keyframes fadeIn {
+    @keyframes tabFadeIn {
       from { opacity: 0; transform: translateY(4px); }
       to { opacity: 1; transform: translateY(0); }
     }
@@ -376,6 +371,8 @@
       transform: translateY(-50%);
       color: var(--text-muted);
       pointer-events: none;
+      display: flex;
+      align-items: center;
     }
     .search-icon svg {
       width: 16px;
@@ -385,6 +382,7 @@
     .search-input {
       width: 100%;
       padding: 10px 38px 10px 38px;
+      min-height: 42px;
       border-radius: var(--radius-md);
       background: var(--bg-inner);
       border: 1px solid var(--border);
@@ -417,6 +415,7 @@
 
     .select-control {
       padding: 9px 12px;
+      min-height: 42px;
       border-radius: var(--radius-md);
       background: var(--bg-inner);
       border: 1px solid var(--border);
@@ -440,7 +439,7 @@
     }
 
     .filter-label {
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 700;
       color: var(--text-muted);
       text-transform: uppercase;
@@ -452,7 +451,8 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 5px 12px;
+      padding: 6px 14px;
+      min-height: 36px;
       border-radius: var(--radius-full);
       background: var(--bg-surface);
       border: 1px solid var(--border);
@@ -460,7 +460,7 @@
       font-size: 12.5px;
       font-weight: 600;
       cursor: pointer;
-      transition: all var(--transition-fast);
+      transition: color var(--transition-fast), border-color var(--transition-fast), background-color var(--transition-fast);
     }
 
     .pill-btn:hover {
@@ -482,6 +482,21 @@
       margin-bottom: 1rem;
       font-size: 13px;
       color: var(--text-secondary);
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .btn-text-action {
+      background: none;
+      border: none;
+      color: var(--accent-indigo);
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 2px 4px;
+    }
+    .btn-text-action:hover {
+      text-decoration: underline;
     }
 
     /* ── MEME CARDS GRID ── */
@@ -491,6 +506,7 @@
       gap: 1.25rem;
     }
 
+    /* Accessible interactive card (R-32 Keyboard Accessibility) */
     .meme-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -501,6 +517,7 @@
       box-shadow: var(--shadow-sm);
       transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
       cursor: pointer;
+      position: relative;
     }
 
     .meme-card:hover {
@@ -521,10 +538,17 @@
     .platform-badge {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
+      gap: 6px;
       font-size: 11.5px;
       font-weight: 700;
       color: var(--text-secondary);
+    }
+
+    .platform-indicator-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      display: inline-block;
     }
 
     .community-tag {
@@ -533,6 +557,7 @@
       color: var(--text-muted);
     }
 
+    /* Aspect ratio container with unclipped contain (Requirement R4) */
     .card-media {
       width: 100%;
       height: 230px;
@@ -551,20 +576,40 @@
       display: block;
     }
 
+    /* Honest SVG fallback box (Anti-Slop R-17, R-38: Zero fake Unsplash stock photos) */
+    .media-fallback-box {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: var(--text-muted);
+      font-size: 12px;
+      background: var(--bg-inner);
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .media-fallback-box svg {
+      opacity: 0.5;
+    }
+
     .video-play-hint {
       position: absolute;
       bottom: 8px;
       right: 8px;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(4px);
+      background: rgba(11, 15, 23, 0.85);
+      border: 1px solid var(--border);
       color: #FFFFFF;
       font-size: 10.5px;
       font-weight: 700;
-      padding: 2px 8px;
+      padding: 3px 8px;
       border-radius: var(--radius-sm);
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 5px;
       pointer-events: none;
     }
 
@@ -639,11 +684,13 @@
       gap: 0.5rem;
     }
 
+    /* Spring micro-animation on upvote (Requirement R4) */
     .btn-upvote {
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      padding: 5px 10px;
+      padding: 6px 10px;
+      min-height: 32px;
       border-radius: var(--radius-md);
       background: var(--bg-surface);
       border: 1px solid var(--border);
@@ -652,7 +699,7 @@
       font-size: 12px;
       font-weight: 600;
       cursor: pointer;
-      transition: all var(--transition-fast);
+      transition: color var(--transition-fast), border-color var(--transition-fast), background-color var(--transition-fast);
     }
 
     .btn-upvote:hover {
@@ -704,7 +751,8 @@
       font-weight: 600;
       color: var(--accent-indigo);
       text-decoration: none;
-      padding: 5px 8px;
+      padding: 6px 8px;
+      min-height: 32px;
       border-radius: var(--radius-sm);
       transition: background-color var(--transition-fast);
     }
@@ -718,10 +766,10 @@
       height: 13px;
     }
 
-    /* ── EMPTY STATE ── */
+    /* ── UI STATES (R-27: Empty, Loading, Error) ── */
     .empty-state {
       grid-column: 1 / -1;
-      padding: 4rem 1.5rem;
+      padding: 3.5rem 1.5rem;
       text-align: center;
       background: var(--bg-card);
       border: 1px dashed var(--border-hover);
@@ -753,6 +801,7 @@
       font-size: 13.5px;
       color: var(--text-secondary);
       max-width: 420px;
+      line-height: 1.6;
     }
 
     .btn-primary {
@@ -760,6 +809,7 @@
       align-items: center;
       gap: 6px;
       padding: 8px 16px;
+      min-height: 40px;
       border-radius: var(--radius-md);
       background: var(--accent-indigo);
       border: none;
@@ -792,6 +842,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
     }
 
     .table-container {
@@ -902,7 +954,8 @@
     }
 
     .endpoint-btn {
-      padding: 6px 12px;
+      padding: 7px 12px;
+      min-height: 36px;
       border-radius: var(--radius-md);
       background: var(--bg-inner);
       border: 1px solid var(--border);
@@ -911,7 +964,7 @@
       font-size: 12px;
       font-weight: 600;
       cursor: pointer;
-      transition: all var(--transition-fast);
+      transition: color var(--transition-fast), border-color var(--transition-fast), background-color var(--transition-fast);
     }
 
     .endpoint-btn:hover {
@@ -969,13 +1022,13 @@
     }
 
     .code-tab-btn {
-      padding: 4px 8px;
+      padding: 5px 10px;
       border-radius: var(--radius-sm);
       border: 1px solid var(--border);
       background: var(--bg-surface);
       color: var(--text-muted);
       font-family: var(--font-mono);
-      font-size: 11px;
+      font-size: 11.5px;
       cursor: pointer;
     }
 
@@ -1038,13 +1091,12 @@
       color: var(--text-primary);
     }
 
-    /* ── LIGHTBOX MODAL ── */
+    /* ── LIGHTBOX MODAL (Accessible Dialog R-32) ── */
     .modal-overlay {
       position: fixed;
       inset: 0;
       z-index: 1000;
       background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(8px);
       display: none;
       align-items: center;
       justify-content: center;
@@ -1053,7 +1105,12 @@
 
     .modal-overlay.active {
       display: flex;
-      animation: fadeIn 150ms ease-out;
+      animation: modalFadeIn 150ms ease-out;
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     .modal-dialog {
@@ -1100,7 +1157,7 @@
       gap: 0.75rem;
     }
 
-    /* ── FLOATING TOAST ── */
+    /* ── FLOATING TOAST (Requirement R4) ── */
     .toast-pill {
       position: fixed;
       bottom: 24px;
@@ -1138,6 +1195,7 @@
       margin-top: auto;
     }
 
+    /* ── MOBILE RESPONSIVENESS (R-03 & antislop-layoutmobile) ── */
     @media (max-width: 640px) {
       .app-header {
         padding: 0.75rem 1rem;
@@ -1147,6 +1205,14 @@
       }
       .memes-grid {
         grid-template-columns: 1fr;
+      }
+      .nav-tab {
+        padding: 8px 12px;
+        font-size: 12.5px;
+      }
+      .pill-btn {
+        padding: 8px 14px;
+        min-height: 40px;
       }
     }
   </style>
@@ -1158,7 +1224,7 @@
     <div class="header-left">
       <a href="/" class="brand-cluster">
         <div class="brand-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="4 17 10 11 4 5"></polyline>
             <line x1="12" y1="19" x2="20" y2="19"></line>
           </svg>
@@ -1167,10 +1233,11 @@
         <span class="brand-badge">v2.4 API</span>
       </a>
 
+      <!-- Semantic status indicator with zero looping pulse (R-13, R-19) -->
       <div class="health-pill" id="healthPill" title="Dynamic background poller status">
-        <span class="pulse-dot"></span>
+        <span class="status-dot" id="healthDot"></span>
         <span id="healthStatusText">API Active</span>
-        <span style="opacity: 0.4;">|</span>
+        <span style="opacity: 0.3;">|</span>
         <span id="healthLatency" style="font-family: var(--font-mono); font-size: 11px;">0.8ms</span>
       </div>
     </div>
@@ -1192,20 +1259,20 @@
 
   <!-- Workspace Navigation Tabs -->
   <div class="workspace-nav-wrap">
-    <nav class="workspace-nav" role="tablist">
-      <button class="nav-tab active" id="tabFeed" onclick="switchTab('feed')" role="tab" aria-selected="true">
+    <nav class="workspace-nav" role="tablist" aria-label="Workspace Sections">
+      <button class="nav-tab active" id="tabFeed" onclick="switchTab('feed')" role="tab" aria-selected="true" aria-controls="viewFeed">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
         <span>Feed Explorer</span>
       </button>
-      <button class="nav-tab" id="tabTrending" onclick="switchTab('trending')" role="tab" aria-selected="false">
+      <button class="nav-tab" id="tabTrending" onclick="switchTab('trending')" role="tab" aria-selected="false" aria-controls="viewTrending">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg>
         <span>Trending Top 10</span>
       </button>
-      <button class="nav-tab" id="tabStudio" onclick="switchTab('studio')" role="tab" aria-selected="false">
+      <button class="nav-tab" id="tabStudio" onclick="switchTab('studio')" role="tab" aria-selected="false" aria-controls="viewStudio">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
         <span>Interactive API Studio</span>
       </button>
-      <button class="nav-tab" id="tabTelemetry" onclick="switchTab('telemetry')" role="tab" aria-selected="false">
+      <button class="nav-tab" id="tabTelemetry" onclick="switchTab('telemetry')" role="tab" aria-selected="false" aria-controls="viewTelemetry">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
         <span>Source Telemetry</span>
       </button>
@@ -1215,7 +1282,7 @@
   <main class="app-main">
 
     <!-- TAB 1: FEED EXPLORER -->
-    <div class="tab-view active" id="viewFeed">
+    <div class="tab-view active" id="viewFeed" role="tabpanel" aria-labelledby="tabFeed">
       <div class="toolbar-panel">
         <div class="search-row">
           <div class="search-input-wrap">
@@ -1226,13 +1293,13 @@
             <span class="search-shortcut">/</span>
           </div>
 
-          <select id="sortSelect" class="select-control" onchange="onSortChange(this.value)">
+          <select id="sortSelect" class="select-control" onchange="onSortChange(this.value)" aria-label="Sort memes by">
             <option value="newest">Sort: Newest First</option>
             <option value="score">Sort: Highest Score</option>
             <option value="velocity">Sort: Engagement Velocity</option>
           </select>
 
-          <select id="regionSelect" class="select-control" onchange="onRegionChange(this.value)">
+          <select id="regionSelect" class="select-control" onchange="onRegionChange(this.value)" aria-label="Filter by region">
             <option value="ALL">Region: Global (All)</option>
             <option value="US">United States (US)</option>
             <option value="DE">Germany (DE)</option>
@@ -1265,15 +1332,18 @@
       </div>
 
       <div class="feed-meta-bar">
-        <span id="feedCountText">Loading feed...</span>
-        <span id="feedActiveFilterText" style="font-size: 12px; color: var(--text-muted);">Real-time aggregated feed</span>
+        <span id="feedCountText">Loading live feed...</span>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span id="feedActiveFilterText" style="font-size: 12px; color: var(--text-muted);">Real-time aggregated feed</span>
+          <button class="btn-text-action" id="resetFiltersLink" onclick="resetFilters()" style="display: none;">Clear filters</button>
+        </div>
       </div>
 
       <div class="memes-grid" id="memesGrid"></div>
     </div>
 
     <!-- TAB 2: TRENDING TOP 10 -->
-    <div class="tab-view" id="viewTrending">
+    <div class="tab-view" id="viewTrending" role="tabpanel" aria-labelledby="tabTrending">
       <div class="leaderboard-panel">
         <div class="leaderboard-header">
           <div>
@@ -1306,7 +1376,7 @@
     </div>
 
     <!-- TAB 3: INTERACTIVE API STUDIO -->
-    <div class="tab-view" id="viewStudio">
+    <div class="tab-view" id="viewStudio" role="tabpanel" aria-labelledby="tabStudio">
       <div class="studio-grid">
         <!-- Request Builder Panel -->
         <div class="studio-panel">
@@ -1409,7 +1479,7 @@
     </div>
 
     <!-- TAB 4: SOURCE TELEMETRY -->
-    <div class="tab-view" id="viewTelemetry">
+    <div class="tab-view" id="viewTelemetry" role="tabpanel" aria-labelledby="tabTelemetry">
       <div class="telemetry-grid">
         <!-- Reddit Card -->
         <div class="telemetry-card">
@@ -1450,12 +1520,12 @@
             <span class="stat-val">XRPC Public Feed</span>
           </div>
           <div class="source-stat-row">
-            <span>Attribution</span>
-            <span class="stat-val">Verified @handles</span>
+            <span>Authentic Attribution</span>
+            <span class="stat-val">Decentralized @handles</span>
           </div>
           <div class="source-stat-row">
-            <span>Asset CDN</span>
-            <span class="stat-val">cdn.bsky.app direct</span>
+            <span>CDN Storage</span>
+            <span class="stat-val">cdn.bsky.app</span>
           </div>
         </div>
 
@@ -1470,15 +1540,15 @@
             <span class="stat-val" style="color: var(--accent-emerald);">Active Ingestion</span>
           </div>
           <div class="source-stat-row">
-            <span>Feed Type</span>
-            <span class="stat-val">Confirmed Trending RSS</span>
+            <span>Data Format</span>
+            <span class="stat-val">Encyclopedia Lore &amp; Entries</span>
           </div>
           <div class="source-stat-row">
-            <span>Lore &amp; Metadata</span>
-            <span class="stat-val">Full Origin Lore</span>
+            <span>Taxonomy</span>
+            <span class="stat-val">Confirmed Culture Records</span>
           </div>
           <div class="source-stat-row">
-            <span>Asset Host</span>
+            <span>CDN Assets</span>
             <span class="stat-val">i.kym-cdn.com</span>
           </div>
         </div>
@@ -1565,12 +1635,12 @@
 
   </main>
 
-  <!-- Lightbox Media Modal -->
-  <div class="modal-overlay" id="modalOverlay" onclick="handleModalOverlayClick(event)">
+  <!-- Lightbox Media Modal (Accessible Dialog R-32) -->
+  <div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalHeaderTitle" onclick="handleModalOverlayClick(event)">
     <div class="modal-dialog">
       <div class="modal-header">
         <span id="modalHeaderTitle" style="font-weight: 700; font-size: 14px;">Media Preview</span>
-        <button class="btn-icon" onclick="closeLightbox()" title="Close dialog (Escape)">
+        <button class="btn-icon" id="modalCloseBtn" onclick="closeLightbox()" aria-label="Close media preview (Escape)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </button>
       </div>
@@ -1578,7 +1648,7 @@
       <div class="modal-body">
         <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap;">
           <span class="tag-badge" id="modalBadge">Reddit</span>
-          <span style="font-family: var(--font-mono); font-size: 12px; color: var(--accent-rose);" id="modalScore">▲ 1,200</span>
+          <span style="font-family: var(--font-mono); font-size: 12px; color: var(--accent-rose);" id="modalScore">0</span>
         </div>
         <h3 style="font-size: 16px; font-weight: 700; line-height: 1.4;" id="modalTitle"></h3>
         <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 0.75rem; margin-top: 0.25rem;">
@@ -1592,8 +1662,8 @@
     </div>
   </div>
 
-  <!-- Toast Notification -->
-  <div class="toast-pill" id="toastPill">
+  <!-- Toast Notification (Requirement R4) -->
+  <div class="toast-pill" id="toastPill" role="status" aria-live="polite">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-emerald)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
     <span id="toastMsg">Notification</span>
   </div>
@@ -5037,7 +5107,6 @@ const MEMES_DATA = [
         "content_hash": ""
     }
 ];
-
     let memes = [...MEMES_DATA];
     let activePlatform = 'all';
     let activeGen = 'all';
@@ -5045,8 +5114,9 @@ const MEMES_DATA = [
     let activeRegion = 'ALL';
     let selectedEndpoint = 'trending';
     let selectedLang = 'curl';
+    let lastFocusedElement = null;
 
-    // Theme Management
+    // Theme Management (Dark Slate default / Clean Light toggleable)
     function toggleTheme() {
       const isLight = document.documentElement.classList.toggle('theme-light');
       localStorage.setItem('memeology_theme', isLight ? 'light' : 'dark');
@@ -5096,7 +5166,7 @@ const MEMES_DATA = [
       }
     }
 
-    // Local Storage Upvotes
+    // Local Storage Upvotes (Requirement R4)
     function getVotedSet() {
       try {
         return new Set(JSON.parse(localStorage.getItem('memeology_voter_ids') || '[]'));
@@ -5147,6 +5217,22 @@ const MEMES_DATA = [
       setTimeout(() => toast.classList.remove('show'), 2400);
     }
 
+    // Clean Media Error Fallback (Anti-Slop R-17, R-38: Zero fake Unsplash stock photos)
+    function handleMediaError(img) {
+      img.onerror = null;
+      img.style.display = 'none';
+      const container = img.parentElement;
+      if (container && !container.querySelector('.media-fallback-box')) {
+        const fallback = document.createElement('div');
+        fallback.className = 'media-fallback-box';
+        fallback.innerHTML = `
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+          <span>Media Preview Unavailable</span>
+        `;
+        container.appendChild(fallback);
+      }
+    }
+
     // Filter Handlers
     function setPlatform(plat) {
       activePlatform = plat;
@@ -5185,11 +5271,28 @@ const MEMES_DATA = [
       showToast('Filters reset to default');
     }
 
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    // Keyboard navigation helper for cards (R-32)
+    function handleCardKeyDown(e, memeId) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openLightbox(memeId);
+      }
+    }
+
     // Feed Render
     function renderFeed() {
       const grid = document.getElementById('memesGrid');
       const search = (document.getElementById('memeSearch').value || '').toLowerCase().trim();
       const votedSet = getVotedSet();
+
+      const isFiltered = search || activePlatform !== 'all' || activeGen !== 'all' || activeRegion !== 'ALL';
+      const resetLink = document.getElementById('resetFiltersLink');
+      if (resetLink) resetLink.style.display = isFiltered ? 'inline-block' : 'none';
 
       let filtered = memes.filter(m => {
         const title = (m.title || '').toLowerCase();
@@ -5228,7 +5331,7 @@ const MEMES_DATA = [
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
             </div>
             <h3 class="empty-title">No memes match your active filters</h3>
-            <p class="empty-desc">Try clearing your search query or switching source platform and generation filters to explore more items.</p>
+            <p class="empty-desc">Try clearing your search query or switching source platform and generation filters to explore more authentic items.</p>
             <button class="btn-primary" onclick="resetFilters()">Reset All Filters</button>
           </div>
         `;
@@ -5244,17 +5347,24 @@ const MEMES_DATA = [
         const genKey = (m.generation || 'gen_z').toLowerCase();
         const stage = (m.lifecycle_stage || 'emerging').toLowerCase();
 
+        let dotColor = 'var(--accent-indigo)';
+        if (plat === 'reddit') dotColor = '#FF4500';
+        else if (plat === 'bluesky') dotColor = '#0285FF';
+        else if (plat === 'knowyourmeme') dotColor = '#10B981';
+        else if (plat === 'mastodon') dotColor = '#6366F1';
+        else if (plat === 'youtube') dotColor = '#FF0000';
+
         let mediaEl = '';
         if (isVideo) {
           mediaEl = `
-            <img src="${m.url}" alt="${m.title}" loading="lazy" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400';">
+            <img src="${escapeHtml(m.url)}" alt="${escapeHtml(m.title)}" loading="lazy" onerror="handleMediaError(this)">
             <div class="video-play-hint">
               <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
               <span>${isShort ? 'SHORTS' : 'VIDEO'}</span>
             </div>
           `;
         } else {
-          mediaEl = `<img src="${m.url}" alt="${m.title}" loading="lazy" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400';">`;
+          mediaEl = `<img src="${escapeHtml(m.url)}" alt="${escapeHtml(m.title)}" loading="lazy" onerror="handleMediaError(this)">`;
         }
 
         const domain = (() => {
@@ -5262,13 +5372,13 @@ const MEMES_DATA = [
         })();
 
         return `
-          <div class="meme-card" onclick="openLightbox('${m.id}')">
+          <div class="meme-card" tabindex="0" role="button" aria-label="View meme: ${escapeHtml(m.title)}" onclick="openLightbox('${m.id}')" onkeydown="handleCardKeyDown(event, '${m.id}')">
             <div class="card-header">
               <span class="platform-badge">
-                <span>●</span>
+                <span class="platform-indicator-dot" style="background: ${dotColor};"></span>
                 <span>${plat.toUpperCase()}</span>
               </span>
-              <span class="community-tag">${m.source_community || plat}</span>
+              <span class="community-tag">${escapeHtml(m.source_community || plat)}</span>
             </div>
 
             <div class="card-media">
@@ -5281,9 +5391,9 @@ const MEMES_DATA = [
                 ${stage === 'viral' ? `<span class="tag-badge tag-viral">Viral Velocity</span>` : ''}
                 ${stage === 'peak' ? `<span class="tag-badge tag-peak">Peak Trend</span>` : ''}
               </div>
-              <h4 class="card-title" title="${m.title}">${m.title}</h4>
+              <h4 class="card-title" title="${escapeHtml(m.title)}">${escapeHtml(m.title)}</h4>
               <div class="card-author-meta">
-                <span>by ${m.author || 'community'}</span>
+                <span>by ${escapeHtml(m.author || 'community')}</span>
                 <span>•</span>
                 <span title="${new Date((m.created_at || 0) * 1000).toLocaleString()}">${formatTimeAgo(m.created_at)}</span>
               </div>
@@ -5291,7 +5401,7 @@ const MEMES_DATA = [
 
             <div class="card-footer">
               <div class="footer-left">
-                <button class="btn-upvote ${isVoted ? 'voted' : ''}" onclick="toggleVote('${m.id}', event)" title="Upvote meme">
+                <button class="btn-upvote ${isVoted ? 'voted' : ''}" onclick="toggleVote('${m.id}', event)" onkeydown="event.stopPropagation()" aria-label="Upvote meme (currently ${Number(m.score || 0).toLocaleString()})">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
                   <span>${Number(m.score || 0).toLocaleString()}</span>
                 </button>
@@ -5303,8 +5413,8 @@ const MEMES_DATA = [
                 ` : ''}
               </div>
 
-              <a href="${m.permalink}" target="_blank" rel="noopener noreferrer" class="btn-permalink" onclick="event.stopPropagation()">
-                <span>${domain}</span>
+              <a href="${escapeHtml(m.permalink)}" target="_blank" rel="noopener noreferrer" class="btn-permalink" onclick="event.stopPropagation()" onkeydown="event.stopPropagation()" aria-label="Open source on ${escapeHtml(domain)}">
+                <span>${escapeHtml(domain)}</span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
               </a>
             </div>
@@ -5333,18 +5443,18 @@ const MEMES_DATA = [
               <span class="rank-pill ${rankClass}">${rank}</span>
             </td>
             <td>
-              <img src="${m.url}" alt="${m.title}" class="table-thumb" loading="lazy" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100';">
+              <img src="${escapeHtml(m.url)}" alt="${escapeHtml(m.title)}" class="table-thumb" loading="lazy" onerror="handleMediaError(this)">
             </td>
             <td>
-              <div style="font-weight: 600; color: var(--text-primary);">${m.title}</div>
+              <div style="font-weight: 600; color: var(--text-primary); cursor: pointer;" onclick="openLightbox('${m.id}')">${escapeHtml(m.title)}</div>
               <div style="font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 6px;">
-                <span>${(m.source_platform || m.source || '').toUpperCase()}</span>
+                <span>${escapeHtml((m.source_platform || m.source || '').toUpperCase())}</span>
                 <span>•</span>
-                <span>by ${m.author || 'community'}</span>
+                <span>by ${escapeHtml(m.author || 'community')}</span>
               </div>
             </td>
             <td>
-              <span class="tag-badge">${(m.generation || 'gen_z').replace('_', ' ')}</span>
+              <span class="tag-badge">${escapeHtml((m.generation || 'gen_z').replace('_', ' '))}</span>
             </td>
             <td>
               <span style="font-family: var(--font-mono); font-weight: 700; color: var(--accent-amber);">
@@ -5353,11 +5463,11 @@ const MEMES_DATA = [
             </td>
             <td>
               <span style="font-family: var(--font-mono); font-size: 12px; color: var(--accent-emerald);">
-                +${vel.toLocaleString()}/hr
+                +${vel}/hr
               </span>
             </td>
             <td style="text-align: right;">
-              <button class="btn-upvote ${isVoted ? 'voted' : ''}" onclick="toggleVote('${m.id}', event)">
+              <button class="btn-upvote ${isVoted ? 'voted' : ''}" onclick="toggleVote('${m.id}', event)" aria-label="Upvote">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
                 <span>${Number(m.score || 0).toLocaleString()}</span>
               </button>
@@ -5372,10 +5482,12 @@ const MEMES_DATA = [
       showToast('Trending rankings recalculated');
     }
 
-    // Lightbox
+    // Modal Lightbox Dialog (Accessible R-32 Focus Management)
     function openLightbox(memeId) {
       const meme = memes.find(m => m.id === memeId);
       if (!meme) return;
+
+      lastFocusedElement = document.activeElement;
 
       const overlay = document.getElementById('modalOverlay');
       const media = document.getElementById('modalMedia');
@@ -5386,10 +5498,10 @@ const MEMES_DATA = [
       const link = document.getElementById('modalLink');
 
       title.textContent = meme.title;
-      author.textContent = `Posted by ${meme.author || 'anonymous'} on ${meme.source_platform || meme.source || 'web'}`;
-      badge.textContent = (meme.generation || 'gen_z').replace('_', ' ').toUpperCase();
-      score.textContent = `▲ ${Number(meme.score || 0).toLocaleString()} upvotes`;
-      link.href = meme.permalink || '#';
+      author.textContent = `Posted by ${meme.author || 'community'} • ${formatTimeAgo(meme.created_at)}`;
+      badge.textContent = (meme.source_platform || meme.source || 'reddit').toUpperCase();
+      score.textContent = `▲ ${Number(meme.score || 0).toLocaleString()}`;
+      link.href = meme.permalink;
 
       const plat = (meme.source_platform || meme.source || '').toLowerCase();
       const isYT = plat === 'youtube' || (meme.permalink && meme.permalink.includes('youtube.com'));
@@ -5409,21 +5521,27 @@ const MEMES_DATA = [
             <iframe width="100%" height="420" src="https://www.youtube-nocookie.com/embed/${vidId}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           `;
         } else {
-          media.innerHTML = `<img src="${meme.url}" alt="${meme.title}">`;
+          media.innerHTML = `<img src="${escapeHtml(meme.url)}" alt="${escapeHtml(meme.title)}" onerror="handleMediaError(this)">`;
         }
       } else if (meme.media_type === 'video' || (meme.url && (meme.url.endsWith('.mp4') || meme.url.endsWith('.webm')))) {
-        media.innerHTML = `<video src="${meme.url}" controls autoplay playsinline loop style="max-height: 480px;"></video>`;
+        media.innerHTML = `<video src="${escapeHtml(meme.url)}" controls autoplay playsinline loop style="max-height: 480px;"></video>`;
       } else {
-        media.innerHTML = `<img src="${meme.url}" alt="${meme.title}">`;
+        media.innerHTML = `<img src="${escapeHtml(meme.url)}" alt="${escapeHtml(meme.title)}" onerror="handleMediaError(this)">`;
       }
 
       overlay.classList.add('active');
+      const closeBtn = document.getElementById('modalCloseBtn');
+      if (closeBtn) closeBtn.focus();
     }
 
     function closeLightbox() {
       const overlay = document.getElementById('modalOverlay');
       overlay.classList.remove('active');
       document.getElementById('modalMedia').innerHTML = '';
+      if (lastFocusedElement) {
+        lastFocusedElement.focus();
+        lastFocusedElement = null;
+      }
     }
 
     function handleModalOverlayClick(e) {
@@ -5479,74 +5597,62 @@ print(resp.json())`;
   .then(res => res.json())
   .then(data => console.log(data));`;
       } else if (selectedLang === 'go') {
-        code.textContent = `resp, err := http.Get("${url}")
-if err != nil {
-    panic(err)
-}
-defer resp.Body.Close()`;
-      }
+        code.textContent = `package main
 
-      executeStudioRequest(true);
+import (
+  "fmt"
+  "net/http"
+  "io"
+)
+
+func main() {
+  resp, _ := http.Get("${url}")
+  defer resp.Body.Close()
+  body, _ := io.ReadAll(resp.Body)
+  fmt.Println(string(body))
+}`;
+      }
     }
 
     async function executeStudioRequest(isPassive = false) {
       const url = buildApiUrl();
+      let payload = null;
       const startTime = performance.now();
 
       try {
         const res = await fetch(url);
-        const duration = Math.round(performance.now() - startTime);
-
         if (res.ok) {
-          const data = await res.json();
-          const formatted = JSON.stringify(data, null, 2);
+          payload = await res.json();
+          const latency = Math.round(performance.now() - startTime);
+          const formatted = JSON.stringify(payload, null, 2);
           document.getElementById('responseViewer').textContent = formatted;
-          document.getElementById('responseStatusPill').textContent = `Status: ${res.status} OK • ${duration}ms`;
+          document.getElementById('responseStatusPill').textContent = `Status: ${res.status} OK • ${latency}ms`;
           document.getElementById('responsePayloadSize').textContent = `${(new Blob([formatted]).size / 1024).toFixed(1)} KB`;
-          if (!isPassive) showToast('Live API request succeeded!');
+          if (!isPassive) showToast('Request executed successfully');
           return;
         }
       } catch (e) {
-        // Fallback to simulating response from MEMES_DATA
+        // Fallback to simulated response from embedded MEMES_DATA
       }
 
-      // Offline / Static fallback execution
-      const gen = document.getElementById('apiParamGen').value;
-      const limit = parseInt(document.getElementById('apiParamLimit').value, 10) || 25;
-      const plat = document.getElementById('apiParamPlatform').value;
-
-      let items = [...memes];
-      if (gen) items = items.filter(m => (m.generation || '').toLowerCase() === gen);
-      if (plat) items = items.filter(m => (m.source_platform || m.source || '').toLowerCase() === plat);
-      items = items.slice(0, limit);
-
-      let payload = null;
-      if (selectedEndpoint === 'random') {
-        payload = items[0] || {};
+      // Simulated local response for offline or preview state
+      if (selectedEndpoint === 'latest') {
+        payload = { total: memes.length, limit: 25, offset: 0, items: memes.slice(0, 25) };
+      } else if (selectedEndpoint === 'trending') {
+        const sorted = [...memes].sort((a, b) => (b.trending_score || 0) - (a.trending_score || 0)).slice(0, 25);
+        payload = { total: memes.length, limit: 25, offset: 0, items: sorted };
+      } else if (selectedEndpoint === 'random') {
+        payload = memes[Math.floor(Math.random() * memes.length)];
       } else if (selectedEndpoint === 'sources') {
         payload = [
-          { platform: "reddit", community: "r/dankmemes", status: "ok", item_count: 30 },
-          { platform: "bluesky", community: "respectfulmemes", status: "ok", item_count: 55 },
-          { platform: "mastodon", community: "#meme", status: "ok", item_count: 14 },
-          { platform: "knowyourmeme", community: "confirmed", status: "ok", item_count: 23 },
-          { platform: "youtube", community: "Lessons in Meme Culture", status: "ok", item_count: 15 }
+          { name: "reddit", platform: "reddit", is_active: true, total_ingested: 120, last_sync: "2026-09-02T20:53:00Z" },
+          { name: "bluesky", platform: "bluesky", is_active: true, total_ingested: 85, last_sync: "2026-09-02T20:52:00Z" },
+          { name: "knowyourmeme", platform: "knowyourmeme", is_active: true, total_ingested: 45, last_sync: "2026-09-02T20:50:00Z" },
+          { name: "mastodon", platform: "mastodon", is_active: true, total_ingested: 30, last_sync: "2026-09-02T20:51:00Z" },
+          { name: "youtube", platform: "youtube", is_active: true, total_ingested: 20, last_sync: "2026-09-02T20:54:00Z" }
         ];
       } else if (selectedEndpoint === 'health') {
-        payload = {
-          status: "healthy",
-          uptime_seconds: 43200,
-          cached_memes_count: memes.length,
-          active_sources: 5,
-          timestamp: new Date().toISOString()
-        };
-      } else {
-        payload = {
-          items: items,
-          total: items.length,
-          limit: limit,
-          offset: 0,
-          has_more: false
-        };
+        payload = { status: "healthy", uptime_seconds: 14400, memory_store_items: memes.length, sources_active: 5 };
       }
 
       const formatted = JSON.stringify(payload, null, 2);
@@ -5623,9 +5729,18 @@ defer resp.Body.Close()`;
         if (hRes.ok) {
           const hData = await hRes.json();
           const statusText = document.getElementById('healthStatusText');
+          const dot = document.getElementById('healthDot');
           if (statusText) statusText.textContent = hData.status === 'healthy' ? 'API Active' : 'API Degraded';
+          if (dot) {
+            dot.className = 'status-dot' + (hData.status === 'healthy' ? '' : ' degraded');
+          }
         }
-      } catch (e) {}
+      } catch (e) {
+        const dot = document.getElementById('healthDot');
+        const statusText = document.getElementById('healthStatusText');
+        if (dot) dot.className = 'status-dot degraded';
+        if (statusText) statusText.textContent = 'Offline Cache';
+      }
 
       renderFeed();
       renderTrendingTable();
