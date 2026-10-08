@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Meme-ology social preview</title>
+  <desc id="desc">Get the joke. Find the source. A source-aware field guide to internet culture.</desc>
+  <rect width="1200" height="630" fill="#F5F2E9"/>
+  <rect x="60" y="58" width="1080" height="3" fill="#B83222"/>
+  <text x="60" y="122" fill="#191919" font-family="Georgia, serif" font-size="28" font-weight="700">Meme-ology<tspan fill="#B83222">.</tspan></text>
+  <text x="60" y="287" fill="#191919" font-family="Georgia, serif" font-size="86" font-weight="700" letter-spacing="-4">Get the joke.</text>
+  <text x="60" y="382" fill="#B83222" font-family="Georgia, serif" font-size="86" font-style="italic" letter-spacing="-4">Find the source.</text>
+  <text x="64" y="468" fill="#595650" font-family="Arial, sans-serif" font-size="22">A source-aware field guide to internet culture.</text>
+  <text x="64" y="530" fill="#595650" font-family="monospace" font-size="15">KNOW YOUR MEME COLLECTION  /  SOURCE-BACKED RECORDS  /  MEME-OLOGY</text>
+  <path d="M1030 170h56v56h-56zM1058 142v112M1002 198h112" fill="none" stroke="#B83222" stroke-width="3" opacity=".75"/>
+</svg>

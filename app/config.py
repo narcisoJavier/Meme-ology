@@ -35,6 +35,11 @@ class Settings(BaseSettings):
         default=3,
         description="Maximum retry attempts on rate limiting or transient errors",
     )
+    LIVE_REFRESH_TTL_SECONDS: int = Field(
+        default=300,
+        ge=30,
+        description="Minimum interval between request-driven live refreshes in serverless deployments",
+    )
 
     # Source Feeds Configuration
     REDDIT_SUBREDDITS: List[str] = Field(

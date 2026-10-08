@@ -28,6 +28,17 @@ def get_memory_store(request: Request) -> MemoryStore:
     return store
 
 
+def _page(items: list, total: int, limit: int, offset: int) -> PaginatedMemeResponse:
+    """Build the small response envelope shared by collection endpoints."""
+    return PaginatedMemeResponse(
+        items=[Meme.from_normalized(item) for item in items],
+        total=total,
+        limit=limit,
+        offset=offset,
+        has_more=(offset + len(items)) < total,
+    )
+
+
 @router.get(
     "/latest",
     response_model=PaginatedMemeResponse,
@@ -111,6 +122,62 @@ async def get_latest_memes(
         offset=offset,
         has_more=has_more,
     )
+
+
+@router.get(
+    "/catalog",
+    response_model=PaginatedMemeResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Browse the Know Your Meme catalog",
+    description="Return catalog entries collected from Know Your Meme. Catalog ordering is not a claim about cross-platform popularity.",
+)
+async def get_catalog(
+    limit: int = Query(default=24, ge=1, le=100),
+    offset: int = Query(default=0, ge=0),
+    q: Optional[str] = Query(default=None, description="Search title, author, or source community"),
+    store: MemoryStore = Depends(get_memory_store),
+) -> PaginatedMemeResponse:
+    """Return KYM entries as a source-labelled catalog collection."""
+    items, total = store.get_latest(
+        limit=1000,
+        offset=0,
+        source="knowyourmeme",
+        nsfw=False,
+    )
+    if q:
+        needle = q.casefold().strip()
+        items = [
+            item
+            for item in items
+            if needle in item.title.casefold()
+            or needle in (item.author or "").casefold()
+            or needle in (item.source_community or "").casefold()
+        ]
+        total = len(items)
+    page = items[offset : offset + limit]
+    return _page(page, total, limit, offset)
+
+
+@router.get(
+    "/popular",
+    response_model=PaginatedMemeResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Return observed KYM popularity",
+    description="Return Know Your Meme records with observed source metrics. A catalog snapshot without observed metrics is not promoted into this collection.",
+)
+async def get_popular(
+    limit: int = Query(default=10, ge=1, le=50),
+    offset: int = Query(default=0, ge=0),
+    store: MemoryStore = Depends(get_memory_store),
+) -> PaginatedMemeResponse:
+    """Return only rankable, observed KYM records."""
+    items, total = store.get_trending(
+        limit=limit,
+        offset=offset,
+        source="knowyourmeme",
+        nsfw=False,
+    )
+    return _page(items, total, limit, offset)
 
 
 @router.get(
@@ -404,3 +471,22 @@ async def get_global_trends(
         top_memes=[Meme.from_normalized(m) for m in top_memes],
         active_regions=sorted(list(active_regions)),
     )
+
+
+@router.get(
+    "/{meme_id}",
+    response_model=Meme,
+    status_code=status.HTTP_200_OK,
+    summary="Get one meme record",
+    description="Return one source-backed meme record by its stable API identifier.",
+    responses={404: {"description": "Meme record not found"}},
+)
+async def get_meme(
+    meme_id: str,
+    store: MemoryStore = Depends(get_memory_store),
+) -> Meme:
+    """Return a single record for shareable detail pages."""
+    meme = store.get_by_id(meme_id)
+    if meme is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Meme record not found")
+    return Meme.from_normalized(meme)

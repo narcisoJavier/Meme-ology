@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import os
 import random
 import threading
 import time
@@ -112,6 +113,7 @@ class MemoryStore:
     def _init_default_source_statuses(self) -> None:
         """Initialize default status tracking for configured sources."""
         settings = get_settings()
+        initial_status = "offline" if os.environ.get("VERCEL") else "ok"
         for sub in settings.REDDIT_SUBREDDITS:
             clean_sub = sub.lstrip("r/").strip()
             name = f"reddit:r/{clean_sub}"
@@ -121,7 +123,7 @@ class MemoryStore:
                 platform=SourcePlatform.REDDIT,
                 community=f"r/{clean_sub}",
                 category="community_forum",
-                status="ok",
+                status=initial_status,
                 item_count=0,
             )
 
@@ -133,7 +135,7 @@ class MemoryStore:
                 platform=SourcePlatform.KNOWYOURMEME,
                 community=cat,
                 category="encyclopedia",
-                status="ok",
+                status=initial_status,
                 item_count=0,
             )
 
@@ -146,7 +148,7 @@ class MemoryStore:
                 platform=SourcePlatform.BLUESKY,
                 community=clean_feed,
                 category="federated_social",
-                status="ok",
+                status=initial_status,
                 item_count=0,
             )
 
@@ -159,7 +161,7 @@ class MemoryStore:
                 platform=SourcePlatform.MASTODON,
                 community="#meme",
                 category="federated_social",
-                status="ok",
+                status=initial_status,
                 item_count=0,
             )
 
@@ -179,7 +181,7 @@ class MemoryStore:
                 platform=SourcePlatform.YOUTUBE,
                 community=comm,
                 category="video_creator",
-                status="ok",
+                status=initial_status,
                 item_count=0,
             )
 

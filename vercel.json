@@ -1,42 +1,17 @@
 {
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/index.py" },
+    { "source": "/static/(.*)", "destination": "/api/index.py" },
+    { "source": "/(.*)", "destination": "/api/index.py" }
+  ],
   "headers": [
     {
       "source": "/api/(.*)",
       "headers": [
-        { "key": "Content-Type", "value": "application/json" },
         { "key": "Access-Control-Allow-Origin", "value": "*" },
         { "key": "Access-Control-Allow-Methods", "value": "GET, OPTIONS" },
         { "key": "Cache-Control", "value": "public, max-age=60, s-maxage=120, stale-while-revalidate=300" }
       ]
-    },
-    {
-      "source": "/health",
-      "headers": [
-        { "key": "Content-Type", "value": "application/json" },
-        { "key": "Access-Control-Allow-Origin", "value": "*" }
-      ]
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/api/v1/memes/trending",
-      "destination": "/data/trending.json"
-    },
-    {
-      "source": "/api/v1/memes/latest",
-      "destination": "/data/latest.json"
-    },
-    {
-      "source": "/api/v1/memes/random",
-      "destination": "/data/random.json"
-    },
-    {
-      "source": "/api/v1/sources",
-      "destination": "/data/sources.json"
-    },
-    {
-      "source": "/health",
-      "destination": "/data/health.json"
     }
   ]
 }
