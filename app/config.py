@@ -120,6 +120,10 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
+        # Vercel project variables are often stored as comma-separated strings.
+        # Let the validator above normalize both JSON and CSV values instead of
+        # having pydantic-settings reject a non-JSON value before validation.
+        enable_decoding=False,
         extra="ignore",
     )
 
