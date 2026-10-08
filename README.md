@@ -4,16 +4,16 @@
   <img src="docs/banner.svg" alt="MEME-OLOGY — The Open Internet Meme API" width="100%">
 </p>
 
-### The Open Internet Meme API & Real-Time Curation Engine
+### A source-aware meme field guide and FastAPI
 
-**A lightning-fast, high-concurrency API that discovers, ranks, and categorizes memes across Reddit, Bluesky, Know Your Meme, and Mastodon with sub-5ms edge latency.**
+**Get the joke. Find the source. Explore Know Your Meme entries, see what the API can actually verify, and reproduce the same records from the playground.**
 
 <br/>
 
 [![FastAPI](https://img.shields.io/badge/Framework-FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
 [![Python 3.12+](https://img.shields.io/badge/Python-3.12%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
 [![Networks](https://img.shields.io/badge/Networks-Reddit%20%7C%20Bluesky%20%7C%20KYM%20%7C%20Mastodon-6366f1?style=for-the-badge)](https://github.com/narcisoJavier/Meme-ology)
-[![Tests](https://img.shields.io/badge/Tests-629%20Passed-10b981?style=for-the-badge)](https://github.com/narcisoJavier/Meme-ology)
+[![Tests](https://img.shields.io/badge/Tests-661%20Passed-10b981?style=for-the-badge)](https://github.com/narcisoJavier/Meme-ology)
 [![Coverage](https://img.shields.io/badge/Coverage-94%25-green?style=for-the-badge)](https://github.com/narcisoJavier/Meme-ology)
 [![License](https://img.shields.io/badge/License-MIT-8b5cf6?style=for-the-badge)](LICENSE)
 
@@ -56,12 +56,12 @@ Vercel will give you a public HTTPS URL (e.g. `https://meme-ology.vercel.app`) w
 
 ## 🌐 Live Web Explorer & Documentation Portal
 
-Meme-ology includes a clean, high-contrast web dashboard and live API playground (inspired by `hyperframes.dev`) served directly by the API.
+Meme-ology includes an editorial explorer and API playground served directly by FastAPI.
 
 When the server is running, simply open **[http://127.0.0.1:8000](http://127.0.0.1:8000)** in your browser:
-- 🔍 **Live Search Bar**: Instant real-time keyword search across all meme titles, authors, and communities.
-- 🏷️ **Filter Chips**: Instant filtering by `r/dankmemes`, `r/memes`, `r/me_irl`, `r/wholesomememes`, and `Know Your Meme`.
-- ⏱️ **Time Windows**: Switch between 1 hour, 6 hours, 24 hours, or all-time trending.
+- 🔍 **Source-backed search**: Search the catalog returned by the API and share the query URL.
+- 🧾 **Evidence rows**: See the source, documentation date, retrieval freshness, and unknown fields without guessed context.
+- 🌓 **Reading themes**: Keep the paper or charcoal theme across visits.
 - 💻 **Interactive Code Playground**: Copyable cURL, Python (`httpx`), and JavaScript (`fetch`) snippets with 1-click execution.
 
 ---
@@ -98,7 +98,7 @@ console.log(`Image: ${meme.url}`);
 
 ### Build a live dataset
 
-Use the live harvester before publishing the static `public/data` files:
+Use the live harvester only when you explicitly need a checked-in export:
 
 ```bash
 python scripts/harvest_live_sources.py
@@ -106,9 +106,8 @@ python scripts/harvest_live_sources.py
 
 The harvester fails closed. It keeps source IDs, publication timestamps, and
 engagement values from upstream responses. It does not estimate comments or
-timestamps, and it does not publish fixture records as live data. Records also
-include `data_origin`, `metrics_quality`, and `observed_at` so downstream users
-can see how each item was collected.
+timestamps, and it does not publish fixture records as live data. The deployed
+explorer reads FastAPI responses, never a checked-in JSON file.
 
 The older `scripts/harvest_multiplatform_memes.py` filename remains available as
 a compatibility entrypoint and now runs the same live-only harvester.
